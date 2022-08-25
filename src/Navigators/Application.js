@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { StartupContainer } from '@/Containers'
 import { useTheme } from '@/Hooks'
 import MainNavigator from './Main'
+import AuthNavigator from './Auth'
 import { navigationRef } from './utils'
 
 const Stack = createStackNavigator()
@@ -20,8 +21,8 @@ const ApplicationNavigator = () => {
         <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} />
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen
-            name="Main"
-            component={MainNavigator}
+            name="Auth"
+            component={AuthNavigator}
             options={{
               animationEnabled: false,
             }}
