@@ -34,17 +34,18 @@ env.read_env(env_file)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
-try:
-    # Pull secrets from Secret Manager
-    _, project = google.auth.default()
-    client = secretmanager.SecretManagerServiceClient()
-    settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
-    name = client.secret_version_path(project, settings_name, "latest")
-    payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
-    env.read_env(io.StringIO(payload))
-except (DefaultCredentialsError, PermissionDenied):
-    pass
+if not DEBUG:
 
+    try:
+        # Pull secrets from Secret Manager
+        _, project = google.auth.default()
+        client = secretmanager.SecretManagerServiceClient()
+        settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
+        name = client.secret_version_path(project, settings_name, "latest")
+        payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
+        env.read_env(io.StringIO(payload))
+    except (DefaultCredentialsError, PermissionDenied):
+        pass
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -57,7 +58,6 @@ SITE_ID = 1
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = env.bool("SECURE_REDIRECT", default=False)
-
 
 # Application definition
 
@@ -122,7 +122,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sunrun_solar_projec_36343.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -137,7 +136,6 @@ if env.str("DATABASE_URL", default=None):
     DATABASES = {
         'default': env.db()
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -157,7 +155,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -166,7 +163,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -219,7 +215,6 @@ EMAIL_HOST_PASSWORD = env.str("SENDGRID_PASSWORD", "")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-
 # AWS S3 config
 AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID", "")
 AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY", "")
@@ -227,10 +222,10 @@ AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME", "")
 AWS_STORAGE_REGION = env.str("AWS_STORAGE_REGION", "")
 
 USE_S3 = (
-    AWS_ACCESS_KEY_ID and
-    AWS_SECRET_ACCESS_KEY and
-    AWS_STORAGE_BUCKET_NAME and
-    AWS_STORAGE_REGION
+        AWS_ACCESS_KEY_ID and
+        AWS_SECRET_ACCESS_KEY and
+        AWS_STORAGE_BUCKET_NAME and
+        AWS_STORAGE_REGION
 )
 
 if USE_S3:
@@ -255,7 +250,7 @@ if DEBUG or not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
-# GCP config 
+# GCP config
 def google_service_account_config():
     # base64 encoded service_account.json file
     service_account_config = env.str("GS_CREDENTIALS", "")
@@ -265,6 +260,8 @@ def google_service_account_config():
         return json.loads(base64.b64decode(service_account_config))
     except (binascii.Error, ValueError):
         return {}
+
+
 GOOGLE_SERVICE_ACCOUNT_CONFIG = google_service_account_config()
 if GOOGLE_SERVICE_ACCOUNT_CONFIG:
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(GOOGLE_SERVICE_ACCOUNT_CONFIG)

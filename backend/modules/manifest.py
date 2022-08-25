@@ -1,8 +1,13 @@
 from pathlib import Path
 from django.urls import path, include
+import os
 
 MODULES_PACKAGE_NAME = "modules"
 MODULES_DIR = f"{Path.cwd()}/{MODULES_PACKAGE_NAME}/"
+# module directory for Windows os
+if os.name == 'nt':
+    MODULES_DIR = f"{Path.cwd().as_posix()}/{MODULES_PACKAGE_NAME}/"
+
 APPS = Path(MODULES_DIR).rglob("apps.py")
 
 
