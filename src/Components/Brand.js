@@ -8,7 +8,7 @@ const Brand = ({ height, width, mode }) => {
 
   return (
     <View style={{ height, width }}>
-      <Image style={Layout.fullSize} source={Images.logo} resizeMode={mode} />
+      <Image style={Layout.fullSize} source={Images.logoLogin} resizeMode={mode} />
     </View>
   )
 }
@@ -20,9 +20,9 @@ Brand.propTypes = {
 }
 
 Brand.defaultProps = {
-  height: 200,
+  height: 122,
   mode: 'contain',
-  width: 200,
+  width: 134,
 }
 
 export default Brand
