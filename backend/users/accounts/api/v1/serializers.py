@@ -127,7 +127,6 @@ class UserSerializerForAuth(serializers.ModelSerializer):
         return res
 
 
-
 class PasswordSerializer(PasswordResetSerializer):
     """Custom serializer for rest_auth to solve reset password error"""
     password_reset_form_class = ResetPasswordForm
