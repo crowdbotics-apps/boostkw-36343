@@ -1,0 +1,37 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/Assets/fonts/Montserrat-Bold.ttf",
+      "sha1": "3a54407a2b26ff4718708a4726b10cb070d16534"
+    },
+    {
+      "path": "src/Assets/fonts/Montserrat-BoldItalic.ttf",
+      "sha1": "6acf078ad5e1b77e6d68b8ff0cde39d81b9f057c"
+    },
+    {
+      "path": "src/Assets/fonts/Montserrat-Italic.ttf",
+      "sha1": "798c701450f6bc08217f73c1ac569100cddc2947"
+    },
+    {
+      "path": "src/Assets/fonts/Montserrat-Regular.ttf",
+      "sha1": "d25b35242deb1c6ff888b8162ca2aacc356d3899"
+    },
+    {
+      "path": "src/Assets/fonts/Orbitron-Black.ttf",
+      "sha1": "d9ae5af36d6cc21c1b2b32c81aba7662275b5a7b"
+    },
+    {
+      "path": "src/Assets/fonts/Orbitron-Bold.ttf",
+      "sha1": "3926215281d9ddeed380af0454481228b868062c"
+    },
+    {
+      "path": "src/Assets/fonts/Orbitron-Medium.ttf",
+      "sha1": "171d09406c90d780c384e8f2d2b9943d4428929c"
+    },
+    {
+      "path": "src/Assets/fonts/Orbitron-Regular.ttf",
+      "sha1": "9b3fc913ee57ed9e9b560c69da15c051314f2a5b"
+    }
+  ]
+}

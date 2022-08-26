@@ -9,15 +9,23 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* boostkwTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* boostkwTests.m */; };
 		0856240ADF3E03DC38DD31AD /* libPods-boostkw-boostkwTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03E79971A8B6DB1E18DD433F /* libPods-boostkw-boostkwTests.a */; };
+		0E8573E63F2045C4876DD2F3 /* Orbitron-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2E5305ED3BD4554A5E1BE08 /* Orbitron-Regular.ttf */; };
+		1255FC03A52541E0A7D8B10E /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 79B8DBA110CA4118B68B3673 /* Montserrat-Bold.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		14D23C35C99344AF830B5F3A /* Orbitron-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B90FA908AA4487C8646AA2A /* Orbitron-Bold.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* boostkwTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* boostkwTests.m */; };
+		58430307F4C2462C9A770636 /* Montserrat-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5AA0A54867F2476EA4562658 /* Montserrat-Italic.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		833F2006FE004CFBA319C9F2 /* libPods-boostkw.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CE8F60935CC7F1EA8FB7E0E /* libPods-boostkw.a */; };
+		A58A22D2ACE94D73B6B0BD63 /* Montserrat-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9CB2123E73384617AE4CEF9E /* Montserrat-BoldItalic.ttf */; };
+		C5EA68ADC6424808A2A0C366 /* Orbitron-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB48E89EE37E4E69A6AA7B5C /* Orbitron-Black.ttf */; };
+		D6D865255C29467CABEE691C /* Orbitron-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C8EE6087DF049DF87E5691D /* Orbitron-Medium.ttf */; };
+		E762AA92009740BD8E711F27 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B1F4B8C7CB694F2CB2AD9F23 /* Montserrat-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,15 +58,23 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = boostkw/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = boostkw/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = boostkw/main.m; sourceTree = "<group>"; };
+		1B90FA908AA4487C8646AA2A /* Orbitron-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Orbitron-Bold.ttf"; path = "../src/Assets/fonts/Orbitron-Bold.ttf"; sourceTree = "<group>"; };
+		1C8EE6087DF049DF87E5691D /* Orbitron-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Orbitron-Medium.ttf"; path = "../src/Assets/fonts/Orbitron-Medium.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* boostkw-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "boostkw-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* boostkw-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "boostkw-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F9E780CE724C60CB827C553 /* Pods-boostkw-boostkwTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-boostkw-boostkwTests.debug.xcconfig"; path = "Target Support Files/Pods-boostkw-boostkwTests/Pods-boostkw-boostkwTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5AA0A54867F2476EA4562658 /* Montserrat-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Italic.ttf"; path = "../src/Assets/fonts/Montserrat-Italic.ttf"; sourceTree = "<group>"; };
+		79B8DBA110CA4118B68B3673 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Bold.ttf"; path = "../src/Assets/fonts/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = boostkw/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CE8F60935CC7F1EA8FB7E0E /* libPods-boostkw.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-boostkw.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		968A20F8BD0245E30FBD22A5 /* Pods-boostkw.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-boostkw.release.xcconfig"; path = "Target Support Files/Pods-boostkw/Pods-boostkw.release.xcconfig"; sourceTree = "<group>"; };
+		9CB2123E73384617AE4CEF9E /* Montserrat-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-BoldItalic.ttf"; path = "../src/Assets/fonts/Montserrat-BoldItalic.ttf"; sourceTree = "<group>"; };
 		A8A496B83138A0046DC1D49A /* Pods-boostkw-boostkwTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-boostkw-boostkwTests.release.xcconfig"; path = "Target Support Files/Pods-boostkw-boostkwTests/Pods-boostkw-boostkwTests.release.xcconfig"; sourceTree = "<group>"; };
+		B1F4B8C7CB694F2CB2AD9F23 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Regular.ttf"; path = "../src/Assets/fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
+		C2E5305ED3BD4554A5E1BE08 /* Orbitron-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Orbitron-Regular.ttf"; path = "../src/Assets/fonts/Orbitron-Regular.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		FB48E89EE37E4E69A6AA7B5C /* Orbitron-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Orbitron-Black.ttf"; path = "../src/Assets/fonts/Orbitron-Black.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +180,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				18A06528071B6FFBBA9372E2 /* Pods */,
+				DF1132B286B5489DA6C3DBE7 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -179,6 +196,22 @@
 				2D02E4901E0B4A5D006451C7 /* boostkw-tvOSTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DF1132B286B5489DA6C3DBE7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				79B8DBA110CA4118B68B3673 /* Montserrat-Bold.ttf */,
+				9CB2123E73384617AE4CEF9E /* Montserrat-BoldItalic.ttf */,
+				5AA0A54867F2476EA4562658 /* Montserrat-Italic.ttf */,
+				B1F4B8C7CB694F2CB2AD9F23 /* Montserrat-Regular.ttf */,
+				FB48E89EE37E4E69A6AA7B5C /* Orbitron-Black.ttf */,
+				1B90FA908AA4487C8646AA2A /* Orbitron-Bold.ttf */,
+				1C8EE6087DF049DF87E5691D /* Orbitron-Medium.ttf */,
+				C2E5305ED3BD4554A5E1BE08 /* Orbitron-Regular.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -325,6 +358,14 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				1255FC03A52541E0A7D8B10E /* Montserrat-Bold.ttf in Resources */,
+				A58A22D2ACE94D73B6B0BD63 /* Montserrat-BoldItalic.ttf in Resources */,
+				58430307F4C2462C9A770636 /* Montserrat-Italic.ttf in Resources */,
+				E762AA92009740BD8E711F27 /* Montserrat-Regular.ttf in Resources */,
+				C5EA68ADC6424808A2A0C366 /* Orbitron-Black.ttf in Resources */,
+				14D23C35C99344AF830B5F3A /* Orbitron-Bold.ttf in Resources */,
+				D6D865255C29467CABEE691C /* Orbitron-Medium.ttf in Resources */,
+				0E8573E63F2045C4876DD2F3 /* Orbitron-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

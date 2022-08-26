@@ -64,6 +64,12 @@ export default function () {
     justifyContentCenter: {
       justifyContent: 'center',
     },
+    justifyContentEnd: {
+      justifyContent: 'flex-end'
+    },
+    justifyContentStart: {
+      justifyContent: 'flex-start'
+    },
     justifyContentAround: {
       justifyContent: 'space-around',
     },
@@ -84,6 +90,10 @@ export default function () {
     /* Sizes Layouts */
     fill: {
       flex: 1,
+    },
+    fillFull: {
+      flex: 1,
+      flexGrow: 1,
     },
     fullSize: {
       height: '100%',

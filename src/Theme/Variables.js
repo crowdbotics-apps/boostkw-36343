@@ -11,18 +11,21 @@
 export const Colors = {
   // Example colors:
   transparent: 'rgba(0,0,0,0)',
-  inputBackground: '#FFFFFF',
+  inputBackground: '#000952',
   white: '#ffffff',
-  text: '#212529',
-  primary: '#E14032',
-  success: '#28a745',
-  error: '#dc3545',
-  background: '#000000',
+  text: '#ffffff',
+  textOffWhite: 'rgba(255, 255, 255, 0.75)',
+  primary: '#00043c',
+  success: '#000952',
+  error: '#FF4D4D',
+  background: '#000952',
+  buttonBackground: '#1038EB',
 }
 
 export const NavigationColors = {
   primary: Colors.primary,
   background: Colors.background,
+  buttonBackground: Colors.buttonBackground
 }
 
 /**

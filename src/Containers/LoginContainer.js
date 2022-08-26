@@ -10,45 +10,125 @@ import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Brand } from '@/Components'
 import { useTheme } from '@/Hooks'
+import LinearGradient from 'react-native-linear-gradient';
 
 const LoginContainer = () => {
   const { t } = useTranslation()
   const { Common, Fonts, Gutters, Layout } = useTheme()
   const dispatch = useDispatch()
-
+    
 
   return (
     <ScrollView
-      style={[Layout.fill, Common.backgroundPrimary]}
+      style={[Layout.fill]}
       contentContainerStyle={[
         Layout.fill,
-        Layout.colVCenter,
-        Gutters.smallHPadding,
+        Layout.column,
       ]}
     >
-      <View style={[[Layout.colCenter, Gutters.smallHPadding]]}>
+    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill, Gutters.smallHPadding,]}>
+        
+      <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.regularBMargin, Gutters.largeTMargin]}>
         <Brand />
-        <Text style={Fonts.textRegular}>
+      </View>
+
+      <View style={[
+          Layout.column,
+          Gutters.regularVMargin,
+        ]} />
+
+      <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.regularBMargin]}>
+        <Text style={Fonts.titleBold}>
             Login
         </Text>
       </View>
-      {/* <TextInput
-          onChangeText={setUserId}
-          editable={!isLoading}
-          keyboardType={'number-pad'}
-          maxLength={1}
-          value={userId}
-          selectTextOnFocus
-          style={[Layout.fill, Common.textInput]}
-        /> */}
-      {/* <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>DarkMode :</Text> */}
 
+      <View
+        style={[
+          Layout.column,
+          Gutters.smallHPadding,
+          Gutters.largeVMargin,
+        ]}
+      >
+        <TextInput
+            //   onChangeText={setUserId}
+            //   editable={!isLoading}
+            //   value={userId}
+            placeholder='Email'
+            placeholderTextColor={"#ffffff"}
+            selectTextOnFocus
+            style={[Layout.fill, Common.textInput]}
+            />
+
+        <TextInput
+            //   onChangeText={setUserId}
+            //   editable={!isLoading}
+            //   value={userId}
+            placeholder='Password'
+            placeholderTextColor={"#ffffff"}
+            selectTextOnFocus
+            style={[Layout.fill, Common.textInput]}
+            />
+            
+      </View>
+
+      <View style={[
+          Layout.column,
+          Gutters.smallVMargin,
+        ]} />
+
+        <View
+            style={[
+            Layout.rowVCenter,
+            Gutters.smallHPadding,
+            Gutters.largeVMargin,
+            Layout.justifyContentBetween,
+            ]}
+        >
+         
+         <Text style={[Fonts.textNormal, Fonts.textGray]}>Remember Me</Text>
+         <Text style={Fonts.textNormal}>Forgot password?</Text>
+
+        </View>
+
+      <View
+        style={[
+          Layout.column,
+          Gutters.smallHPadding,
+          Gutters.largeVMargin,
+        ]}
+      >
       <TouchableOpacity
         style={[Common.button.outlineRounded, Gutters.regularBMargin]}
         onPress={() => {}}
       >
-        <Text style={Fonts.textRegular}>Login</Text>
+        <Text style={Fonts.textButton}>Login</Text>
       </TouchableOpacity>
+
+      </View>
+
+      <View
+        style={[
+          Layout.fillFull,
+          Layout.column,
+          Layout.justifyContentEnd,
+          Gutters.smallHPadding,
+          Gutters.regularVMargin,
+        ]}
+      >
+      <View
+        style={[
+          Layout.rowCenter,
+          Gutters.smallHPadding,
+        ]}
+      >
+        <Text style={Fonts.textButton}>Don’t have an account?</Text>
+        <Text style={[Fonts.textButton, Fonts.fontBold, Gutters.smallHPadding]}>Sign up</Text>
+      </View>
+
+      </View>
+
+      </LinearGradient>
     </ScrollView>
   )
 }

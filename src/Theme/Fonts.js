@@ -49,5 +49,33 @@ export default function ({ FontSize, Colors }) {
     textRight: {
       textAlign: 'right',
     },
+    textButton: {
+      fontSize: 16,
+      fontWeight: '400',
+      fontFamily: 'Montserrat-Regular',
+      color: Colors.text,
+      lineHeight: 20,
+    },
+    textNormal: {
+      fontSize: 14,
+      fontWeight: '400',
+      fontFamily: 'Montserrat-Regular',
+      color: Colors.text,
+      lineHeight: 20,
+    },
+    textGray: {
+      color: Colors.textOffWhite
+    },
+    titleBold: {
+      fontSize: FontSize.small * 2,
+      fontFamily: 'Orbitron-Regular',
+      fontWeight: '400',
+      color: Colors.text,
+      lineHeight: 40,
+      letterSpacing: 0.374,
+    },
+    fontBold: {
+      fontWeight: '600',
+    }
   })
 }

@@ -1,1 +1,5 @@
 export { default as Brand } from './Brand'
+export { default as Button } from './Button'
+export { default as Loading } from './Loading'
+export { default as PopupModal } from './Modal'
+export { default as Input } from './Input'

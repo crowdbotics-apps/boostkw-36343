@@ -5,11 +5,11 @@ export default function ({ Colors, Gutters, Layout }) {
     ...Layout.center,
     ...Gutters.largeHPadding,
     height: 40,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.buttonBackground,
   }
   const rounded = {
     ...base,
-    borderRadius: 20,
+    borderRadius: 8,
   }
 
   return StyleSheet.create({
@@ -17,15 +17,15 @@ export default function ({ Colors, Gutters, Layout }) {
     rounded,
     outline: {
       ...base,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.buttonBackground,
       borderWidth: 2,
-      borderColor: Colors.primary,
+      borderColor: Colors.transparent,
     },
     outlineRounded: {
       ...rounded,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.buttonBackground,
       borderWidth: 2,
-      borderColor: Colors.primary,
+      borderColor: Colors.transparent,
     },
   })
 }

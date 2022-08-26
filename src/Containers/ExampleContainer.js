@@ -40,7 +40,7 @@ const ExampleContainer = () => {
         Gutters.smallHPadding,
       ]}
     >
-      <View style={[[Layout.colCenter, Gutters.smallHPadding]]}>
+      <View style={[Layout.colCenter, Gutters.smallHPadding]}>
         <Brand />
         {(isLoading || isFetching) && <ActivityIndicator />}
         {!isSuccess ? (
