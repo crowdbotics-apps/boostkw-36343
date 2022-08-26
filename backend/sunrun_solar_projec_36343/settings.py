@@ -117,7 +117,10 @@ ROOT_URLCONF = 'sunrun_solar_projec_36343.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'web_build')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'web_build'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

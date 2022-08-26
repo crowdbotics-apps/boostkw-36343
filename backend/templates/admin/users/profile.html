@@ -1,0 +1,124 @@
+{% extends "admin/base_site.html" %}
+{% load admin_modify %}
+{% load i18n admin_urls static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+    {{ media }}
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-users model-user change-form{% endblock %}
+
+{% if not is_popup %}
+    {% block breadcrumbs %}
+        <div class="breadcrumbs">
+            <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+            &rsaquo; <a href="{% url 'admin:app_list' app_label='users' %}">Users</a>
+            &rsaquo; <a href="/admin/users/user/">Users</a>
+            &rsaquo; {{ user.username }}
+        </div>
+    {% endblock %}
+{% endif %}
+
+{% block content %}
+    <div id="content-main">
+        {% block object-tools %}
+            {% if change %}{% if not is_popup %}
+                <ul class="object-tools">
+                    {% block object-tools-items %}
+{#                        {% change_form_object_tools %}#}
+                    {% endblock %}
+                </ul>
+            {% endif %}{% endif %}
+        {% endblock %}
+        <div>
+            <h2>Profile</h2>
+            <fieldset class="module aligned ">
+                <div class="form-row">
+                    <div>
+                        <label class="required">Profile Picture</label>
+                        <div class="readonly" style="max-width: 150px">
+                            {% if user.profile_picture %}
+                                <img class="" src="{{ user.profile_picture.url }}" alt="{{ user.username }}"
+                                     style="max-width: 120px">
+                            {% else %}
+                                <span style="color: #777777">No Image</span>
+                                <img class="" src="{% static 'img/user_no_image.png' %}" alt="{{ user.username }}"
+                                     style="max-width: 120px">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="required">First Name</label>
+                        <div class="readonly">{{ user.first_name }}</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="required">Last Name</label>
+                        <div class="readonly">{{ user.last_name }}</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="required">Date Joined</label>
+                        <div class="readonly">{{ user.date_joined }}</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="required">Crew</label>
+                        <div class="readonly">{{ user.crew.name }}</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="required">Branch</label>
+                        <div class="readonly">{{ user.profile.get_branch_display }}</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="required">Job Title</label>
+                        <div class="readonly">{{ user.profile.get_job_title_display }}</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="required">Hours Worked</label>
+                        <div class="readonly">0</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="required">kW Installed</label>
+                        <div class="readonly">0</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="required">Average hr/kW</label>
+                        <div class="readonly">0</div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="submit-row">
+            <p class="deletelink-box">
+                <a class="deletelink" href="/admin/users/user/{{ user.id }}/delete/">Delete</a>
+            </p>
+            <a class="button" href="/admin/users/user/{{ user.id }}/change/"
+               style="height: 15px; line-height: 15px; padding: 10px 15px; display: inline-block">Edit</a>
+        </div>
+    </div>
+
+{% endblock %}
