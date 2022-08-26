@@ -27,6 +27,7 @@ export default function ({ Colors, ...args }) {
         borderColor: 'rgba(255, 255, 255, 0.25)',
         backgroundColor: Colors.inputBackground,
         color: Colors.text,
+        textColor: Colors.text,
         minHeight: 40,
         textAlign: 'left',
         marginTop: 10,

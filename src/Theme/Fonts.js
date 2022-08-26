@@ -67,7 +67,7 @@ export default function ({ FontSize, Colors }) {
       color: Colors.textOffWhite
     },
     titleBold: {
-      fontSize: FontSize.small * 2,
+      fontSize: 28,
       fontFamily: 'Orbitron-Regular',
       fontWeight: '400',
       color: Colors.text,

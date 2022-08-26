@@ -1,8 +1,8 @@
 const Colors = {
-  primary: 'lightblue',
-  text: 'white',
-  inputBackground: 'gray',
-  background: '#ffffff',
+  primary: '#000952',
+  text: '#ffffff',
+  inputBackground: '#000952',
+  background: '#000952',
 }
 
 const NavigationColors = {

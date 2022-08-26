@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Brand } from '@/Components'
+import { Brand, Input } from '@/Components'
 import { useTheme } from '@/Hooks'
-import LinearGradient from 'react-native-linear-gradient';
+import LinearGradient from 'react-native-linear-gradient'
 
 const LoginContainer = () => {
   const { t } = useTranslation()
@@ -47,47 +46,41 @@ const LoginContainer = () => {
         style={[
           Layout.column,
           Gutters.smallHPadding,
-          Gutters.largeVMargin,
+          Gutters.regularVMargin,
         ]}
       >
-        <TextInput
+        <Input
             //   onChangeText={setUserId}
             //   editable={!isLoading}
             //   value={userId}
             placeholder='Email'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
-            style={[Layout.fill, Common.textInput]}
             />
 
-        <TextInput
+        <Input
             //   onChangeText={setUserId}
             //   editable={!isLoading}
             //   value={userId}
             placeholder='Password'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
-            style={[Layout.fill, Common.textInput]}
+            password={true}
             />
             
       </View>
-
-      <View style={[
-          Layout.column,
-          Gutters.smallVMargin,
-        ]} />
 
         <View
             style={[
             Layout.rowVCenter,
             Gutters.smallHPadding,
-            Gutters.largeVMargin,
+            Gutters.smallVMargin,
             Layout.justifyContentBetween,
             ]}
         >
-         
-         <Text style={[Fonts.textNormal, Fonts.textGray]}>Remember Me</Text>
-         <Text style={Fonts.textNormal}>Forgot password?</Text>
+            
+            <Text style={[Fonts.textNormal, Fonts.textGray]}>Remember Me</Text>
+            <Text style={Fonts.textNormal}>Forgot password?</Text>
 
         </View>
 
