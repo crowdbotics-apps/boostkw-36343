@@ -1,10 +1,10 @@
 export default {
-  welcome: 'Welcome to React Native boostkw by TheCodingMachine',
+  welcome: 'Welcome to boostkw',
   actions: {
     continue: 'Continue',
   },
   example: {
-    helloUser: 'I am a fake user, my name is {{name}}',
+    helloUser: 'I am a user, my name is {{name}}',
     labels: {
       userId: 'Enter a user id',
     },
