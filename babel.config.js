@@ -1,14 +1,21 @@
+const presets = ['module:metro-react-native-babel-preset']
+const plugins = []
+
+plugins.push(
+  [
+    'module-resolver',
+    {
+      root: ['./src'],
+      extensions: ['.js', '.json'],
+      alias: {
+        '@': './src',
+      },
+    },
+  ],
+  'react-native-reanimated/plugin',
+)
+
 module.exports = {
-  presets: ['module:metro-react-native-babel-preset'],
-  plugins: [
-    ["module:react-native-dotenv", {
-      "moduleName": "@env",
-      "path": ".env",
-      "blacklist": null,
-      "whitelist": null,
-      "safe": false,
-      "allowUndefined": true
-    }],
-    "import-glob-meta"
-  ]
-};
+  presets,
+  plugins,
+}

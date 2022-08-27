@@ -1,6 +1,6 @@
 {
-  "name": "sunrun-solar-projec-36343",
-  "version": "0.0.1",
+  "name": "boostkw",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -8,52 +8,69 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "web": "react-app-rewired start",
-    "web-build": "react-app-rewired build && mkdir -p backend/web_build && cp -R build/* backend/web_build"
+    "type-check": "tsc"
   },
   "dependencies": {
-    "react": "17.0.1",
-    "react-native": "0.64.0",
-    "axios": "^0.21.1",
-    "@react-native-community/masked-view": "^0.1.10",
-    "@react-navigation/native": "^5.9.3",
-    "react-native-gesture-handler": "^1.10.3",
-    "react-native-reanimated": "^2.0.0",
-    "react-native-safe-area-context": "^3.2.0",
-    "react-native-screens": "^2.18.1",
-    "@react-navigation/stack": "^5.14.3",
-    "redux": "^4.0.5",
-    "react-redux": "^7.2.2",
-    "@reduxjs/toolkit": "^1.5.0",
-    "react-native-dotenv": "^2.5.3",
-    "react-native-responsive-screen": "^1.4.2",
-    "react-native-elements": "^3.3.1",
-    "react-native-vector-icons": "^8.1.0"
+    "@react-native-async-storage/async-storage": "^1.17.7",
+    "@react-native-masked-view/masked-view": "^0.2.7",
+    "@react-navigation/bottom-tabs": "^6.3.2",
+    "@react-navigation/native": "^6.0.11",
+    "@react-navigation/stack": "^6.2.2",
+    "@reduxjs/toolkit": "^1.8.3",
+    "i18next": "^21.8.14",
+    "prop-types": "^15.8.1",
+    "react": "18.0.0",
+    "react-i18next": "^11.18.3",
+    "react-native": "0.69.3",
+    "react-native-fast-image": "^8.5.11",
+    "react-native-flipper": "^0.156.0",
+    "react-native-gesture-handler": "^2.5.0",
+    "react-native-linear-gradient": "^2.6.2",
+    "react-native-modal": "^13.0.1",
+    "react-native-picker-select": "^8.0.4",
+    "react-native-reanimated": "^2.9.1",
+    "react-native-safe-area-context": "^4.3.1",
+    "react-native-screens": "^3.15.0",
+    "react-redux": "^8.0.2",
+    "redux-flipper": "^2.0.2",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/runtime": "^7.12.5",
-    "@react-native-community/eslint-config": "^2.0.0",
+    "@react-native-community/eslint-config": "^3.0.1",
     "babel-jest": "^26.6.3",
-    "eslint": "7.14.0",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "eslint": "^7.32.0",
+    "eslint-import-resolver-babel-module": "^5.1.2",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jest": "^24.3.5",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^26.6.3",
-    "metro-react-native-babel-preset": "^0.64.0",
-    "react-test-renderer": "17.0.1",
-    "babel-plugin-import-glob-meta": "github:crowdbotics/babel-plugin-import-glob-meta"
+    "metro-react-native-babel-preset": "^0.70.3",
+    "prettier": "^2.7.1",
+    "react-test-renderer": "18.0.0"
   },
   "jest": {
-    "preset": "react-native"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
     ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+    "moduleNameMapper": {
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy"
+    },
+    "setupFiles": [
+      "./jest.setup.js"
+    ],
+    "timers": "fake",
+    "testEnvironment": "jsdom",
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@react-native|react-native)"
     ]
   }
 }
