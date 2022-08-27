@@ -10,12 +10,13 @@ import { Brand, Input } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
+import FastImage from "react-native-fast-image"
 
 const SignUpContainer = () => {
-  const { Common, Fonts, Gutters, Layout } = useTheme()
+  const { Common, Fonts, Gutters, Layout, Images } = useTheme()
   const dispatch = useDispatch()
 
-  const onClickSignup = () => {
+  const onClickBack = () => {
     navigate('Login')
   }
     
@@ -39,10 +40,28 @@ const SignUpContainer = () => {
           Gutters.regularVMargin,
         ]} />
 
-      <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.regularBMargin]}>
-        <Text style={Fonts.titleBold}>
-            Sing Up
-        </Text>
+      <View style={[Layout.col, Gutters.smallHPadding, Gutters.regularBMargin]}>
+          <View
+                style={[
+                 Layout.row,
+                 Layout.scrollSpaceBetween,
+                 Layout.alignItemsCenter
+                ]}
+            >
+              <TouchableOpacity
+                    onPress={onClickBack}
+                >
+                    
+                    <FastImage
+                        style={[{width: 12, height: 19}]}
+                        source={Images.leftArrow}
+                    />
+              </TouchableOpacity>
+              <Text style={[Fonts.titleBold, Fonts.textCenter]}>
+                    Sing Up
+              </Text>
+              <View/>
+          </View>
       </View>
 
       <View
@@ -66,6 +85,16 @@ const SignUpContainer = () => {
             //   editable={!isLoading}
             //   value={userId}
             placeholder='Password'
+            placeholderTextColor={"#ffffff"}
+            selectTextOnFocus
+            password={true}
+            />
+
+        <Input
+            //   onChangeText={setUserId}
+            //   editable={!isLoading}
+            //   value={userId}
+            placeholder='Confirm Password'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
             password={true}
@@ -98,14 +127,13 @@ const SignUpContainer = () => {
         style={[Common.button.outlineRounded, Gutters.regularBMargin]}
         onPress={() => {}}
       >
-        <Text style={Fonts.textButton}>Login</Text>
+        <Text style={Fonts.textButton}>Next</Text>
       </TouchableOpacity>
 
       </View>
 
       <View
         style={[
-          Layout.fillFull,
           Layout.column,
           Layout.justifyContentEnd,
           Gutters.smallHPadding,
@@ -119,7 +147,7 @@ const SignUpContainer = () => {
         ]}
       >
         <Text style={Fonts.textButton}>Don’t have an account?</Text>
-        <TouchableOpacity onPress={onClickSignup}>
+        <TouchableOpacity onPress={onClickBack}>
             <Text style={[Fonts.textButton, Fonts.fontBold, Gutters.smallHPadding]}>Sign up</Text>
         </TouchableOpacity>
       </View>
