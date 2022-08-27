@@ -23,6 +23,9 @@ export default function ({ Colors, ...args }) {
       textInput: {
         fontFamily: 'Montserrat-Regular',
         fontWeight: '500',
+        fontSize: 16,
+        letterSpacing: -0.32,
+        lineHeight: 20,
         borderBottomWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.25)',
         backgroundColor: Colors.inputBackground,
