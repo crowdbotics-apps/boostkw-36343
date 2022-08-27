@@ -1,6 +1,6 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { LoginContainer } from '@/Containers'
+import { LoginContainer, SignUpContainer } from '@/Containers'
 
 const AuthStack = createStackNavigator()
 
@@ -16,6 +16,10 @@ const AuthNavigator = () => {
       <AuthStack.Screen
         name="Login"
         component={LoginContainer}
+      />
+      <AuthStack.Screen
+        name="SignUp"
+        component={SignUpContainer}
       />
     </AuthStack.Navigator>
   )

@@ -6,15 +6,18 @@ import {
   ScrollView,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { Brand, Input } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
+import { navigate } from '@/Navigators/utils'
 
 const LoginContainer = () => {
-  const { t } = useTranslation()
   const { Common, Fonts, Gutters, Layout } = useTheme()
   const dispatch = useDispatch()
+
+  const onClickSignup = () => {
+    navigate('SignUp')
+  }
     
 
   return (
@@ -116,7 +119,9 @@ const LoginContainer = () => {
         ]}
       >
         <Text style={Fonts.textButton}>Don’t have an account?</Text>
-        <Text style={[Fonts.textButton, Fonts.fontBold, Gutters.smallHPadding]}>Sign up</Text>
+        <TouchableOpacity onPress={onClickSignup}>
+            <Text style={[Fonts.textButton, Fonts.fontBold, Gutters.smallHPadding]}>Sign up</Text>
+        </TouchableOpacity>
       </View>
 
       </View>
