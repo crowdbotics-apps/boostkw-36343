@@ -56,6 +56,13 @@ export default function ({ FontSize, Colors }) {
       color: Colors.text,
       lineHeight: 20,
     },
+    textButtonSmall: {
+      fontSize: 14,
+      fontWeight: '400',
+      fontFamily: 'Montserrat-Regular',
+      color: Colors.text,
+      lineHeight: 18,
+    },
     textNormal: {
       fontSize: 14,
       fontWeight: '400',

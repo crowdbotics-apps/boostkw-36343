@@ -102,29 +102,15 @@ const SignUpContainer = () => {
             
       </View>
 
-        <View
-            style={[
-            Layout.rowVCenter,
-            Gutters.smallHPadding,
-            Gutters.smallVMargin,
-            Layout.justifyContentBetween,
-            ]}
-        >
-            
-            <Text style={[Fonts.textNormal, Fonts.textGray]}>Remember Me</Text>
-            <Text style={Fonts.textNormal}>Forgot password?</Text>
-
-        </View>
-
       <View
         style={[
           Layout.column,
           Gutters.smallHPadding,
-          Gutters.largeVMargin,
+          Gutters.regularVMargin,
         ]}
       >
       <TouchableOpacity
-        style={[Common.button.outlineRounded, Gutters.regularBMargin]}
+        style={[Common.button.outlineRounded]}
         onPress={() => {}}
       >
         <Text style={Fonts.textButton}>Next</Text>
@@ -140,17 +126,14 @@ const SignUpContainer = () => {
           Gutters.regularVMargin,
         ]}
       >
-      <View
-        style={[
-          Layout.rowCenter,
-          Gutters.smallHPadding,
-        ]}
-      >
-        <Text style={Fonts.textButton}>Don’t have an account?</Text>
-        <TouchableOpacity onPress={onClickBack}>
-            <Text style={[Fonts.textButton, Fonts.fontBold, Gutters.smallHPadding]}>Sign up</Text>
-        </TouchableOpacity>
-      </View>
+        <View
+            style={[
+            Layout.rowCenter,
+            Gutters.smallHPadding,
+            ]}
+        >
+            <Text style={[Fonts.textButtonSmall, Fonts.textCenter]}>By using BOOSTKW you agree to our Terms and Conditions and Privacy Policy</Text>
+        </View>
 
       </View>
 
