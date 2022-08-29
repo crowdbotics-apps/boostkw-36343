@@ -1,4 +1,4 @@
-import React from 'react'
+import React,  { useState }  from 'react'
 import {
   View,
   Text,
@@ -6,7 +6,7 @@ import {
   ScrollView,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { Brand, Input } from '@/Components'
+import { Brand, Input, CheckBoxs } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
@@ -14,6 +14,8 @@ import { navigate } from '@/Navigators/utils'
 const LoginContainer = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
   const dispatch = useDispatch()
+
+  const [remember, setRemember] = useState(false);
 
   const onClickSignup = () => {
     navigate('SignUp')
@@ -80,11 +82,17 @@ const LoginContainer = () => {
             Gutters.smallVMargin,
             Layout.justifyContentBetween,
             ]}
-        >
-            
-            <Text style={[Fonts.textNormal, Fonts.textGray]}>Remember Me</Text>
-            <Text style={Fonts.textNormal}>Forgot password?</Text>
+        >   
+            <View 
+              style={[
+              Layout.rowVCenter,
+              ]}
+            >
+              <CheckBoxs value={remember} onValueChange={() => setRemember(!remember)}  />
+              <Text style={[Fonts.textNormal, Fonts.textGray, Gutters.smallHPadding]}>Remember Me</Text>
+            </View>
 
+            <Text style={Fonts.textNormal}>Forgot password?</Text>
         </View>
 
       <View
