@@ -92,7 +92,9 @@ const LoginContainer = () => {
               <Text style={[Fonts.textNormal, Fonts.textGray, Gutters.smallHPadding]}>Remember Me</Text>
             </View>
 
-            <Text style={Fonts.textNormal}>Forgot password?</Text>
+            <TouchableOpacity onPress={() => navigate('PassReset')}>
+              <Text style={Fonts.textNormal}>Forgot password?</Text>
+            </TouchableOpacity>
         </View>
 
       <View
