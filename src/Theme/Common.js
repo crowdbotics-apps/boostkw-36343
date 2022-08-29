@@ -22,7 +22,7 @@ export default function ({ Colors, ...args }) {
       },
       textInput: {
         fontFamily: 'Montserrat-Regular',
-        fontWeight: '500',
+        fontWeight: '400',
         fontSize: 16,
         letterSpacing: -0.32,
         lineHeight: 20,

@@ -58,7 +58,7 @@ const SignUpContainer = () => {
                     />
               </TouchableOpacity>
               <Text style={[Fonts.titleBold, Fonts.textCenter]}>
-                    Sing Up
+                    Sign Up
               </Text>
               <View/>
           </View>
@@ -130,9 +130,10 @@ const SignUpContainer = () => {
             style={[
             Layout.rowCenter,
             Gutters.smallHPadding,
+            Fonts.textCenter
             ]}
         >
-            <Text style={[Fonts.textButtonSmall, Fonts.textCenter]}>By using BOOSTKW you agree to our Terms and Conditions and Privacy Policy</Text>
+            <Text style={[Fonts.textButtonSmall]}>By using BOOSTKW you agree to our Terms and Conditions and Privacy Policy</Text>
         </View>
 
       </View>
