@@ -45,10 +45,10 @@ const MainNavigator = () => {
         component={ProfileContainer}
         options={{
           tabBarLabel: 'Dashboard',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, color, size }) => (
             <FastImage
                   style={{ width: 44 , height: 44}}
-                  source={Images.dashboard}
+                  source={ focused ?  Images.dashboard : Images.dashboard}
               />
           ),
           tabBarLabelPosition: 'below-icon',
