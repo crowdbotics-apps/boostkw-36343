@@ -1,32 +1,28 @@
 import React from "react"
-import { StyleSheet, View, Text, TouchableOpacity, Modal } from "react-native"
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
+import { Modalize } from 'react-native-modalize';
+import FastImage from "react-native-fast-image"
 
-const ActionSheet = ({ options, onPress, isModalVisible, setModalVisible }) => (
-  <Modal
-    avoidKeyboard={true}
-    transparent={true}
-    visible={isModalVisible}
-    animationType="fade"
-    onRequestClose={() => setModalVisible(false)}
+const ActionSheet = ({ onPress, modalRef, icon }) => (
+  <Modalize
+    ref={modalRef}
+    snapPoint={300}
+    modalHeight={86}
+    modalStyle={styles.modal}
   >
-    <TouchableOpacity
-      onPress={() => setModalVisible(false)}
-      activeOpacity={0.8}
-      style={styles.modal}
-    >
-      <TouchableOpacity activeOpacity={1} style={styles.modalContainer}>
-        <View style={{ padding: 20, width: "100%" }}>
-          <Text style={styles.modalTitle}>Options:</Text>
-          {options.map((o, i) => (
-            <Text key={o} onPress={() => onPress(o, i)} style={styles.option}>
-              {o}
-            </Text>
-          ))}
+    <TouchableOpacity onPress={onPress} activeOpacity={1} style={styles.modalContainer}>
+        <View style={{ flex: 1, flexDirection: "row",justifyContent: "center", alignItems: "center" }}>
+          <FastImage
+              style={[{width: 16, height: 16}]}
+              source={icon}
+          />
+          <Text style={styles.modalTitle}>Open photo library</Text>
         </View>
-      </TouchableOpacity>
     </TouchableOpacity>
-  </Modal>
+  </Modalize>
 )
+
+
 const styles = StyleSheet.create({
   buttonText: {
     // color: colors.blue,
@@ -52,20 +48,22 @@ const styles = StyleSheet.create({
     // color: colors.white
   },
   modalTitle: {
-    // color: colors.black,
-    fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 16,
+    fontFamily: 'Montserrat-Regular',
+    color: "#FFF",
+    lineHeight: 20,
+    fontWeight: "500",
     padding: 8,
     textAlign: "center"
   },
   modalContainer: {
-    // backgroundColor: colors.white,
+    flex: 1,
     alignItems: "center",
     borderRadius: 15
   },
   modal: {
     padding: 15,
-    backgroundColor: "rgba(0,0,0,0.7)",
+    backgroundColor: "#010A61",
     flex: 1,
     justifyContent: "center"
   },

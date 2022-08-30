@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   ImageBackground,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { Brand, Input, SelectItem, Title } from '@/Components'
+import { Brand, Input, SelectItem, Title, ActionSheet } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
@@ -15,11 +15,23 @@ import FastImage from "react-native-fast-image"
 import { checkEmail } from '@/Utils/Validations'
 import { Branch } from '@/Utils/Branch'
 import { Jobs } from '@/Utils/Jobs'
+import ImagePicker from "react-native-image-crop-picker"
 
 const SignUpContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
   const dispatch = useDispatch()
   const [nextPage, setNextPage] = useState(true);
+  const [profileImage, setProfileImage] = useState(null);
+
+  const modalizeRef = useRef(null);
+
+  const OpenModal = () => {
+    modalizeRef.current?.open();
+  }
+
+  const CloseModal = () => {
+    modalizeRef.current?.close();
+  }
 
   const [values, setValues] = useState({})
   const [errorMessage, setErrorMessage] = useState({
@@ -76,6 +88,24 @@ const SignUpContainer = () => {
       [key]: value
     })
   }
+
+  const onPressImage = () => {
+    ImagePicker.openPicker({
+        width: 500,
+        height: 500,
+        mediaType: "photo",
+        cropping: true,
+        compressImageMaxHeight: 500,
+        compressImageMaxHeight: 500,
+        compressImageQuality: 0.5
+      }).then(res => {
+        console.log("Image", res)
+        setProfileImage(res)
+        CloseModal()
+      })
+  }
+
+  console.log(profileImage);
 
   return (
     <ScrollView
@@ -137,6 +167,7 @@ const SignUpContainer = () => {
         nextPage &&
         <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.smallVMargin,]}>
             <ImageBackground
+              source={{ uri: profileImage?.sourceURL}}
               style={[
                 Layout.colCenter,
                 {
@@ -154,11 +185,18 @@ const SignUpContainer = () => {
               resizeMode="cover"
               // source={}
             >
-              <FastImage 
-                style={[{width: 49, height: 57}]}
-                source={Images.userIcon}
-              />
-              <Text style={[Fonts.textButton, { color: '#338AF4', paddingTop: 10}]}>Upload Photo</Text>
+              {!profileImage?.sourceURL &&
+              <TouchableOpacity
+                style={[Layout.colCenter]}
+                onPress={OpenModal}
+              >
+                <FastImage 
+                  style={[{width: 49, height: 57}]}
+                  source={Images.userIcon}
+                />
+                <Text style={[Fonts.textButton, { color: '#338AF4', paddingTop: 10}]}>Upload Photo</Text>
+              </TouchableOpacity>
+              }
             </ImageBackground>
         </View>
       }
@@ -333,6 +371,17 @@ const SignUpContainer = () => {
         </View>
 
       </View>
+
+      {
+        nextPage &&
+        <ActionSheet
+          modalRef={modalizeRef}
+          OpenModal={OpenModal}
+          CloseModal={CloseModal}
+          onPress={onPressImage}
+          icon={Images.imageIcon}
+        />
+      }
 
       </LinearGradient>
     </ScrollView>
