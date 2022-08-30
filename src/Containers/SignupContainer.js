@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  ImageBackground,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { Brand, Input, SelectItem, Title } from '@/Components'
@@ -96,9 +97,10 @@ const SignUpContainer = () => {
           Gutters.regularVMargin,
         ]} />
 
+
       {
         nextPage ?
-        <View style={[Layout.col, Gutters.smallHPadding, Gutters.regularBMargin]}>
+        <View style={[Layout.col, Gutters.smallHPadding, Gutters.regularBMargin, Gutters.smallTMargin]}>
           <Title 
             text={"Set up account"}
             onPressBack={onClickBack}
@@ -128,6 +130,35 @@ const SignUpContainer = () => {
               <View/>
           </View>
       </View>
+      }
+
+      {
+        nextPage &&
+        <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.smallVMargin,]}>
+            <ImageBackground
+              style={[
+                Layout.colCenter,
+                {
+                  borderRadius: 150 / 2,
+                  height: 164, 
+                  width: 164,
+                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                }
+            ]
+            }
+              imageStyle={{ 
+                borderRadius: 150 / 2,
+                overflow: "hidden",
+              }}
+              resizeMode="cover"
+            >
+              <FastImage 
+                style={[{width: 49, height: 57}]}
+                source={Images.userIcon}
+              />
+              <Text style={[Fonts.textButton, { color: '#338AF4'}]}>Upload Photo</Text>
+            </ImageBackground>
+        </View>
       }
 
     {

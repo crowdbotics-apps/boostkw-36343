@@ -13,5 +13,6 @@ export default function () {
     passShowWhite: require('@/Assets/Images/pass_ShowWhite.png'),
     leftArrow: require('@/Assets/Images/left_Arrow.png'),
     hiddenWhite: require('@/Assets/Images/Hidden.png'),
+    userIcon: require('@/Assets/Images/user.png'),
   }
 }
