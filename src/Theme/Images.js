@@ -16,5 +16,6 @@ export default function () {
     userIcon: require('@/Assets/Images/user.png'),
     arrowDown: require('@/Assets/Images/ChevronDown.png'),
     imageIcon: require('@/Assets/Images/Image.png'),
+    dashboard: require('@/Assets/Images/dashboard.png'),
   }
 }

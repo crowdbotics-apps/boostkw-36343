@@ -14,18 +14,25 @@ const Stack = createStackNavigator()
 
 // @refresh reset
 const ApplicationNavigator = () => {
-  const { Layout, darkMode, NavigationTheme } = useTheme()
-  const { colors } = NavigationTheme
+  const { Layout, NavigationTheme } = useTheme()
+  // const { colors } = NavigationTheme
 
   return (
     <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill]}>
     <SafeAreaView style={[Layout.fill]}>
       <NavigationContainer theme={NavigationTheme} ref={navigationRef}>
       <TopStatusBar backgroundColor="#000A62" barStyle="light-content" />
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Auth">
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Main">
           <Stack.Screen
             name="Auth"
             component={AuthNavigator}
+            options={{
+              animationEnabled: false,
+            }}
+          />
+          <Stack.Screen
+            name="Main"
+            component={MainNavigator}
             options={{
               animationEnabled: false,
             }}

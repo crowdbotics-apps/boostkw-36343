@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux'
 import { Brand, Input, CheckBoxs } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
-import { navigate } from '@/Navigators/utils'
+import { navigate, navigateAndSimpleReset } from '@/Navigators/utils'
 import { checkEmail } from '@/Utils/Validations'
 
 const LoginContainer = () => {
@@ -47,6 +47,7 @@ const LoginContainer = () => {
         email: '',
         password: ''
       })
+      navigateAndSimpleReset('Main');
     }
   }
 

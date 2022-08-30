@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import { checkEmail } from '@/Utils/Validations'
 
-const PasswordReset = () => {
+const ProfileContainer = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
   const dispatch = useDispatch()
 
@@ -129,7 +129,7 @@ const PasswordReset = () => {
             style={[Common.button.outlineRounded, Gutters.regularBMargin]}
             onPress={resetSend ? onNavigateLogin : onClickNext}
         >
-            <Text style={Fonts.textButton}>{resetSend ? "Go To Login" : "Reset"}</Text>
+            <Text style={Fonts.textButton}>{"Save"}</Text>
         </TouchableOpacity>
 
       </View>
@@ -139,4 +139,4 @@ const PasswordReset = () => {
   )
 }
 
-export default PasswordReset
+export default ProfileContainer
