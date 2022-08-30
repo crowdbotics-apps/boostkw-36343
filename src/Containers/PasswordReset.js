@@ -32,7 +32,7 @@ const PasswordReset = () => {
     // do paswword reset request
     if (!checkEmail(values.email)) {
       setErrorMessage({
-        ...values,
+        ...errorMessage,
       email: "Please enter email"
       })
     } else {
@@ -50,7 +50,7 @@ const PasswordReset = () => {
     })
   }
     
-  console.log(errorMessage);
+  // console.log(errorMessage);
 
   return (
     <ScrollView

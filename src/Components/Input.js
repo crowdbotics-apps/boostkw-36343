@@ -28,7 +28,7 @@ const Input = ({
   const [hide, setHide] = useState(password)
   const { Common, Layout, Images, Colors, Fonts } = useTheme()
 
-  console.log(error)
+  // console.log(error)
   return (
     <View style={[Layout.column]}>
       <View style={styles.body}>
