@@ -5,10 +5,9 @@ from allauth.account import app_settings as allauth_settings
 from allauth.account.forms import ResetPasswordForm
 from allauth.utils import email_address_exists, generate_unique_username
 from allauth.account.adapter import get_adapter
-from allauth.account.utils import setup_user_email
+from allauth.account.utils import setup_user_email, send_email_confirmation
 from rest_framework import serializers
 from dj_rest_auth.serializers import PasswordResetSerializer
-
 
 User = get_user_model()
 
@@ -58,6 +57,11 @@ class SignupSerializer(serializers.ModelSerializer):
         user.save()
         request = self._get_request()
         setup_user_email(request, user, [])
+        try:
+            send_email_confirmation(request, user, signup=True)
+        except Exception as err:
+            print(err)
+
         return user
 
     def save(self, request=None):
