@@ -13,11 +13,13 @@ import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import FastImage from "react-native-fast-image"
 import { checkEmail } from '@/Utils/Validations'
+import { Branch } from '@/Utils/Branch'
+import { Jobs } from '@/Utils/Jobs'
 
 const SignUpContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
   const dispatch = useDispatch()
-  const [nextPage, setNextPage] = useState(false);
+  const [nextPage, setNextPage] = useState(true);
 
   const [values, setValues] = useState({})
   const [errorMessage, setErrorMessage] = useState({
@@ -74,7 +76,6 @@ const SignUpContainer = () => {
       [key]: value
     })
   }
-    
 
   return (
     <ScrollView
@@ -151,12 +152,13 @@ const SignUpContainer = () => {
                 overflow: "hidden",
               }}
               resizeMode="cover"
+              // source={}
             >
               <FastImage 
                 style={[{width: 49, height: 57}]}
                 source={Images.userIcon}
               />
-              <Text style={[Fonts.textButton, { color: '#338AF4'}]}>Upload Photo</Text>
+              <Text style={[Fonts.textButton, { color: '#338AF4', paddingTop: 10}]}>Upload Photo</Text>
             </ImageBackground>
         </View>
       }
@@ -188,11 +190,65 @@ const SignUpContainer = () => {
             placeholder='Last Name'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
-            password={true}
             />
 
 
-        {/* <SelectItem /> */}
+        <SelectItem 
+          onSelect={(selectedItem, index) => {
+            console.log(selectedItem, index)
+            onChange("branch", selectedItem.trim())
+          }}
+          data={Branch}
+          defaultText="Branch"
+          buttonTextAfterSelection={(selectedItem, index) => {
+              // text represented after item is selected
+              // if data array is an array of objects then return selectedItem.property to render after item is selected
+              return selectedItem
+          }}
+          rowTextForSelection={(selectedItem, index) => {
+            // text represented after item is selected
+            // if data array is an array of objects then return selectedItem.property to render after item is selected
+            return selectedItem
+        }}
+          />
+
+        <SelectItem 
+            onSelect={(selectedItem, index) => {
+              console.log(selectedItem, index)
+              onChange("crewName", selectedItem.trim())
+            }}
+            data={Branch}
+            defaultText="Crew Name"
+            buttonTextAfterSelection={(selectedItem, index) => {
+              // text represented after item is selected
+              // if data array is an array of objects then return selectedItem.property to render after item is selected
+              return selectedItem
+            }}
+            rowTextForSelection={(selectedItem, index) => {
+              // text represented after item is selected
+              // if data array is an array of objects then return selectedItem.property to render after item is selected
+              return selectedItem
+          }}
+          />
+
+          <SelectItem 
+            onSelect={(selectedItem, index) => {
+              console.log(selectedItem, index)
+              onChange("jobTitle", selectedItem.trim())
+            }}
+            data={Jobs}
+            defaultText="Job Title"
+            buttonTextAfterSelection={(selectedItem, index) => {
+              // text represented after item is selected
+              // if data array is an array of objects then return selectedItem.property to render after item is selected
+              return selectedItem
+            }}
+            rowTextForSelection={(selectedItem, index) => {
+              // text represented after item is selected
+              // if data array is an array of objects then return selectedItem.property to render after item is selected
+              return selectedItem
+          }}
+          />
       </View>
 
       :

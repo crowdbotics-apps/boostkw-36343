@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: 18,
     height: 18,
-    marginRight: 10,
-    padding: 12
+    marginRight: 4,
+    padding: 10
   },
   body: {
     flexDirection: "row",

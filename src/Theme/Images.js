@@ -14,5 +14,6 @@ export default function () {
     leftArrow: require('@/Assets/Images/left_Arrow.png'),
     hiddenWhite: require('@/Assets/Images/Hidden.png'),
     userIcon: require('@/Assets/Images/user.png'),
+    arrowDown: require('@/Assets/Images/ChevronDown.png'),
   }
 }

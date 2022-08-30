@@ -1,43 +1,58 @@
 import React from "react"
 import {
-    StyleSheet,
-    View,
-    TouchableOpacity
+    View
   } from "react-native"
 import SelectDropdown from 'react-native-select-dropdown'
 import { useTheme } from '@/Hooks'
+import FastImage from "react-native-fast-image"
+// import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const SelectItem = ({data, onSelect, defaultText="Select Item"}) => {
-    const { Common, Layout, Gutters, Colors, Fonts } = useTheme()
+const SelectItem = ({data, onSelect, defaultText="Select Item", buttonTextAfterSelection, rowTextForSelection}) => {
+    const { Common, Layout, Gutters, Colors, Fonts, Images } = useTheme()
 
     return (
       <View style={[Layout.row, Gutters.smallVPadding]}>
         <SelectDropdown
             data={data}
             defaultButtonText={defaultText}
-            onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index)
-            }}
-            buttonTextAfterSelection={(selectedItem, index) => {
-                // text represented after item is selected
-                // if data array is an array of objects then return selectedItem.property to render after item is selected
-                return selectedItem
-            }}
-            rowTextForSelection={(item, index) => {
-                // text represented for each item in dropdown
-                // if data array is an array of objects then return item.property to represent item in dropdown
-                return item
-            }}
+            onSelect={onSelect}
+            buttonTextAfterSelection={buttonTextAfterSelection}
+            rowTextForSelection={rowTextForSelection}
             dropdownIconPosition="right"
-            // renderDropdownIcon={}
-            // buttonStyle={}
-            // buttonTextStyle={}
-            // dropdownStyle
-            // dropdownBackgroundColor
-            // rowStyle
-            // rowTextStyle
-            // selectedRowStyle
-            // selectedRowTextStyle
+            renderDropdownIcon={(isOpened) => {
+                return <FastImage 
+                    style={[{width: 16, height: 7, marginRight: 4 }]}
+                    source={Images.arrowDown}
+                />
+                }
+            }
+            buttonStyle={{...Common.selectInput, flex: 1, height: 40,  paddingHorizontal: 0}}
+            buttonTextStyle={{...Common.selectInput, marginHorizontal: 0, marginRight: 8}}
+            dropdownBackgroundColor={Colors.transparent}
+            dropdownStyle={
+                {
+                    backgroundColor: "#010A60"
+                }
+            }
+            rowStyle={{
+                borderBottomWidth: 0,
+            }}
+
+            rowTextStyle={{
+                ...Common.selectInputCard,
+            }}
+
+            selectedRowStyle={
+                {
+                    ...Common.selectInputCard,
+                    backgroundColor: "rgba(255, 255, 255, 0.04)",
+                }
+            }
+
+            selectedRowTextStyle={{
+                ...Common.selectInputCard,
+                fontWeight: "600",
+            }}
         />
     </View>
     )
