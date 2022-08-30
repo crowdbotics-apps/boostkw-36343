@@ -1,4 +1,4 @@
-import React from 'react'
+import React,  { useState }  from 'react'
 import {
   View,
   Text,
@@ -6,19 +6,58 @@ import {
   ScrollView,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { Brand, Input } from '@/Components'
+import { Brand, Input, CheckBoxs } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
+import { checkEmail } from '@/Utils/Validations'
 
 const LoginContainer = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
   const dispatch = useDispatch()
 
+  const [values, setValues] = useState({})
+  const [errorMessage, setErrorMessage] = useState({
+    email: "",
+    password: "",
+  })
+
+  const [remember, setRemember] = useState(false);
+
   const onClickSignup = () => {
     navigate('SignUp')
   }
-    
+
+  const onClickLogin = () => {
+    if (!checkEmail(values.email)) {
+      setErrorMessage({
+        ...values,
+      email: "Please enter your email",
+      password: "",
+      })
+    }
+    else if (!values.password) {
+      setErrorMessage({
+        ...values,
+      email: "",
+      password: "Please enter your password"
+      })
+    } else {
+      setErrorMessage({
+        email: '',
+        password: ''
+      })
+    }
+  }
+
+  const onChange = (key, value) => {
+    setValues({
+      ...values,
+      [key]: value
+    })
+  }
+
+  // console.log(errorMessage, values)
 
   return (
     <ScrollView
@@ -53,18 +92,20 @@ const LoginContainer = () => {
         ]}
       >
         <Input
-            //   onChangeText={setUserId}
-            //   editable={!isLoading}
-            //   value={userId}
+           error={!!errorMessage?.email?.length}
+           errorValue={errorMessage?.email}
+           onChangeText={v => onChange("email", v.trim())}
+           value={values.email}
             placeholder='Email'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
             />
 
         <Input
-            //   onChangeText={setUserId}
-            //   editable={!isLoading}
-            //   value={userId}
+            error={!!errorMessage?.password?.length}
+            errorValue={errorMessage?.password}
+            onChangeText={v => onChange("password", v.trim())}
+            value={values.password}
             placeholder='Password'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
@@ -80,11 +121,19 @@ const LoginContainer = () => {
             Gutters.smallVMargin,
             Layout.justifyContentBetween,
             ]}
-        >
-            
-            <Text style={[Fonts.textNormal, Fonts.textGray]}>Remember Me</Text>
-            <Text style={Fonts.textNormal}>Forgot password?</Text>
+        >   
+            <View 
+              style={[
+              Layout.rowVCenter,
+              ]}
+            >
+              <CheckBoxs value={remember} onValueChange={() => setRemember(!remember)}  />
+              <Text style={[Fonts.textNormal, Fonts.textGray, Gutters.smallHPadding]}>Remember Me</Text>
+            </View>
 
+            <TouchableOpacity onPress={() => navigate('PassReset')}>
+              <Text style={Fonts.textNormal}>Forgot password?</Text>
+            </TouchableOpacity>
         </View>
 
       <View
@@ -96,7 +145,7 @@ const LoginContainer = () => {
       >
       <TouchableOpacity
         style={[Common.button.outlineRounded, Gutters.regularBMargin]}
-        onPress={() => {}}
+        onPress={onClickLogin}
       >
         <Text style={Fonts.textButton}>Login</Text>
       </TouchableOpacity>

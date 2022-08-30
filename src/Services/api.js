@@ -1,7 +1,20 @@
 import { Config } from '@/Config'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-const baseQuery = fetchBaseQuery({ baseUrl: Config.API_URL })
+const baseQuery = fetchBaseQuery({ 
+  baseUrl: Config.API_URL, 
+  // headers: { 'content-type': 'application/json' },
+  // prepareHeaders: (headers, { getState }) => {
+  //   const token = getState().auth.token
+  // headers.set("Content-Type", "application/json");
+  //   // If we have a token set in state, let's assume that we should be passing it.
+  //   if (token) {
+  //     headers.set('authorization', `Bearer ${token}`)
+  //   }
+
+  //   return headers
+  // },
+})
 
 const baseQueryWithInterceptor = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions)

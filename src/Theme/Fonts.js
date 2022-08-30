@@ -78,11 +78,20 @@ export default function ({ FontSize, Colors }) {
       fontFamily: 'Orbitron-Regular',
       fontWeight: '400',
       color: Colors.text,
-      lineHeight: 40,
+      lineHeight: 41,
       letterSpacing: 0.374,
     },
     fontBold: {
       fontWeight: '600',
-    }
+    },
+    errorText: {
+      fontSize: 14,
+      fontWeight: '400',
+      fontStyle: 'normal',
+      fontFamily: 'Roboto-Regular',
+      color: Colors.error,
+      lineHeight: 20,
+      letterSpacing: -0.32,
+    },
   })
 }

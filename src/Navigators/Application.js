@@ -22,7 +22,7 @@ const ApplicationNavigator = () => {
     <SafeAreaView style={[Layout.fill]}>
       <NavigationContainer theme={NavigationTheme} ref={navigationRef}>
       <TopStatusBar backgroundColor="#000A62" barStyle="light-content" />
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Auth">
           <Stack.Screen
             name="Auth"
             component={AuthNavigator}

@@ -32,6 +32,46 @@
     {
       "path": "src/Assets/fonts/Orbitron-Regular.ttf",
       "sha1": "9b3fc913ee57ed9e9b560c69da15c051314f2a5b"
+    },
+    {
+      "path": "src/Assets/fonts/Roboto-Bold.ttf",
+      "sha1": "3dd713113ff2d79b94d2df343e2e28fa8e7279cf"
+    },
+    {
+      "path": "src/Assets/fonts/Roboto-BoldItalic.ttf",
+      "sha1": "60b9860b7fc93d6b0b322f170634105bc6a8cc8d"
+    },
+    {
+      "path": "src/Assets/fonts/Roboto-Italic.ttf",
+      "sha1": "dc6756127707ab2d6e388a6023087351fa41999c"
+    },
+    {
+      "path": "src/Assets/fonts/Roboto-Light.ttf",
+      "sha1": "73a2bb2d6e591a90ffb4ed118a3989fb17b54c7b"
+    },
+    {
+      "path": "src/Assets/fonts/Roboto-Medium.ttf",
+      "sha1": "5f16f4d6dbb4a4f12d8ae96488ac209bb49762a5"
+    },
+    {
+      "path": "src/Assets/fonts/Roboto-Regular.ttf",
+      "sha1": "096c9245b6a192d1403a82848e104a65f578a8ec"
+    },
+    {
+      "path": "src/Assets/fonts/RobotoMono-Bold.ttf",
+      "sha1": "292de3aecd24fb34beebde23a0f17425a9f4061f"
+    },
+    {
+      "path": "src/Assets/fonts/RobotoMono-BoldItalic.ttf",
+      "sha1": "64ca928d5dd56803734996abf9a9cdef7923743c"
+    },
+    {
+      "path": "src/Assets/fonts/RobotoMono-Italic.ttf",
+      "sha1": "4421cbfee997d8a1e18a8bd162eb17588cfd733d"
+    },
+    {
+      "path": "src/Assets/fonts/RobotoMono-Regular.ttf",
+      "sha1": "8b91c38b4beb70b8b39a1f7cb601fc1f426a9af8"
     }
   ]
 }
