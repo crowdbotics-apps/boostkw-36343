@@ -17,7 +17,7 @@ import { checkEmail } from '@/Utils/Validations'
 const SignUpContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
   const dispatch = useDispatch()
-  const [nextPage, setNextPage] = useState(true);
+  const [nextPage, setNextPage] = useState(false);
 
   const [values, setValues] = useState({})
   const [errorMessage, setErrorMessage] = useState({
@@ -174,6 +174,7 @@ const SignUpContainer = () => {
             error={!!errorMessage?.FirstName?.length}
             errorValue={errorMessage?.FirstName}
             onChangeText={v => onChange("FirstName", v.trim())}
+            value={values.FirstName}
             placeholder='First Name'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
@@ -183,6 +184,7 @@ const SignUpContainer = () => {
             error={!!errorMessage?.LastName?.length}
             errorValue={errorMessage?.LastName}
             onChangeText={v => onChange("LastName", v.trim())}
+            value={values.LastName}
             placeholder='Last Name'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
@@ -205,6 +207,7 @@ const SignUpContainer = () => {
         <Input
             error={!!errorMessage?.email?.length}
             errorValue={errorMessage?.email}
+            value={values.email}
             onChangeText={v => onChange("email", v.trim())}
             placeholder='Email'
             placeholderTextColor={"#ffffff"}
@@ -215,6 +218,7 @@ const SignUpContainer = () => {
             error={!!errorMessage?.password?.length}
             errorValue={errorMessage?.password}
             onChangeText={v => onChange("password", v.trim())}
+            value={values.password}
             placeholder='Password'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
@@ -225,6 +229,7 @@ const SignUpContainer = () => {
             error={!!errorMessage?.resetPassword?.length}
             errorValue={errorMessage?.resetPassword}
             onChangeText={v => onChange("resetPassword", v.trim())}
+            value={values.resetPassword}
             placeholder='Confirm Password'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
