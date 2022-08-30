@@ -20,7 +20,7 @@ import ImagePicker from "react-native-image-crop-picker"
 const SignUpContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
   const dispatch = useDispatch()
-  const [nextPage, setNextPage] = useState(true);
+  const [nextPage, setNextPage] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
 
   const modalizeRef = useRef(null);
@@ -367,7 +367,7 @@ const SignUpContainer = () => {
             Fonts.textCenter
             ]}
         >
-            <Text style={[Fonts.textButtonSmall, Fonts.textCenter]}>By using BOOSTKW you agree to our Terms and Conditions and Privacy Policy</Text>
+            <Text style={[Fonts.textButtonSmall, Fonts.textCenter]}>By using BOOSTKW you agree to our <Text style={{color: "#338AF4"}} onPress={() => navigate('Terms')}>Terms and Conditions</Text> and <Text style={{color: "#338AF4"}} onPress={() => navigate('Privacy')}>Privacy Policy</Text></Text>
         </View>
 
       </View>
