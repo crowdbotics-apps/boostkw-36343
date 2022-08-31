@@ -62,10 +62,6 @@ const PrivacyContainer = () => {
     >
     <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill, Gutters.smallHPadding,]}>
         
-      <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.regularBMargin, Gutters.largeTMargin]}>
-        <Brand />
-      </View>
-
       <View style={[
           Layout.column,
           Gutters.regularVMargin,
@@ -73,8 +69,10 @@ const PrivacyContainer = () => {
 
       <View style={[Layout.col, Gutters.smallHPadding, Gutters.regularBMargin]}>
           <Title 
-            text={"Reset Password"}
+            text={"Privacy Policy"}
             onPressBack={onNavigateLogin}
+            textStyle={Fonts.titleBoldTerms}
+            terms={true}
           />
       </View>
 
@@ -86,53 +84,10 @@ const PrivacyContainer = () => {
             Fonts.textCenter
             ]}
         >
-            {
-            resetSend ? 
-            <Text style={[Fonts.textButtonSmall, Fonts.textCenter, Gutters.smallHPadding]}>{`We have sent you instructions to change your password to ${values.email}`}</Text>
-            :
-            <Text style={[Fonts.textButtonSmall, Fonts.textCenter, Gutters.smallHPadding]}>Enter the email associated with your account and we will send you a link to reset your password.</Text>
-            }
-            
-        </View>
-
-      { 
-      !resetSend &&
-      <View
-        style={[
-          Layout.column,
-          Gutters.smallHPadding,
-          Gutters.regularVMargin,
-        ]}
-      >
-        <Input
-            error={!!errorMessage?.email?.length}
-            errorValue={errorMessage?.email}
-            onChangeText={v => onChange("email", v.trim())}
-            value={values.email}
-            placeholder='Enter your email'
-            placeholderTextColor={"#ffffff"}
-            selectTextOnFocus
-          />
+          <Text style={[Fonts.textButtonSmall, Fonts.textCenter, Gutters.smallHPadding]}>Privacy Policy for BOOSTKW</Text>
             
       </View>
-      }
 
-
-      <View
-        style={[
-          Layout.column,
-          Gutters.smallHPadding,
-          Gutters.smallVMargin,
-        ]}
-      >
-        <TouchableOpacity
-            style={[Common.button.outlineRounded, Gutters.regularBMargin]}
-            onPress={resetSend ? onNavigateLogin : onClickNext}
-        >
-            <Text style={Fonts.textButton}>{resetSend ? "Go To Login" : "Reset"}</Text>
-        </TouchableOpacity>
-
-      </View>
 
       </LinearGradient>
     </ScrollView>

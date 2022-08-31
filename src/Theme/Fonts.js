@@ -81,6 +81,9 @@ export default function ({ FontSize, Colors }) {
       lineHeight: 41,
       letterSpacing: 0.374,
     },
+    titleBoldTerms: {
+      fontSize: 24,
+    },
     fontBold: {
       fontWeight: '600',
     },
