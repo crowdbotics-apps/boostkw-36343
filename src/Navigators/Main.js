@@ -48,7 +48,7 @@ const MainNavigator = () => {
           tabBarIcon: ({ focused, color, size }) => (
             <FastImage
                   style={{ width: 44 , height: 44}}
-                  source={ focused ?  Images.dashboard : Images.dashboard}
+                  source={ focused ?  Images.dashboard : Images.dashboardInactive}
               />
           ),
           tabBarLabelPosition: 'below-icon',
@@ -59,8 +59,11 @@ const MainNavigator = () => {
         component={ProfileContainer}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesomeIcon name="user" color={color} size={size} />
+          tabBarIcon: ({ focused, color, size }) => (
+            <FastImage
+                  style={{ width: 44 , height: 44}}
+                  source={ focused ?  Images.profile : Images.profileInactive}
+              />
           ),
           tabBarLabelPosition: 'below-icon',
         }}
@@ -70,8 +73,11 @@ const MainNavigator = () => {
         component={FeedbackContainer}
         options={{
           tabBarLabel: 'Feedback',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesomeIcon name="user" color={color} size={size} />
+          tabBarIcon: ({ focused, color, size }) => (
+            <FastImage
+                  style={{ width: 44 , height: 44}}
+                  source={ focused ?  Images.feedback : Images.feedbackInactive}
+              />
           ),
           tabBarLabelPosition: 'below-icon',
         }}
@@ -81,8 +87,11 @@ const MainNavigator = () => {
         component={TrackerContainer}
         options={{
           tabBarLabel: 'Tracker',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesomeIcon name="user" color={color} size={size} />
+          tabBarIcon: ({ focused, color, size }) => (
+            <FastImage
+                  style={{ width: 44 , height: 44}}
+                  source={ focused ?  Images.tracker : Images.trackerInactive}
+              />
           ),
           tabBarLabelPosition: 'below-icon',
         }}
