@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import { checkEmail } from '@/Utils/Validations'
 
-const PasswordReset = () => {
+const TermsContainer = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
   const dispatch = useDispatch()
 
@@ -139,4 +139,4 @@ const PasswordReset = () => {
   )
 }
 
-export default PasswordReset
+export default TermsContainer

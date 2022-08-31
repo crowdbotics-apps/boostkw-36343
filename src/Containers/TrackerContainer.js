@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import { checkEmail } from '@/Utils/Validations'
 
-const FeedbackContainer = () => {
+const TrackerContainer = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
   const dispatch = useDispatch()
 
@@ -49,8 +49,6 @@ const FeedbackContainer = () => {
       [key]: value
     })
   }
-    
-  // console.log(errorMessage);
 
   return (
     <ScrollView
@@ -61,7 +59,6 @@ const FeedbackContainer = () => {
       ]}
     >
     <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill, Gutters.smallHPadding,]}>
-        
 
       <View style={[
           Layout.column,
@@ -70,52 +67,28 @@ const FeedbackContainer = () => {
 
       <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.regularBMargin]}>
         <Text style={Fonts.titleBold}>
-            Feedback
+            Tracker
         </Text>
       </View>
 
-      { 
-      !resetSend &&
-      <View
-        style={[
-          Layout.column,
-          Gutters.smallHPadding,
-          Gutters.regularVMargin,
-        ]}
-      >
-        <Input
-            error={!!errorMessage?.email?.length}
-            errorValue={errorMessage?.email}
-            onChangeText={v => onChange("email", v.trim())}
-            value={values.email}
-            placeholder='Enter your email'
-            placeholderTextColor={"#ffffff"}
-            selectTextOnFocus
-          />
-            
-      </View>
-      }
-
 
       <View
-        style={[
-          Layout.column,
-          Gutters.smallHPadding,
-          Gutters.smallVMargin,
-        ]}
-      >
-        <TouchableOpacity
-            style={[Common.button.outlineRounded, Gutters.regularBMargin]}
-            onPress={resetSend ? onNavigateLogin : onClickNext}
+            style={[
+            Layout.rowCenter,
+            Gutters.smallHPadding,
+            Gutters.regularVMargin,
+            Fonts.textCenter
+            ]}
         >
-            <Text style={Fonts.textButton}>{"Submit"}</Text>
-        </TouchableOpacity>
+            
+            
+        </View>
 
-      </View>
+
 
       </LinearGradient>
     </ScrollView>
   )
 }
 
-export default FeedbackContainer
+export default TrackerContainer

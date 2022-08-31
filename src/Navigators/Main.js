@@ -1,6 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { ProfileContainer } from '@/Containers'
+import { ProfileContainer, FeedbackContainer, TrackerContainer, DashboardContainer } from '@/Containers'
 import FastImage from "react-native-fast-image"
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '@/Hooks'
@@ -42,7 +42,7 @@ const MainNavigator = () => {
     >
       <Tab.Screen
         name="Dashboard"
-        component={ProfileContainer}
+        component={DashboardContainer}
         options={{
           tabBarLabel: 'Dashboard',
           tabBarIcon: ({ focused, color, size }) => (
@@ -67,7 +67,7 @@ const MainNavigator = () => {
       />
       <Tab.Screen
         name="Feedback"
-        component={ProfileContainer}
+        component={FeedbackContainer}
         options={{
           tabBarLabel: 'Feedback',
           tabBarIcon: ({ color, size }) => (
@@ -78,7 +78,7 @@ const MainNavigator = () => {
       />
       <Tab.Screen
         name="Tracker"
-        component={ProfileContainer}
+        component={TrackerContainer}
         options={{
           tabBarLabel: 'Tracker',
           tabBarIcon: ({ color, size }) => (

@@ -1,6 +1,6 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { LoginContainer, SignUpContainer, PasswordReset } from '@/Containers'
+import { LoginContainer, SignUpContainer, PasswordReset, TermsContainer, PrivacyContainer } from '@/Containers'
 
 const AuthStack = createStackNavigator()
 
@@ -24,6 +24,14 @@ const AuthNavigator = () => {
       <AuthStack.Screen
         name="PassReset"
         component={PasswordReset}
+      />
+      <AuthStack.Screen
+        name="Terms"
+        component={TermsContainer}
+      />
+      <AuthStack.Screen
+        name="Privacy"
+        component={PrivacyContainer}
       />
     </AuthStack.Navigator>
   )
