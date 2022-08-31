@@ -7,8 +7,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import path
 from django.utils.safestring import mark_safe
+from import_export.admin import ExportMixin
 
 from users.forms import UserChangeForm, UserCreationForm
+from users.model_resources import UserAdminResource
 
 User = get_user_model()
 
@@ -32,7 +34,7 @@ admin_site = MyAdminSite()
 
 
 @admin.register(User)
-class UserAdmin(auth_admin.UserAdmin):
+class UserAdmin(ExportMixin, auth_admin.UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     fieldsets = (('User', {'fields': ('name', 'profile_picture', 'crew')}),) + auth_admin.UserAdmin.fieldsets
@@ -40,6 +42,7 @@ class UserAdmin(auth_admin.UserAdmin):
                     'get_view_button']
     search_fields = ['first_name', 'last_name', 'email']
     list_select_related = ['profile', 'crew']
+    resource_class = UserAdminResource
 
     # def get_branch(self, instance):
     #     if instance.get_branch:
