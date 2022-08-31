@@ -14,5 +14,15 @@ export default function () {
     leftArrow: require('@/Assets/Images/left_Arrow.png'),
     hiddenWhite: require('@/Assets/Images/Hidden.png'),
     userIcon: require('@/Assets/Images/user.png'),
+    arrowDown: require('@/Assets/Images/ChevronDown.png'),
+    imageIcon: require('@/Assets/Images/Image.png'),
+    dashboard: require('@/Assets/Images/dashboard.png'),
+    dashboardInactive: require('@/Assets/Images/dashboardInactive.png'),
+    profile: require('@/Assets/Images/profile.png'),
+    profileInactive: require('@/Assets/Images/profileInactive.png'),
+    tracker: require('@/Assets/Images/tracker.png'),
+    trackerInactive: require('@/Assets/Images/trackerInactive.png'),
+    feedback: require('@/Assets/Images/feedback.png'),
+    feedbackInactive: require('@/Assets/Images/feedbackInactive.png'),
   }
 }
