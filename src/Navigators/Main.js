@@ -8,7 +8,7 @@ import { useTheme } from '@/Hooks'
 const Tab = createBottomTabNavigator()
 
 // @refresh reset
-const MainNavigator = () => {
+const MainNavigator = ({ navigation }) => {
   const { Common, Fonts, Images } = useTheme()
 
   return (
@@ -43,6 +43,7 @@ const MainNavigator = () => {
       <Tab.Screen
         name="Dashboard"
         component={DashboardContainer}
+        navigation={navigation}
         options={{
           tabBarLabel: 'Dashboard',
           tabBarIcon: ({ focused, color, size }) => (
@@ -57,6 +58,7 @@ const MainNavigator = () => {
       <Tab.Screen
         name="Profile"
         component={ProfileContainer}
+        navigation={navigation}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({ focused, color, size }) => (
@@ -71,6 +73,7 @@ const MainNavigator = () => {
       <Tab.Screen
         name="Feedback"
         component={FeedbackContainer}
+        navigation={navigation}
         options={{
           tabBarLabel: 'Feedback',
           tabBarIcon: ({ focused, color, size }) => (
@@ -85,6 +88,7 @@ const MainNavigator = () => {
       <Tab.Screen
         name="Tracker"
         component={TrackerContainer}
+        navigation={navigation}
         options={{
           tabBarLabel: 'Tracker',
           tabBarIcon: ({ focused, color, size }) => (

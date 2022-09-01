@@ -50,7 +50,6 @@ const LoginContainer = () => {
         email: '',
         password: ''
       })
-      // navigateAndSimpleReset('Main');
       doLogin(values)
     }
   }
@@ -70,10 +69,11 @@ const LoginContainer = () => {
         dispatch(setRemeberUser({ remember: remember}))
         dispatch(setLoggedIn({ loggedIn: true}))
         navigateAndSimpleReset('Main');
-        console.log('user: ', response.data)
+        // console.log('user: ', response.data)
       }
     } catch (error) {
       console.log("Error: user login", error)
+      dispatch(setLoggedIn({ loggedIn: false}))
     }
   }
 
