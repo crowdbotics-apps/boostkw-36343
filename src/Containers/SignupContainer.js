@@ -16,6 +16,7 @@ import { checkEmail } from '@/Utils/Validations'
 import { Branch } from '@/Utils/Branch'
 import { Jobs } from '@/Utils/Jobs'
 import ImagePicker from "react-native-image-crop-picker"
+import { request } from '@/Utils/http'
 
 const SignUpContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
@@ -58,25 +59,101 @@ const SignUpContainer = () => {
         ...values,
       email: "",
       password: "Please enter your password",
-      resetPassword: ""
+      resetPassword: "",
+      firstName: '',
+      lastName: ''
       })
     }
-    else if (!values.password) {
+    else if (!values.resetPassword) {
       setErrorMessage({
         ...values,
       email: "",
       password: "",
-      resetPassword: "Please confirm your password"
+      resetPassword: "Please confirm your password",
+      firstName: '',
+      lastName: ''
+      })
+     }
+     else if (values.password !== values.resetPassword) {
+      setErrorMessage({
+        ...values,
+      email: "",
+      password: "",
+      resetPassword: "Password doesn't match",
+      firstName: '',
+      lastName: ''
       })
      } else {
       setNextPage(true)
       setErrorMessage({
         email: '',
         password: '',
-        resetPassword: ''
+        resetPassword: '',
+        firstName: '',
+        lastName: ''
       })
     }
   }
+
+  const onClickSignUp = () => {
+    if (!values.firstName) {
+      setErrorMessage({
+        ...values,
+      email: "",
+      password: "",
+      resetPassword: "",
+      firstName: "Please enter your first name",
+      lastName: ""
+      })
+    } 
+    else if (!values.resetPassword) {
+      setErrorMessage({
+        ...values,
+      email: "",
+      password: "",
+      resetPassword: "",
+      firstName: '',
+      lastName: "Please enter your last name"
+      })
+     } else {
+      setErrorMessage({
+        email: '',
+        password: '',
+        resetPassword: '',
+        firstName: '',
+        lastName: ''
+      })
+      doSignUp({...values, image: profileImage})
+     }
+
+  }
+
+  const doSignUp = async ({ image, email, password, firstName, lastName, branch, crewName, jobTitle}) => {
+    try {
+      console.log(image, email, password, firstName, lastName, branch, jobTitle);
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("first_name", firstName);
+      formData.append("last_name", lastName);
+      formData.append("branch", branch);
+      formData.append("crew", 1);
+      formData.append("job_title", jobTitle);
+      image && formData.append("profile_picture", image);
+
+      const response = await request.post(
+        `accounts/signup/`,
+        formData
+      )
+      if (response) {
+        console.log('user reg: ', response.data)
+        onNavigateLogin()
+      }
+    } catch (error) {
+      console.log("Error: user signup", error)
+    }
+  }
+
 
   const onClickBack = () => {
     setNextPage(false)
@@ -211,20 +288,20 @@ const SignUpContainer = () => {
         ]}
       >
         <Input
-            error={!!errorMessage?.FirstName?.length}
-            errorValue={errorMessage?.FirstName}
-            onChangeText={v => onChange("FirstName", v.trim())}
-            value={values.FirstName}
+            error={!!errorMessage?.firstName?.length}
+            errorValue={errorMessage?.firstName}
+            onChangeText={v => onChange("firstName", v.trim())}
+            value={values.firstName}
             placeholder='First Name'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
             />
 
         <Input
-            error={!!errorMessage?.LastName?.length}
-            errorValue={errorMessage?.LastName}
-            onChangeText={v => onChange("LastName", v.trim())}
-            value={values.LastName}
+            error={!!errorMessage?.lastName?.length}
+            errorValue={errorMessage?.lastName}
+            onChangeText={v => onChange("lastName", v.trim())}
+            value={values.lastName}
             placeholder='Last Name'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
@@ -330,7 +407,6 @@ const SignUpContainer = () => {
             password={true}
             />
 
-        {/* <SelectItem /> */}
       </View>
 
     }
@@ -345,12 +421,15 @@ const SignUpContainer = () => {
       >
       <TouchableOpacity
         style={[Common.button.outlineRounded]}
-        onPress={onClickNext}
+        onPress={nextPage ? onClickSignUp : onClickNext}
       >
         <Text style={Fonts.textButton}>{nextPage ? "Sign up" : "Next"}</Text>
       </TouchableOpacity>
 
       </View>
+
+      {
+        !nextPage &&
 
       <View
         style={[
@@ -371,6 +450,7 @@ const SignUpContainer = () => {
         </View>
 
       </View>
+      }
 
       {
         nextPage &&

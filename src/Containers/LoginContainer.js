@@ -70,7 +70,7 @@ const LoginContainer = () => {
         console.log('user: ', response.data)
       }
     } catch (error) {
-      console.log("Error: user login", error.response.data)
+      console.log("Error: user login", error)
     }
   }
 
