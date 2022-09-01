@@ -24,9 +24,11 @@ export const request = axios.create({
 // )
 
 export function setupHttpConfig () {
-  request.defaults.baseURL = Config.API_DEV_URL;
+  request.defaults.baseURL = Config.API_DEV_URL + 'api/v1/';
   request.defaults.timeout = 10000;
   axios.defaults.headers['Content-Type'] = 'application/json';
+  axios.defaults.headers['Accept'] = 'application/json';
+  
   // request.defaults.xsrfHeaderName = "X-CSRFToken";
   // request.defaults.xsrfCookieName = "csrftoken";
   // you can add more default values for http requests here

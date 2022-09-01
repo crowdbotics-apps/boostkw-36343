@@ -2,7 +2,7 @@ import { Config } from '@/Config'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const baseQuery = fetchBaseQuery({ 
-  baseUrl: Config.API_URL, 
+  baseUrl: Config.API_DEV_URL, 
   // headers: { 'content-type': 'application/json' },
   // prepareHeaders: (headers, { getState }) => {
   //   const token = getState().auth.token

@@ -1,20 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
-import { StartupContainer } from '@/Containers'
 import { TopStatusBar } from '@/Components'
 import { useTheme } from '@/Hooks'
 import MainNavigator from './Main'
 import AuthNavigator from './Auth'
 import { navigationRef } from './utils'
 import LinearGradient from 'react-native-linear-gradient'
+import { setupHttpConfig } from '@/Utils/http'
 
 const Stack = createStackNavigator()
 
 // @refresh reset
 const ApplicationNavigator = () => {
   const { Layout, NavigationTheme } = useTheme()
+
+  useEffect(() => {
+    setupHttpConfig()
+  }, [])
+
   // const { colors } = NavigationTheme
 
   return (

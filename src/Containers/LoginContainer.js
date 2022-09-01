@@ -10,7 +10,9 @@ import { Brand, Input, CheckBoxs } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate, navigateAndSimpleReset } from '@/Navigators/utils'
-import { checkEmail } from '@/Utils/Validations'
+// import { checkEmail } from '@/Utils/Validations'
+import { request } from '@/Utils/http'
+import { setUser, setRemeberUser } from '@/Services/modules/auth'
 
 const LoginContainer = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
@@ -29,7 +31,7 @@ const LoginContainer = () => {
   }
 
   const onClickLogin = () => {
-    if (!checkEmail(values.email)) {
+    if (!values.email) {
       setErrorMessage({
         ...values,
       email: "Please enter your email",
@@ -47,7 +49,28 @@ const LoginContainer = () => {
         email: '',
         password: ''
       })
-      navigateAndSimpleReset('Main');
+      // navigateAndSimpleReset('Main');
+      doLogin(values)
+    }
+  }
+
+  const doLogin = async ({ email, password}) => {
+
+    try {
+      const response = await request.post(
+        `accounts/login/token/`,
+        {
+          username: email,
+          password: password
+        }
+      )
+      if (response) {
+        dispatch(setUser({ user: response.data }))
+        dispatch(setRemeberUser({ remember: remember}))
+        console.log('user: ', response.data)
+      }
+    } catch (error) {
+      console.log("Error: user login", error.response.data)
     }
   }
 
