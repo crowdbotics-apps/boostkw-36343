@@ -27,10 +27,8 @@ const SignUpContainer = () => {
 
 
   useEffect(() => {
-    !!crewList.length && fetchCrew()
+    !crewList.length && fetchCrew()
   }, [])
-
-  console.log(crewList)
 
   const modalizeRef = useRef(null);
 
@@ -175,8 +173,8 @@ const SignUpContainer = () => {
           headers: {
             Accept: "application/json",
             "Content-Type": `multipart/form-data; boundary=${formData._boundary}`
+            // "Content-Type": "application/json"
           },
-          transformRequest: formData => formData,
         })
       if (response) {
         console.log('user reg: ', response.data)
