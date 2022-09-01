@@ -5,7 +5,7 @@ import { LoginContainer, SignUpContainer, PasswordReset, TermsContainer, Privacy
 const AuthStack = createStackNavigator()
 
 // @refresh reset
-const AuthNavigator = () => {
+const AuthNavigator = ({ navigation }) => {
   return (
     <AuthStack.Navigator
         screenOptions={{
@@ -15,22 +15,27 @@ const AuthNavigator = () => {
     >
       <AuthStack.Screen
         name="Login"
+        navigation={navigation}
         component={LoginContainer}
       />
       <AuthStack.Screen
         name="SignUp"
+        navigation={navigation}
         component={SignUpContainer}
       />
       <AuthStack.Screen
         name="PassReset"
+        navigation={navigation}
         component={PasswordReset}
       />
       <AuthStack.Screen
         name="Terms"
+        navigation={navigation}
         component={TermsContainer}
       />
       <AuthStack.Screen
         name="Privacy"
+        navigation={navigation}
         component={PrivacyContainer}
       />
     </AuthStack.Navigator>

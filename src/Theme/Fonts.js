@@ -96,5 +96,12 @@ export default function ({ FontSize, Colors }) {
       lineHeight: 20,
       letterSpacing: -0.32,
     },
+    textTerms: {
+      fontSize: 12,
+      fontWeight: '400',
+      fontFamily: 'Montserrat-Regular',
+      color: Colors.text,
+      lineHeight: 18,
+    }
   })
 }
