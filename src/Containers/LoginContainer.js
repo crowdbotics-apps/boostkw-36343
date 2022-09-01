@@ -13,6 +13,7 @@ import { navigate, navigateAndSimpleReset } from '@/Navigators/utils'
 // import { checkEmail } from '@/Utils/Validations'
 import { request } from '@/Utils/http'
 import { setUser, setRemeberUser } from '@/Services/modules/auth'
+import { setLoggedIn } from '@/Services/modules/app'
 
 const LoginContainer = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
@@ -67,6 +68,7 @@ const LoginContainer = () => {
       if (response) {
         dispatch(setUser({ user: response.data }))
         dispatch(setRemeberUser({ remember: remember}))
+        dispatch(setLoggedIn({ loggedIn: true}))
         console.log('user: ', response.data)
       }
     } catch (error) {

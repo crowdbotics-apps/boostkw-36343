@@ -15,11 +15,13 @@ import {
 import { api } from '@/Services/api'
 import theme from './Theme'
 import auth from '@/Services/modules/auth'
+import app from '@/Services/modules/app'
 
 const reducers = combineReducers({
   theme,
   api: api.reducer,
-  auth: auth
+  auth: auth,
+  app: app
 })
 
 const persistConfig = {

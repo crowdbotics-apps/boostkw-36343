@@ -1,11 +1,15 @@
-import { api } from '@/Services/api'
-import crew from './crew'
+import { createSlice } from '@reduxjs/toolkit'
 
-export const appApi = api.injectEndpoints({
-  endpoints: build => ({
-    fetchCrew: crew(build),
-  }),
-  overrideExisting: false,
+const slice = createSlice({
+  name: 'app',
+  initialState: { isLoggedIn: null },
+  reducers: {
+    setLoggedIn: (state, { payload: { loggedIn } }) => {
+        state.isLoggedIn = loggedIn
+    },
+  },
 })
 
-export const { useLazyFetchAppQuery } = appApi
+export const { setLoggedIn } = slice.actions
+
+export default slice.reducer
