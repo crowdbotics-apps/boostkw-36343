@@ -69,6 +69,7 @@ const LoginContainer = () => {
         dispatch(setUser({ user: response.data }))
         dispatch(setRemeberUser({ remember: remember}))
         dispatch(setLoggedIn({ loggedIn: true}))
+        navigateAndSimpleReset('Main');
         console.log('user: ', response.data)
       }
     } catch (error) {
