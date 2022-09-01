@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   View,
   Text,
@@ -23,6 +23,14 @@ const SignUpContainer = () => {
   const dispatch = useDispatch()
   const [nextPage, setNextPage] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
+  const [crewList, setCrewList] = useState([]);
+
+
+  useEffect(() => {
+    !!crewList.length && fetchCrew()
+  }, [])
+
+  console.log(crewList)
 
   const modalizeRef = useRef(null);
 
@@ -38,8 +46,25 @@ const SignUpContainer = () => {
   const [errorMessage, setErrorMessage] = useState({
     email: "",
     password: "",
-    resetPassword: ""
+    resetPassword: "",
+    firstName: "",
+    lastName: ""
+
   })
+
+  const fetchCrew = async () => {
+    try {
+      const response = await request.get(`crews/`)
+      if (response) {
+        const data = response.data?.map((item) => {
+          return { name: item.name, value: item.id }
+        })
+        setCrewList(data);
+      }
+      } catch (error) {
+        console.log("Error: crew list", error)
+      }
+  }
 
   const onNavigateLogin = () => {
     navigate('Login')
@@ -51,7 +76,9 @@ const SignUpContainer = () => {
         ...values,
       email: "Please enter your email",
       password: "",
-      resetPassword: ""
+      resetPassword: "",
+      firstName: '',
+      lastName: ''
       })
     }
     else if (!values.password) {
@@ -106,7 +133,7 @@ const SignUpContainer = () => {
       lastName: ""
       })
     } 
-    else if (!values.resetPassword) {
+    else if (!values.lastName) {
       setErrorMessage({
         ...values,
       email: "",
@@ -130,21 +157,27 @@ const SignUpContainer = () => {
 
   const doSignUp = async ({ image, email, password, firstName, lastName, branch, crewName, jobTitle}) => {
     try {
-      console.log(image, email, password, firstName, lastName, branch, jobTitle);
+      // console.log(email, password, firstName, lastName, branch, jobTitle);
       const formData = new FormData();
       formData.append("email", email);
       formData.append("password", password);
       formData.append("first_name", firstName);
       formData.append("last_name", lastName);
       formData.append("branch", branch);
-      formData.append("crew", 1);
+      formData.append("crew", crewName);
       formData.append("job_title", jobTitle);
       image && formData.append("profile_picture", image);
 
+      console.log(formData);
       const response = await request.post(
         `accounts/signup/`,
-        formData
-      )
+        formData, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": `multipart/form-data; boundary=${formData._boundary}`
+          },
+          transformRequest: formData => formData,
+        })
       if (response) {
         console.log('user reg: ', response.data)
         onNavigateLogin()
@@ -181,8 +214,6 @@ const SignUpContainer = () => {
         CloseModal()
       })
   }
-
-  console.log(profileImage);
 
   return (
     <ScrollView
@@ -279,7 +310,51 @@ const SignUpContainer = () => {
       }
 
     {
-      nextPage ? 
+      !nextPage && 
+      <View
+        style={[
+          Layout.column,
+          Gutters.smallHPadding,
+          Gutters.regularVMargin,
+        ]}
+      >
+        <Input
+            error={!!errorMessage?.email?.length}
+            errorValue={errorMessage?.email}
+            value={values.email}
+            onChangeText={v => onChange("email", v.trim())}
+            placeholder='Email'
+            placeholderTextColor={"#ffffff"}
+            selectTextOnFocus
+            />
+
+        <Input
+            error={!!errorMessage?.password?.length}
+            errorValue={errorMessage?.password}
+            onChangeText={v => onChange("password", v.trim())}
+            value={values.password}
+            placeholder='Password'
+            placeholderTextColor={"#ffffff"}
+            selectTextOnFocus
+            password={true}
+            />
+
+        <Input
+            error={!!errorMessage?.resetPassword?.length}
+            errorValue={errorMessage?.resetPassword}
+            onChangeText={v => onChange("resetPassword", v.trim())}
+            value={values.resetPassword}
+            placeholder='Confirm Password'
+            placeholderTextColor={"#ffffff"}
+            selectTextOnFocus
+            password={true}
+            />
+
+      </View>
+    }
+
+    {
+      nextPage &&
       <View
         style={[
           Layout.column,
@@ -330,19 +405,19 @@ const SignUpContainer = () => {
         <SelectItem 
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index)
-              onChange("crewName", selectedItem.trim())
+              onChange("crewName", selectedItem.value)
             }}
-            data={Branch}
+            data={crewList}
             defaultText="Crew Name"
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
             }}
             rowTextForSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
           }}
           />
 
@@ -364,49 +439,6 @@ const SignUpContainer = () => {
               return selectedItem
           }}
           />
-      </View>
-
-      :
-
-      <View
-        style={[
-          Layout.column,
-          Gutters.smallHPadding,
-          Gutters.regularVMargin,
-        ]}
-      >
-        <Input
-            error={!!errorMessage?.email?.length}
-            errorValue={errorMessage?.email}
-            value={values.email}
-            onChangeText={v => onChange("email", v.trim())}
-            placeholder='Email'
-            placeholderTextColor={"#ffffff"}
-            selectTextOnFocus
-            />
-
-        <Input
-            error={!!errorMessage?.password?.length}
-            errorValue={errorMessage?.password}
-            onChangeText={v => onChange("password", v.trim())}
-            value={values.password}
-            placeholder='Password'
-            placeholderTextColor={"#ffffff"}
-            selectTextOnFocus
-            password={true}
-            />
-
-        <Input
-            error={!!errorMessage?.resetPassword?.length}
-            errorValue={errorMessage?.resetPassword}
-            onChangeText={v => onChange("resetPassword", v.trim())}
-            value={values.resetPassword}
-            placeholder='Confirm Password'
-            placeholderTextColor={"#ffffff"}
-            selectTextOnFocus
-            password={true}
-            />
-
       </View>
 
     }

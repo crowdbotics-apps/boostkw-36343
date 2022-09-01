@@ -152,7 +152,7 @@ const LoginContainer = () => {
               ]}
             >
               <CheckBoxs value={remember} onValueChange={() => setRemember(!remember)}  />
-              <Text style={[Fonts.textNormal, Fonts.textGray, Gutters.smallHPadding]}>Remember Me</Text>
+              <Text style={[Fonts.textNormal, Fonts.textGray, Gutters.smallHPadding]}>Remember me</Text>
             </View>
 
             <TouchableOpacity onPress={() => navigate('PassReset')}>
