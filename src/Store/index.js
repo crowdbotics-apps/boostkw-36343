@@ -27,7 +27,7 @@ const reducers = combineReducers({
 const persistConfig = {
   key: 'kwroot',
   storage: AsyncStorage,
-  whitelist: ['theme', 'auth'],
+  whitelist: ['theme'],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers)

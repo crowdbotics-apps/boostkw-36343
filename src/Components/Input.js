@@ -31,6 +31,12 @@ const Input = ({
   // console.log(error)
   return (
     <View style={[Layout.column]}>
+      {
+        value && 
+        <View>
+          <Text style={[Fonts.labelText]}>{placeholder}</Text>
+        </View>
+      }
       <View style={styles.body}>
           <TextInput
             style={

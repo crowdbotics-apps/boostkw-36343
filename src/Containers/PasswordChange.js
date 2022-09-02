@@ -18,20 +18,27 @@ const FeedbackContainer = () => {
 
   const [values, setValues] = useState({})
   const [errorMessage, setErrorMessage] = useState({
-    messgae: "",
+    email: "",
   })
 
+  const [resetSend, setResetSend] = useState(false);
 
-  const onClickSubmit = () => {
+
+  const onNavigateLogin = () => {
+    navigate('Login')
+  }
+
+  const onClickNext = () => {
     // do paswword reset request
     if (!checkEmail(values.email)) {
       setErrorMessage({
         ...errorMessage,
-      messgae: "Please enter response"
+      email: "Please enter email"
       })
     } else {
+      setResetSend(true);
       setErrorMessage({
-        messgae: ''
+        email: ''
       })
     }
   }
@@ -65,11 +72,10 @@ const FeedbackContainer = () => {
         <Text style={Fonts.titleBold}>
           How do you like
         </Text>
-        <Text style={Fonts.titleBold}>
-          using TrackNapp?
-        </Text>
       </View>
 
+      { 
+      !resetSend &&
       <View
         style={[
           Layout.column,
@@ -82,12 +88,13 @@ const FeedbackContainer = () => {
             errorValue={errorMessage?.email}
             onChangeText={v => onChange("email", v.trim())}
             value={values.email}
-            placeholder='Email'
+            placeholder='Enter your email'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
           />
             
       </View>
+      }
 
 
       <View
@@ -99,7 +106,7 @@ const FeedbackContainer = () => {
       >
         <TouchableOpacity
             style={[Common.button.outlineRounded, Gutters.regularBMargin]}
-            onPress={onClickSubmit}
+            onPress={resetSend ? onNavigateLogin : onClickNext}
         >
             <Text style={Fonts.textButton}>{"Submit"}</Text>
         </TouchableOpacity>

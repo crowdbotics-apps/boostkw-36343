@@ -33,8 +33,8 @@ export default function ({ Colors, ...args }) {
         textColor: Colors.text,
         minHeight: 40,
         textAlign: 'left',
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: 5,
+        marginBottom: 20,
       },
       selectInput: {
         fontFamily: 'Montserrat-Regular',

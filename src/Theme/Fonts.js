@@ -102,6 +102,14 @@ export default function ({ FontSize, Colors }) {
       fontFamily: 'Montserrat-Regular',
       color: Colors.text,
       lineHeight: 18,
+    },
+    labelText: {
+      fontSize: 12,
+      fontWeight: '400',
+      fontStyle: 'normal',
+      fontFamily: 'Montserrat-Regular',
+      color: 'rgba(255, 255, 255, 0.75)',
+      letterSpacing: -0.078,
     }
   })
 }

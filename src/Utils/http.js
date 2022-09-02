@@ -12,16 +12,17 @@ export const request = axios.create({
 });
 
 
-// request.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response.status === 401) {
-//       // dispatch something to your store
-//     }
+request.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.status === 401) {
+      // dispatch something to your store
+      
+    }
 
-//     return Promise.reject(error);
-//   }
-// )
+    return Promise.reject(error);
+  }
+)
 
 export function setupHttpConfig () {
   request.defaults.baseURL = Config.API_DEV_URL + 'api/v1/';

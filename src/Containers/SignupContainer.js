@@ -175,6 +175,7 @@ const SignUpContainer = () => {
             "Content-Type": `multipart/form-data; boundary=${formData._boundary}`
             // "Content-Type": "application/json"
           },
+          transformRequest: formData => formData
         })
       if (response) {
         console.log('user reg: ', response.data)
@@ -380,7 +381,12 @@ const SignUpContainer = () => {
             selectTextOnFocus
             />
 
-
+        {
+          values?.branch && 
+          <View>
+            <Text style={[Fonts.labelText]}>{"Branch"}</Text>
+          </View>
+        }
         <SelectItem 
           onSelect={(selectedItem, index) => {
             console.log(selectedItem, index)
@@ -400,6 +406,12 @@ const SignUpContainer = () => {
         }}
           />
 
+        {
+          values?.crewName && 
+          <View>
+            <Text style={[Fonts.labelText]}>{"Crew Name"}</Text>
+          </View>
+        }
         <SelectItem 
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index)
@@ -419,6 +431,12 @@ const SignUpContainer = () => {
           }}
           />
 
+          {
+          values?.jobTitle && 
+          <View>
+            <Text style={[Fonts.labelText]}>{"Job Title"}</Text>
+          </View>
+        }
           <SelectItem 
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index)
