@@ -24,6 +24,7 @@ const Input = ({
   multiline,
   numberOfLines,
   hideColor,
+  editable=true
 }) => {
   const [hide, setHide] = useState(password)
   const { Common, Layout, Images, Colors, Fonts } = useTheme()
@@ -48,6 +49,7 @@ const Input = ({
             
               ]
             }
+            editable={editable}
             placeholder={placeholder}
             secureTextEntry={hide}
             multiline={multiline}
