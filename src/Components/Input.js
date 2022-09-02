@@ -24,6 +24,7 @@ const Input = ({
   multiline,
   numberOfLines,
   hideColor,
+  editable=true
 }) => {
   const [hide, setHide] = useState(password)
   const { Common, Layout, Images, Colors, Fonts } = useTheme()
@@ -31,6 +32,12 @@ const Input = ({
   // console.log(error)
   return (
     <View style={[Layout.column]}>
+      {
+        value && 
+        <View>
+          <Text style={[Fonts.labelText]}>{placeholder}</Text>
+        </View>
+      }
       <View style={styles.body}>
           <TextInput
             style={
@@ -42,6 +49,7 @@ const Input = ({
             
               ]
             }
+            editable={editable}
             placeholder={placeholder}
             secureTextEntry={hide}
             multiline={multiline}
@@ -69,7 +77,7 @@ const Input = ({
               ) : (
                 <FastImage
                   style={styles.iconPass}
-                  source={hide ? Images.passHideWhite : Images.passShowWhite}
+                  source={hide ? Images.eyeClose : Images.eye}
                 />
               )}
             </TouchableOpacity>

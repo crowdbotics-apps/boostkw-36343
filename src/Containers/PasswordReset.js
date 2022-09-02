@@ -11,6 +11,7 @@ import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import { checkEmail } from '@/Utils/Validations'
+import { request } from '@/Utils/http'
 
 const PasswordReset = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
@@ -36,10 +37,27 @@ const PasswordReset = () => {
       email: "Please enter email"
       })
     } else {
-      setResetSend(true);
+      sendReset(values)
       setErrorMessage({
         email: ''
       })
+    }
+  }
+
+
+  const sendReset = async ({ email }) => {
+    try {
+
+      const response = await request.post(
+        `accounts/password/reset/`, {
+          email: email
+        }
+        )
+      if (response) {
+        setResetSend(true);
+      }
+    } catch (error) {
+      console.log("Error: user password reset", error)
     }
   }
 
