@@ -26,5 +26,7 @@ export default function () {
     feedbackInactive: require('@/Assets/Images/feedbackInactive.png'),
     eye: require('@/Assets/Images/eye.png'),
     eyeClose: require('@/Assets/Images/eye_close.png'),
+    star: require('@/Assets/Images/Star.png'),
+    starFill: require('@/Assets/Images/starFill.png'),
   }
 }

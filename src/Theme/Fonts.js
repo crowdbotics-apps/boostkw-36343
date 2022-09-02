@@ -110,6 +110,13 @@ export default function ({ FontSize, Colors }) {
       fontFamily: 'Montserrat-Regular',
       color: 'rgba(255, 255, 255, 0.75)',
       letterSpacing: -0.078,
+    },
+    subTitle: {
+      fontSize: 20,
+      fontWeight: '400',
+      fontFamily: 'Montserrat-Regular',
+      color: Colors.text,
+      lineHeight: 24,
     }
   })
 }
