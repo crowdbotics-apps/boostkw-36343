@@ -151,7 +151,7 @@ const ProfileContainer = () => {
             Gutters.smallVMargin,
             ]}
         >
-            <Text style={[Fonts.textButton, { color: '#89BEFF'}]}>Change photo</Text>
+            <Text onPress={onPressImage} style={[Fonts.textButton, { color: '#89BEFF'}]}>Change photo</Text>
             
         </View>
 
@@ -299,15 +299,15 @@ const ProfileContainer = () => {
 
       </View>
 
-      <ActionSheet
+      </LinearGradient>
+
+      {/* <ActionSheet
           modalRef={modalizeRef}
           OpenModal={OpenModal}
           CloseModal={CloseModal}
           onPress={onPressImage}
           icon={Images.imageIcon}
-        />
-
-      </LinearGradient>
+        /> */}
     </ScrollView>
   )
 }
