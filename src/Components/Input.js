@@ -75,7 +75,7 @@ const Input = ({
               ) : (
                 <FastImage
                   style={styles.iconPass}
-                  source={hide ? Images.passHideWhite : Images.passShowWhite}
+                  source={hide ? Images.eyeClose : Images.eye}
                 />
               )}
             </TouchableOpacity>
