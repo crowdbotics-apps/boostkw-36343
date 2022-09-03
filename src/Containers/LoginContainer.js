@@ -14,6 +14,7 @@ import { navigate, navigateAndSimpleReset } from '@/Navigators/utils'
 import { request } from '@/Utils/http'
 import { setUser, setRemeberUser } from '@/Services/modules/auth'
 import { setLoggedIn } from '@/Services/modules/app'
+import { addTokenToHttp } from '@/Utils/http'
 
 const LoginContainer = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
@@ -68,11 +69,13 @@ const LoginContainer = () => {
         dispatch(setUser({ user: response.data }))
         dispatch(setRemeberUser({ remember: remember}))
         dispatch(setLoggedIn({ loggedIn: true}))
+        addTokenToHttp(response?.data?.token)
         navigateAndSimpleReset('Main');
         // console.log('user: ', response.data)
       }
     } catch (error) {
       console.log("Error: user login", error)
+      addTokenToHttp(null)
       dispatch(setLoggedIn({ loggedIn: false}))
     }
   }

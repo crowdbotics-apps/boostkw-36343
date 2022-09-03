@@ -20,7 +20,7 @@ const FeedbackContainer = () => {
   const [ star, setStar ] = useState(4);
   const [values, setValues] = useState({})
   const [errorMessage, setErrorMessage] = useState({
-    messgae: "",
+    comment: "",
   })
 
   const modalizeRef = useRef(null);
@@ -36,16 +36,34 @@ const FeedbackContainer = () => {
 
   const onClickSubmit = () => {
     // do paswword reset request
-    if (!values.messgae) {
+    if (!values.comment) {
       setErrorMessage({
         ...errorMessage,
-      messgae: "Please enter response"
+        comment: "Please enter response"
       })
     } else {
-      OpenModal()
+      sendFeedback({comment: values?.comment, rating: star})
       setErrorMessage({
-        messgae: ''
+        comment: ''
       })
+    }
+  }
+
+  const sendFeedback = async ({ comment, rating }) => {
+    try {
+
+      const response = await request.post(
+        `feedbacks/user-feedback/`, {
+          rating: rating,
+          comment: comment
+        }
+        )
+      if (response) {
+        console.log(response.data);
+        OpenModal()
+      } 
+    } catch (error) {
+      console.log("Error: user feedback failed", error)
     }
   }
 
@@ -125,18 +143,18 @@ const FeedbackContainer = () => {
             placeholder={"Your response"}
             multiline={true}
             numberOfLines={5}
-            onChangeText={v => onChange("messgae", v.trim())}
+            onChangeText={v => onChange("comment", v.trim())}
             color={'#ffffff'}
             placeholderTextColor={
               "#ffffff"
             }
-            value={values?.messgae || null}
+            value={values?.comment || null}
           />
 
         {
-          !!errorMessage?.messgae?.length &&
+          !!errorMessage?.comment?.length &&
         <View style={[Gutters.smallVMargin,]}>
-          <Text style={[Fonts.errorText]}>{errorMessage?.messgae}</Text>
+          <Text style={[Fonts.errorText]}>{errorMessage?.comment}</Text>
         </View>
         }
             
