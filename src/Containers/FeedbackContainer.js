@@ -12,6 +12,7 @@ import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import Stars from 'react-native-stars';
+import { request } from '@/Utils/http'
 
 const FeedbackContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
