@@ -1,4 +1,4 @@
-import React,  { useState }  from 'react'
+import React,  { useState, useRef }  from 'react'
 import {
   View,
   Text,
@@ -7,11 +7,10 @@ import {
   TextInput
 } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { Brand, Input, Title } from '@/Components'
+import { FeedbackAction } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
-import { checkEmail } from '@/Utils/Validations'
 import Stars from 'react-native-stars';
 
 const FeedbackContainer = () => {
@@ -24,15 +23,26 @@ const FeedbackContainer = () => {
     messgae: "",
   })
 
+  const modalizeRef = useRef(null);
+
+  const OpenModal = () => {
+    modalizeRef.current?.open();
+  }
+
+  const CloseModal = () => {
+    modalizeRef.current?.close();
+  }
+
 
   const onClickSubmit = () => {
     // do paswword reset request
-    if (!checkEmail(values.email)) {
+    if (!values.messgae) {
       setErrorMessage({
         ...errorMessage,
       messgae: "Please enter response"
       })
     } else {
+      OpenModal()
       setErrorMessage({
         messgae: ''
       })
@@ -45,20 +55,23 @@ const FeedbackContainer = () => {
       [key]: value
     })
   }
+
+  const onPressGotIt = () => {
+    CloseModal()
+  }
     
   // console.log(errorMessage);
 
   return (
+    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill]}>
+    
     <ScrollView
       style={[Layout.fill]}
       contentContainerStyle={[
-        Layout.fill,
         Layout.column,
+        Gutters.smallHPadding
       ]}
     >
-    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill, Gutters.smallHPadding,]}>
-        
-
       <View style={[
           Layout.column,
           Gutters.regularVMargin,
@@ -119,6 +132,13 @@ const FeedbackContainer = () => {
             }
             value={values?.messgae || null}
           />
+
+        {
+          !!errorMessage?.messgae?.length &&
+        <View style={[Gutters.smallVMargin,]}>
+          <Text style={[Fonts.errorText]}>{errorMessage?.messgae}</Text>
+        </View>
+        }
             
       </View>
 
@@ -138,9 +158,18 @@ const FeedbackContainer = () => {
         </TouchableOpacity>
 
       </View>
-
-      </LinearGradient>
     </ScrollView>
+
+    <FeedbackAction
+        modalRef={modalizeRef}
+        OpenModal={OpenModal}
+        CloseModal={CloseModal}
+        onPress={onPressGotIt}
+        icon={Images.flash}
+        buttonStyle={Common.button.outlineRounded}
+      >
+        </FeedbackAction>
+    </LinearGradient>
   )
 }
 

@@ -175,7 +175,7 @@ const SignUpContainer = () => {
             "Content-Type": `multipart/form-data; boundary=${formData._boundary}`
             // "Content-Type": "application/json"
           },
-          transformRequest: formData => formData
+          // transformRequest: formData => formData
         })
       if (response) {
         console.log('user reg: ', response.data)
@@ -215,14 +215,14 @@ const SignUpContainer = () => {
   }
 
   return (
+    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill]}>
     <ScrollView
       style={[Layout.fill]}
       contentContainerStyle={[
-        Layout.fill,
         Layout.column,
+        Gutters.smallHPadding
       ]}
     >
-    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill, Gutters.smallHPadding,]}>
       {
         !nextPage &&
         <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.regularBMargin, Gutters.largeTMargin]}>
@@ -500,7 +500,8 @@ const SignUpContainer = () => {
       </View>
       }
 
-      {
+    </ScrollView>
+    {
         nextPage &&
         <ActionSheet
           modalRef={modalizeRef}
@@ -510,9 +511,7 @@ const SignUpContainer = () => {
           icon={Images.imageIcon}
         />
       }
-
-      </LinearGradient>
-    </ScrollView>
+    </LinearGradient>
   )
 }
 

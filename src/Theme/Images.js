@@ -28,5 +28,6 @@ export default function () {
     eyeClose: require('@/Assets/Images/eye_close.png'),
     star: require('@/Assets/Images/Star.png'),
     starFill: require('@/Assets/Images/starFill.png'),
+    flash: require('@/Assets/Images/flash.png'),
   }
 }

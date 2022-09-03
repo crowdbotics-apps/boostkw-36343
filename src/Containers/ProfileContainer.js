@@ -102,13 +102,14 @@ const ProfileContainer = () => {
   console.log(authUser);
 
   return (
+    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill]}>
     <ScrollView
       style={[Layout.fill]}
       contentContainerStyle={[
         Layout.column,
+        Gutters.smallHPadding
       ]}
     >
-    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill, Gutters.smallHPadding,]}>
 
       <View style={[
           Layout.column,
@@ -151,7 +152,7 @@ const ProfileContainer = () => {
             Gutters.smallVMargin,
             ]}
         >
-            <Text onPress={onPressImage} style={[Fonts.textButton, { color: '#89BEFF'}]}>Change photo</Text>
+            <Text onPress={OpenModal} style={[Fonts.textButton, { color: '#89BEFF'}]}>Change photo</Text>
             
         </View>
 
@@ -299,16 +300,17 @@ const ProfileContainer = () => {
 
       </View>
 
-      </LinearGradient>
+    </ScrollView>
 
-      {/* <ActionSheet
+    <ActionSheet
           modalRef={modalizeRef}
           OpenModal={OpenModal}
           CloseModal={CloseModal}
           onPress={onPressImage}
           icon={Images.imageIcon}
-        /> */}
-    </ScrollView>
+        />
+
+    </LinearGradient>
   )
 }
 
