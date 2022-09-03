@@ -440,19 +440,19 @@ const SignUpContainer = () => {
           <SelectItem 
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index)
-              onChange("jobTitle", selectedItem.trim())
+              onChange("jobTitle", selectedItem.value)
             }}
             data={Jobs}
             defaultText="Job Title"
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
             }}
             rowTextForSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
           }}
           />
       </View>
