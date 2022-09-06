@@ -10,6 +10,7 @@ import { navigationRef } from './utils'
 import LinearGradient from 'react-native-linear-gradient'
 import { setupHttpConfig, addTokenToHttp } from '@/Utils/http'
 import { useSelector } from 'react-redux'
+import { PasswordChange } from '@/Containers'
 
 const Stack = createStackNavigator()
 
@@ -46,6 +47,14 @@ const ApplicationNavigator = () => {
           <Stack.Screen
             name="Main"
             component={MainNavigator}
+            options={{
+              animationEnabled: true,
+            }}
+          />
+
+          <Stack.Screen
+            name="PasswordChange"
+            component={PasswordChange}
             options={{
               animationEnabled: true,
             }}

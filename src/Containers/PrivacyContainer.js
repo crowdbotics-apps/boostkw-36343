@@ -68,6 +68,17 @@ const PrivacyContainer = ({ navigation }) => {
             Gutters.smallVMargin
             ]}
         >
+          <Text style={[Fonts.textTerms]}>At SnapNrack, accessible from www.snapnrack.com, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by SnapNrack and how we use it.</Text>
+            
+      </View>
+
+      <View
+            style={[
+            Layout.row,
+            Gutters.smallHPadding,
+            Gutters.smallVMargin
+            ]}
+        >
           <Text style={[Fonts.textTerms]}>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</Text>
             
       </View>

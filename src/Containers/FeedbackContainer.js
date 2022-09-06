@@ -76,6 +76,7 @@ const FeedbackContainer = () => {
   }
 
   const onPressGotIt = () => {
+    onChange("comment", '')
     CloseModal()
   }
     
@@ -101,7 +102,7 @@ const FeedbackContainer = () => {
           How do you like
         </Text>
         <Text style={Fonts.titleBold}>
-          using TrackNapp?
+          using BOOSTKW?
         </Text>
       </View>
 

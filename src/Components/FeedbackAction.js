@@ -31,7 +31,7 @@ const FeedbackAction = ({ onPress, modalRef, icon, buttonStyle, children}) => (
             style={[buttonStyle, { width: '90%', marginVertical: 20 }]}
             onPress={onPress}
           >
-            <Text style={styles.buttonText}>{"Submit"}</Text>
+            <Text style={styles.buttonText}>{"Got it"}</Text>
         </TouchableOpacity>
           { children }
     </View>

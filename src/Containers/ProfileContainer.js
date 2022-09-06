@@ -151,6 +151,10 @@ const ProfileContainer = () => {
     }
   }
 
+  const navigatePasswordChange = () => {
+    navigate('PasswordChange')
+  }
+
 
   console.log(authUser);
 
@@ -380,8 +384,8 @@ const ProfileContainer = () => {
               }
             ]}
         >
-          <Text onPress={() => console.log("pressed")} style={[Gutters.mediumHPadding, Gutters.tinyVMargin, Fonts.textButton]}>Change Password</Text>
-          <TouchableOpacity style={[Gutters.mediumHPadding]} onPress={() => console.log("pressed")}>
+          <Text onPress={navigatePasswordChange} style={[Gutters.mediumHPadding, Gutters.tinyVMargin, Fonts.textButton]}>Change Password</Text>
+          <TouchableOpacity style={[Gutters.mediumHPadding]} onPress={navigatePasswordChange}>
             <FastImage
                     style={[{ width: 9, height:15}]}
                     source={Images.rightArrow}
