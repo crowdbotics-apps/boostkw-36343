@@ -76,7 +76,7 @@ export default function ({ Colors, ...args }) {
         color: Colors.text,
         textColor: Colors.text,
         textAlign: 'left',
-      }
+      },
     }),
   }
 }

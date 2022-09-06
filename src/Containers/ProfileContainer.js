@@ -31,6 +31,12 @@ const ProfileContainer = () => {
     !crewList.length && fetchCrew()
   }, [])
 
+  useEffect(() => {
+    if(authUser?.crew?.id) {
+      onChange("crewName", authUser?.crew?.id)
+    }
+  },[authUser])
+
   const modalizeRef = useRef(null);
 
   const OpenModal = () => {
@@ -106,14 +112,14 @@ const ProfileContainer = () => {
     <ScrollView
       style={[Layout.fill]}
       contentContainerStyle={[
-        Layout.column,
-        Gutters.smallHPadding
+        Layout.column
       ]}
     >
 
       <View style={[
           Layout.column,
           Gutters.regularVMargin,
+          Gutters.smallHPadding
         ]} />
 
       <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.regularBMargin]}>
@@ -122,7 +128,7 @@ const ProfileContainer = () => {
         </Text>
       </View>
 
-      <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.smallVMargin,]}>
+      <View style={[Layout.colCenter, Gutters.mediumHPadding, Gutters.smallVMargin,]}>
             <ImageBackground
               source={{ uri: profileImage?.sourceURL || authUser?.profile_picture}}
               style={[
@@ -148,7 +154,7 @@ const ProfileContainer = () => {
         <View
             style={[
             Layout.rowCenter,
-            Gutters.smallHPadding,
+            Gutters.mediumHPadding,
             Gutters.smallVMargin,
             ]}
         >
@@ -160,30 +166,43 @@ const ProfileContainer = () => {
       <View
             style={[
             Layout.rowCenter,
-            Gutters.smallHPadding,
+            Gutters.mediumHPadding,
             Gutters.regularVMargin,
-            Fonts.textCenter
+            ]}
+        />
+
+        <View
+            style={[
+              Layout.colHCenter,
+              Gutters.regularBMargin,
+              {
+     
+                borderBottomWidth: 1,
+                borderTopWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.12)',
+              }
             ]}
         >
-            
-            
+          <Text style={[Gutters.mediumHPadding, Gutters.smallVMargin, Fonts.labelText]}>Email</Text>
+          <Text style={[Gutters.mediumHPadding, Gutters.smallBMargin, Fonts.textButton]}>{authUser?.email}</Text>
         </View>
+      
 
       <View
         style={[
           Layout.column,
-          Gutters.smallHPadding,
-          Gutters.smallVMargin,
+          Gutters.mediumHPadding,
+          Gutters.smallBMargin,
         ]}
       >
 
-        <Input
+        {/* <Input
             value={authUser?.email}
             placeholder="Email"
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
             editable={false}
-          />
+          /> */}
 
         <Input
             error={!!errorMessage?.firstName?.length}
@@ -207,7 +226,7 @@ const ProfileContainer = () => {
 
         {
           (values?.branch || authUser?.branch) && 
-          <View>
+          <View style={[Gutters.tinyTMargin]}>
             <Text style={[Fonts.labelText]}>{"Branch"}</Text>
           </View>
         }
@@ -232,7 +251,7 @@ const ProfileContainer = () => {
 
         {
           values?.crewName && 
-          <View>
+          <View style={[Gutters.tinyTMargin]}>
             <Text style={[Fonts.labelText]}>{"Crew Name"}</Text>
           </View>
         }
@@ -242,7 +261,7 @@ const ProfileContainer = () => {
               onChange("crewName", selectedItem.value)
             }}
             data={crewList}
-            defaultText="Crew Name"
+            defaultText={authUser?.crew?.name || "Crew Name"}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
@@ -257,26 +276,26 @@ const ProfileContainer = () => {
 
           {
           values?.jobTitle && 
-          <View>
+          <View style={[Gutters.tinyTMargin]}>
             <Text style={[Fonts.labelText]}>{"Job Title"}</Text>
           </View>
         }
           <SelectItem 
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index)
-              onChange("jobTitle", selectedItem.trim())
+              onChange("jobTitle", selectedItem.value)
             }}
             data={Jobs}
             defaultText="Job Title"
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
             }}
             rowTextForSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
           }}
           />
 
@@ -287,7 +306,7 @@ const ProfileContainer = () => {
       <View
         style={[
           Layout.column,
-          Gutters.smallHPadding,
+          Gutters.mediumHPadding,
           Gutters.smallVMargin,
         ]}
       >
