@@ -17,14 +17,14 @@ import { Jobs } from '@/Utils/Jobs'
 import ImagePicker from "react-native-image-crop-picker"
 import { request } from '@/Utils/http'
 import FastImage from "react-native-fast-image"
-import { logOut } from '@/Services/modules/auth'
+import { logOut, setProfile } from '@/Services/modules/auth'
 import { setLoggedIn } from '@/Services/modules/app'
 
 const ProfileContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
   const dispatch = useDispatch()
 
-  const authUser = useSelector((state) => state.auth?.user?.user)
+  const authUser = useSelector((state) => state.auth?.profile)
 
   const [profileImage, setProfileImage] = useState(null);
   const [crewList, setCrewList] = useState([]);
@@ -32,6 +32,7 @@ const ProfileContainer = () => {
 
   useEffect(() => {
     !crewList.length && fetchCrew()
+    !authUser && getProfile()
   }, [])
 
   useEffect(() => {
@@ -57,17 +58,7 @@ const ProfileContainer = () => {
 
 
   const onClickSave = () => {
-    // do paswword reset request
-    if (!checkEmail(values.email)) {
-      setErrorMessage({
-        ...errorMessage,
-      email: "Please enter email"
-      })
-    } else {
-      setErrorMessage({
-        email: ''
-      })
-    }
+    doProfileUpdate({...values, image: profileImage})
   }
 
   const onChange = (key, value) => {
@@ -91,6 +82,19 @@ const ProfileContainer = () => {
       }
   }
 
+  const getProfile = async () => {
+    try {
+      const response = await request.get(`accounts/profile/`)
+      if (response) {
+        // console.log('profile', response.data);
+        dispatch(setProfile({ profile: response.data }))
+  
+      }
+      } catch (error) {
+        console.log("Error: profile", error)
+      }
+  }
+
   const onPressImage = () => {
     ImagePicker.openPicker({
         width: 500,
@@ -110,6 +114,41 @@ const ProfileContainer = () => {
   const onLogout = () => {
       dispatch(logOut())
       dispatch(setLoggedIn({ loggedIn: false}))
+  }
+
+  const doProfileUpdate = async ({ image, firstName, lastName, branch, crewName, jobTitle}) => {
+    try {
+      // console.log(email, password, firstName, lastName, branch, jobTitle);
+      const formData = new FormData();
+      firstName && formData.append("first_name", firstName);
+      lastName && formData.append("last_name", lastName);
+      branch && formData.append("branch", branch);
+      crewName && formData.append("crew", crewName);
+      jobTitle && formData.append("job_title", jobTitle);
+      image && formData.append("profile_picture", {
+        uri: image?.sourceURL,
+        type: 'image/jpg',
+        name: 'image.jpg',
+      });
+
+      console.log(formData);
+      const response = await request.patch(
+        `accounts/profile/`,
+        formData, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": `multipart/form-data; boundary=${formData._boundary}`
+            // "Content-Type": "application/json"
+          },
+          // transformRequest: formData => formData
+        })
+      if (response) {
+        // console.log('user profile: ', response.data)
+        dispatch(setProfile({ profile: response.data }))
+      }
+    } catch (error) {
+      console.log("Error: user signup", error)
+    }
   }
 
 

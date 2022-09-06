@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { navigate, navigateAndSimpleReset } from '@/Navigators/utils'
 // import { checkEmail } from '@/Utils/Validations'
 import { request } from '@/Utils/http'
-import { setUser, setRemeberUser } from '@/Services/modules/auth'
+import { setUser, setRemeberUser, setProfile } from '@/Services/modules/auth'
 import { setLoggedIn } from '@/Services/modules/app'
 import { addTokenToHttp } from '@/Utils/http'
 
