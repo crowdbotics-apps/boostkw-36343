@@ -7,7 +7,7 @@ import {
   ImageBackground,
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { Brand, Input, Title, SelectItem, ActionSheet } from '@/Components'
+import { Input, Title, SelectItem, ActionSheet } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
@@ -16,6 +16,9 @@ import { Branch } from '@/Utils/Branch'
 import { Jobs } from '@/Utils/Jobs'
 import ImagePicker from "react-native-image-crop-picker"
 import { request } from '@/Utils/http'
+import FastImage from "react-native-fast-image"
+import { logOut } from '@/Services/modules/auth'
+import { setLoggedIn } from '@/Services/modules/app'
 
 const ProfileContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
@@ -102,6 +105,11 @@ const ProfileContainer = () => {
         setProfileImage(res)
         CloseModal()
       })
+  }
+
+  const onLogout = () => {
+      dispatch(logOut())
+      dispatch(setLoggedIn({ loggedIn: false}))
   }
 
 
@@ -318,6 +326,53 @@ const ProfileContainer = () => {
         </TouchableOpacity>
 
       </View>
+
+      <View
+            style={[
+              Layout.rowHCenter,
+              Layout.justifyContentBetween,
+              Gutters.regularVMargin,
+              Gutters.regularVPadding,
+              {
+     
+                borderBottomWidth: 1,
+                borderTopWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.12)',
+              }
+            ]}
+        >
+          <Text onPress={() => console.log("pressed")} style={[Gutters.mediumHPadding, Gutters.tinyVMargin, Fonts.textButton]}>Change Password</Text>
+          <TouchableOpacity style={[Gutters.mediumHPadding]} onPress={() => console.log("pressed")}>
+            <FastImage
+                    style={[{ width: 9, height:15}]}
+                    source={Images.rightArrow}
+              />
+          </TouchableOpacity>
+          
+        </View>
+
+        <View
+            style={[
+              Layout.rowHCenter,
+              Layout.justifyContentBetween,
+              Gutters.regularBMargin,
+              Gutters.regularBPadding,
+              {
+     
+                borderBottomWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.12)',
+              }
+            ]}
+        >
+          <Text onPress={onLogout} style={[Gutters.mediumHPadding, Gutters.tinyVMargin, Fonts.textButton]}>Sign Out</Text>
+          <TouchableOpacity style={[Gutters.mediumHPadding]} onPress={onLogout}>
+            <FastImage
+                    style={[{ width: 9, height:15}]}
+                    source={Images.rightArrow}
+              />
+          </TouchableOpacity>
+          
+        </View>
 
     </ScrollView>
 

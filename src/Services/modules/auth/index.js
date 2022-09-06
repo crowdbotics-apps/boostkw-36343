@@ -10,9 +10,13 @@ const slice = createSlice({
     setRemeberUser: (state, { payload: { remember } }) => {
       state.remember = remember
     },
+    logOut: (state, payload) => {
+      state.user = null
+      state.remember = null
+    },
   },
 })
 
-export const { setUser, setRemeberUser } = slice.actions
+export const { setUser, setRemeberUser, logOut } = slice.actions
 
 export default slice.reducer

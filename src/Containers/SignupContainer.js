@@ -164,7 +164,11 @@ const SignUpContainer = () => {
       formData.append("branch", branch);
       formData.append("crew", crewName);
       formData.append("job_title", jobTitle);
-      image && formData.append("profile_picture", image);
+      image && formData.append("profile_picture", {
+        uri: image?.sourceURL,
+        type: 'image/jpg',
+        name: 'image.jpg',
+      });
 
       console.log(formData);
       const response = await request.post(

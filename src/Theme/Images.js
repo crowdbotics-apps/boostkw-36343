@@ -29,5 +29,6 @@ export default function () {
     star: require('@/Assets/Images/Star.png'),
     starFill: require('@/Assets/Images/starFill.png'),
     flash: require('@/Assets/Images/flash.png'),
+    rightArrow: require('@/Assets/Images/right_arrow.png'),
   }
 }
