@@ -198,7 +198,7 @@ const ProfileContainer = () => {
 
       <View style={[Layout.colCenter, Gutters.mediumHPadding, Gutters.smallVMargin,]}>
             <ImageBackground
-              source={{ uri: profileImage?.sourceURL || authUser?.profile_picture}}
+              source={{ uri: profileImage?.sourceURL || profileImage?.path || authUser?.profile_picture}}
               style={[
                 Layout.colCenter,
                 {

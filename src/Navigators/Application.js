@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { setupHttpConfig, addTokenToHttp } from '@/Utils/http'
 import { useSelector } from 'react-redux'
 import { PasswordChange } from '@/Containers'
+import SplashScreen from 'react-native-splash-screen'
 
 const Stack = createStackNavigator()
 
@@ -23,6 +24,10 @@ const ApplicationNavigator = () => {
 
   useEffect(() => {
     setupHttpConfig()
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 3000);
+
   }, [])
 
   useEffect(() => {

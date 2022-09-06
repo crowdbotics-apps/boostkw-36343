@@ -27,7 +27,7 @@ const SelectItem = ({data, onSelect, defaultText="Select Item", buttonTextAfterS
                 }
             }
             buttonStyle={{...Common.selectInput, flex: 1, height: 40,  paddingHorizontal: 0}}
-            buttonTextStyle={{...Common.selectInput, marginHorizontal: 0, marginRight: 8}}
+            buttonTextStyle={{...Common.selectInput, marginHorizontal: 0, marginRight: 8, borderBottomWidth: 0}}
             dropdownBackgroundColor={Colors.transparent}
             dropdownStyle={
                 {

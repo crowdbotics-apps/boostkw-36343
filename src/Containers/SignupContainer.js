@@ -295,7 +295,7 @@ const SignUpContainer = () => {
         nextPage &&
         <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.smallVMargin,]}>
             <ImageBackground
-              source={{ uri: profileImage?.sourceURL}}
+              source={{ uri: profileImage?.sourceURL || profileImage?.path}}
               style={[
                 Layout.colCenter,
                 {
@@ -313,7 +313,7 @@ const SignUpContainer = () => {
               resizeMode="cover"
               // source={}
             >
-              {!profileImage?.sourceURL &&
+              {!(profileImage?.sourceURL || profileImage?.path) &&
               <TouchableOpacity
                 style={[Layout.colCenter]}
                 onPress={OpenModal}
