@@ -202,8 +202,24 @@ const SignUpContainer = () => {
     })
   }
 
-  const onPressImage = () => {
-    ImagePicker.openPicker({
+  const onPressImage = (camera) => {
+    if(camera) {
+      ImagePicker.openCamera({
+        width: 500,
+        height: 500,
+        mediaType: "photo",
+        cropping: true,
+        compressImageMaxHeight: 500,
+        compressImageMaxHeight: 500,
+        compressImageQuality: 0.5
+      }).then(res => {
+        console.log("Image", res)
+        setProfileImage(res)
+        CloseModal()
+      })
+    }
+    else {
+      ImagePicker.openPicker({
         width: 500,
         height: 500,
         mediaType: "photo",
@@ -216,6 +232,7 @@ const SignUpContainer = () => {
         setProfileImage(res)
         CloseModal()
       })
+    }
   }
 
   return (

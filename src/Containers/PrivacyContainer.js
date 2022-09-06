@@ -50,7 +50,7 @@ const PrivacyContainer = ({ navigation }) => {
           />
       </View>
 
-      <View
+      {/* <View
             style={[
             Layout.row,
             Gutters.smallHPadding,
@@ -59,7 +59,7 @@ const PrivacyContainer = ({ navigation }) => {
         >
           <Text style={[Fonts.textTerms]}>Also see: <Text style={{ fontWeight: "700"}} onPress={goToTerms}>Terms and Conditions</Text></Text>
             
-      </View>
+      </View> */}
 
       <View
             style={[
