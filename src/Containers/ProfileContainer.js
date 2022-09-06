@@ -143,9 +143,9 @@ const ProfileContainer = () => {
       crewName && formData.append("crew", crewName);
       jobTitle && formData.append("job_title", jobTitle);
       image && formData.append("profile_picture", {
-        uri: image?.sourceURL,
-        type: 'image/jpg',
-        name: 'image.jpg',
+        uri: image?.sourceURL || image?.path,
+        type: image?.mime || 'image/jpg',
+        name: image.filename || firstName+'profile.jpg',
       });
 
       // console.log(formData);

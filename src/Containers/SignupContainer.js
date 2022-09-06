@@ -165,9 +165,9 @@ const SignUpContainer = () => {
       formData.append("crew", crewName);
       formData.append("job_title", jobTitle);
       image && formData.append("profile_picture", {
-        uri: image?.sourceURL,
-        type: 'image/jpg',
-        name: 'image.jpg',
+        uri: image?.sourceURL || image?.path,
+        type: image?.mime || 'image/jpg',
+        name: image.filename || firstName+'profile.jpg',
       });
 
       // console.log(formData);
@@ -228,7 +228,7 @@ const SignUpContainer = () => {
         compressImageMaxHeight: 500,
         compressImageQuality: 0.5
       }).then(res => {
-        // console.log("Image", res)
+        console.log("Image", res)
         setProfileImage(res)
         CloseModal()
       })
