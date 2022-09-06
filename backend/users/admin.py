@@ -9,6 +9,7 @@ from django.urls import path
 from django.utils.safestring import mark_safe
 from import_export.admin import ExportMixin
 
+from users.admin_inlines import ProfileAdminInline
 from users.forms import UserChangeForm, UserCreationForm
 from users.model_resources import UserAdminResource
 
@@ -43,6 +44,7 @@ class UserAdmin(ExportMixin, auth_admin.UserAdmin):
     search_fields = ['first_name', 'last_name', 'email']
     list_select_related = ['profile', 'crew']
     resource_class = UserAdminResource
+    inlines = [ProfileAdminInline, ]
 
     # def get_branch(self, instance):
     #     if instance.get_branch:

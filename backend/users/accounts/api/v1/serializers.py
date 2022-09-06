@@ -10,6 +10,7 @@ from rest_framework import serializers
 from dj_rest_auth.serializers import PasswordResetSerializer
 
 from crews.api.v1.serializers import CrewSerializerName
+from users.api.v1.serializers import ProfileSerializer
 from users.models import *
 from users.utils import BRANCH_CHOICES
 
@@ -114,9 +115,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializerForAuth(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile_picture', 'date_joined', 'crew']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile_picture', 'date_joined',
+                  'crew', 'profile']
         read_only_fields = ('username', 'email',)
 
     def to_representation(self, instance):
@@ -125,6 +129,17 @@ class UserSerializerForAuth(serializers.ModelSerializer):
             res['crew'] = CrewSerializerName(instance.crew).data
 
         return res
+
+    def update(self, instance, validated_data):
+        if 'profile' in validated_data:
+            profile = validated_data.pop('profile')
+            super(UserSerializerForAuth, self).update(instance, validated_data)
+            try:
+                ProfileSerializer().update(instance.profile, profile)
+            except Profile.DoesNotExist:
+                Profile.objects.create(user=instance, **profile)
+            return instance
+        return super(UserSerializerForAuth, self).update(instance, validated_data)
 
 
 class PasswordSerializer(PasswordResetSerializer):
