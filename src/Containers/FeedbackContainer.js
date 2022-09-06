@@ -60,7 +60,7 @@ const FeedbackContainer = () => {
         }
         )
       if (response) {
-        console.log(response.data);
+        // console.log(response.data);
         OpenModal()
       } 
     } catch (error) {

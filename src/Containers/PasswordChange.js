@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import { checkEmail } from '@/Utils/Validations'
 
-const FeedbackContainer = () => {
+const PasswordChange = () => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
   const dispatch = useDispatch()
 
@@ -118,4 +118,4 @@ const FeedbackContainer = () => {
   )
 }
 
-export default FeedbackContainer
+export default PasswordChange

@@ -23,7 +23,7 @@ const ImageUploader = ({
         compressImageMaxHeight: 500,
         compressImageQuality: 0.5
       }).then(res => {
-        console.log("Image", res)
+        // console.log("Image", res)
         onUpload(res)
         CloseModal()
       })

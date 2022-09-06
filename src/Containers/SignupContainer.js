@@ -170,7 +170,7 @@ const SignUpContainer = () => {
         name: 'image.jpg',
       });
 
-      console.log(formData);
+      // console.log(formData);
       const response = await request.post(
         `accounts/signup/`,
         formData, {
@@ -212,7 +212,7 @@ const SignUpContainer = () => {
         compressImageMaxHeight: 500,
         compressImageQuality: 0.5
       }).then(res => {
-        console.log("Image", res)
+        // console.log("Image", res)
         setProfileImage(res)
         CloseModal()
       })

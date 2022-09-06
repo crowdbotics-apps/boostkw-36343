@@ -30,7 +30,7 @@ const ApplicationNavigator = () => {
 
   const isLoggged = (auth?.user?.token && auth.remember) || isLoggedIn
 
-  console.log(auth)
+  // console.log(auth)
 
 
   // const { colors } = NavigationTheme
@@ -47,9 +47,10 @@ const ApplicationNavigator = () => {
             name="Main"
             component={MainNavigator}
             options={{
-              animationEnabled: false,
+              animationEnabled: true,
             }}
           />
+
         </Stack.Navigator>
         :
         <Stack.Navigator screenOptions={{ headerShown: false }}>
