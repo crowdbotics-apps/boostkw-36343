@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.utils.translation import ugettext_lazy as _
@@ -10,6 +11,7 @@ from rest_framework import serializers
 from dj_rest_auth.serializers import PasswordResetSerializer
 
 from crews.api.v1.serializers import CrewSerializerName
+from users.accounts.forms import CustomResetPasswordForm
 from users.api.v1.serializers import ProfileSerializer
 from users.models import *
 from users.utils import BRANCH_CHOICES
@@ -142,9 +144,31 @@ class UserSerializerForAuth(serializers.ModelSerializer):
         return super(UserSerializerForAuth, self).update(instance, validated_data)
 
 
-class PasswordSerializer(PasswordResetSerializer):
+class AccountPasswordSerializer(PasswordResetSerializer):
     """Custom serializer for rest_auth to solve reset password error"""
+    # password_reset_form_class = CustomResetPasswordForm
     password_reset_form_class = ResetPasswordForm
+
+    def save(self):
+        if 'allauth' in settings.INSTALLED_APPS:
+            from allauth.account.forms import default_token_generator
+        else:
+            from django.contrib.auth.tokens import default_token_generator
+
+        request = self.context.get('request')
+        # Set some values to trigger the send_email method.
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL')
+        subject = f'BOOSTKW | Password Reset E-mail'
+        opts = {
+            'subject': subject,
+            'use_https': request.is_secure(),
+            'from_email': f'BOOSTKW <{from_email}>',
+            'request': request,
+            'token_generator': default_token_generator,
+        }
+
+        opts.update(self.get_email_options())
+        self.reset_form.save(**opts)
 
 
 class UserAthleteSignupSerializer(serializers.ModelSerializer):

@@ -32,10 +32,11 @@ class CustomResetPasswordForm(ResetPasswordForm):
                 "password_reset_url": url,
                 "request": request,
             }
-            subject = 'CONXTS - Password Reset'
+
+            subject_template_name = 'account/email/email_password_reset_subject.txt'
 
             if settings.ACCOUNT_AUTHENTICATION_METHOD != 'email':
                 context["username"] = user_username(user)
             get_adapter(request).send_mail(
-                "account/email/password_reset_key", email, context, email_subject=subject
+                "account/email/password_reset_key", email, context
             )
