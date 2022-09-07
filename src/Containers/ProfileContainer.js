@@ -172,12 +172,8 @@ const ProfileContainer = () => {
       image && formData.append("profile_picture", {
         uri: image?.sourceURL || image?.path,
         type: image?.mime || 'image/jpg',
-        name: image.filename || firstName+'profile.jpg',
+        name: image.filename || (firstName || authUser?.first_name)+'profile.jpg',
       });
-      // (branch || jobTitle) && formData.append("profile", JSON.stringify({
-      //   branch: branch || null,
-      //   job_title: jobTitle || null,
-      // }));
 
       // console.log(formData);
       const response = await request.patch(

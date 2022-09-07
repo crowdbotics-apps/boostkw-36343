@@ -54,6 +54,7 @@ const PasswordReset = () => {
         }
         )
       if (response) {
+        console.log(response.data)
         setResetSend(true);
       }
     } catch (error) {
@@ -92,7 +93,7 @@ const PasswordReset = () => {
       <View style={[Layout.col, Gutters.smallHPadding, Gutters.regularBMargin]}>
           <Title 
             text={"Reset Password"}
-            onPressBack={onNavigateLogin}
+            onPressBack={resetSend ? () => setResetSend(false) : onNavigateLogin}
           />
       </View>
 
