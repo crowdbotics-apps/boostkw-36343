@@ -12,7 +12,7 @@ import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import FastImage from "react-native-fast-image"
-import { checkEmail } from '@/Utils/Validations'
+import { checkEmail, checkPassword } from '@/Utils/Validations'
 import { Branch } from '@/Utils/Branch'
 import { Jobs } from '@/Utils/Jobs'
 import ImagePicker from "react-native-image-crop-picker"
@@ -105,6 +105,16 @@ const SignUpContainer = () => {
       email: "",
       password: "",
       resetPassword: "Password doesn't match",
+      firstName: '',
+      lastName: ''
+      })
+     }
+     else if (!checkPassword(values.resetPassword)) {
+      setErrorMessage({
+        ...values,
+      email: "",
+      password: "",
+      resetPassword: "Password must have at least one character and number",
       firstName: '',
       lastName: ''
       })

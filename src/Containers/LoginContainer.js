@@ -77,6 +77,9 @@ const LoginContainer = () => {
       console.log("Error: user login", error)
       addTokenToHttp(null)
       dispatch(setLoggedIn({ loggedIn: false}))
+      setErrorMessage({
+        password: 'Either username or password is wrong'
+      })
     }
   }
 
@@ -199,7 +202,7 @@ const LoginContainer = () => {
       >
         <Text style={Fonts.textButton}>Don’t have an account?</Text>
         <TouchableOpacity onPress={onClickSignup}>
-            <Text style={[Fonts.textButton, Fonts.fontBold, Gutters.smallHPadding]}>Sign up</Text>
+            <Text style={[Fonts.textButton, Fonts.fontBold, Gutters.tinyHPadding]}>Sign up</Text>
         </TouchableOpacity>
       </View>
 

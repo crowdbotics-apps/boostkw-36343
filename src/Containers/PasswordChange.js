@@ -11,6 +11,7 @@ import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import { request } from '@/Utils/http'
+import { checkPassword } from '@/Utils/Validations'
 
 const PasswordChange = ({ navigation }) => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
@@ -33,19 +34,27 @@ const PasswordChange = ({ navigation }) => {
       confirmNewPassword: ""
       })
     }
-    else if (values.newPassword?.length < 8) {
-      setErrorMessage({
-        ...errorMessage,
-        password: "",
-        newPassword: "This password is too short",
-        confirmNewPassword: ""
-      })
-    }
     else if (!values.newPassword) {
       setErrorMessage({
         ...errorMessage,
         password: "",
         newPassword: "Please enter new password",
+        confirmNewPassword: ""
+      })
+    }
+    else if (values.newPassword?.length < 8) {
+      setErrorMessage({
+        ...errorMessage,
+        password: "",
+        newPassword: "This password should be minimum 8 character",
+        confirmNewPassword: ""
+      })
+    }
+    else if (!checkPassword(values.newPassword)) {
+      setErrorMessage({
+        ...errorMessage,
+        password: "",
+        newPassword: "Password must have at least one character and number",
         confirmNewPassword: ""
       })
     }
@@ -55,6 +64,14 @@ const PasswordChange = ({ navigation }) => {
         password: "",
         newPassword: "",
         confirmNewPassword: "Please confirm new password"
+      })
+    } 
+    else if (values.confirmNewPassword != values.newPassword) {
+      setErrorMessage({
+        ...errorMessage,
+        password: "",
+        newPassword: "",
+        confirmNewPassword: "Please doesn't match"
       })
     } else {
       setErrorMessage({
