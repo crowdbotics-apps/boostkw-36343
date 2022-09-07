@@ -39,6 +39,18 @@ const ProfileContainer = () => {
     if(authUser?.crew?.id) {
       onChange("crewName", authUser?.crew?.id)
     }
+    if(authUser?.profile?.branch){
+      onChange("branch", authUser?.profile?.branch)
+    }
+    if(authUser?.profile?.job_title){
+      onChange("jobTitle", authUser?.profile?.job_title)
+    }
+    if(authUser?.first_name){
+      onChange("firstName", authUser?.first_name)
+    }
+    if(authUser?.last_name){
+      onChange("lastName", authUser?.last_name)
+    }
   },[authUser])
 
   const modalizeRef = useRef(null);
@@ -135,20 +147,24 @@ const ProfileContainer = () => {
 
   const doProfileUpdate = async ({ image, firstName, lastName, branch, crewName, jobTitle}) => {
     try {
-      // console.log(email, password, firstName, lastName, branch, jobTitle);
+      // console.log(firstName, lastName, branch, jobTitle);
       const formData = new FormData();
       firstName && formData.append("first_name", firstName);
       lastName && formData.append("last_name", lastName);
-      branch && formData.append("branch", branch);
+      // branch && formData.append("branch", branch);
       crewName && formData.append("crew", crewName);
-      jobTitle && formData.append("job_title", jobTitle);
+      // jobTitle && formData.append("job_title", jobTitle);
       image && formData.append("profile_picture", {
         uri: image?.sourceURL || image?.path,
         type: image?.mime || 'image/jpg',
         name: image.filename || firstName+'profile.jpg',
       });
+      (branch || jobTitle) && formData.append("profile", JSON.stringify({
+        branch: branch || null,
+        job_title: jobTitle || null,
+      }));
 
-      // console.log(formData);
+      console.log(formData);
       const response = await request.patch(
         `accounts/profile/`,
         formData, {
@@ -160,11 +176,12 @@ const ProfileContainer = () => {
           // transformRequest: formData => formData
         })
       if (response) {
-        // console.log('user profile: ', response.data)
+        console.log('user profile: ', response.data)
         dispatch(setProfile({ profile: response.data }))
+
       }
     } catch (error) {
-      console.log("Error: user signup", error)
+      console.log("Error: user PROFILE", error)
     }
   }
 
@@ -276,7 +293,7 @@ const ProfileContainer = () => {
             error={!!errorMessage?.firstName?.length}
             errorValue={errorMessage?.firstName}
             onChangeText={v => onChange("firstName", v.trim())}
-            value={values.firstName || authUser?.first_name}
+            value={values.firstName}
             placeholder='First Name'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
@@ -286,7 +303,7 @@ const ProfileContainer = () => {
             error={!!errorMessage?.lastName?.length}
             errorValue={errorMessage?.lastName}
             onChangeText={v => onChange("lastName", v.trim())}
-            value={values.lastName || authUser?.last_name}
+            value={values.lastName}
             placeholder='Last Name'
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
@@ -304,7 +321,7 @@ const ProfileContainer = () => {
             onChange("branch", selectedItem.trim())
           }}
           data={Branch}
-          defaultText="Branch"
+          defaultText={authUser?.profile?.branch || "Branch"}
           buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
@@ -354,7 +371,7 @@ const ProfileContainer = () => {
               onChange("jobTitle", selectedItem.value)
             }}
             data={Jobs}
-            defaultText="Job Title"
+            defaultText={authUser?.profile?.job_title || "Job Title"}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
