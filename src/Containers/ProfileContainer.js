@@ -190,7 +190,7 @@ const ProfileContainer = () => {
       if (response) {
         console.log('user profile: ', response.data)
         dispatch(setProfile({ profile: response.data }))
-        Alert.alert(null, 'Profile updated successfully.')
+        Alert.alert('Saved', 'Profile updated successfully.')
       }
     } catch (error) {
       console.log("Error: user PROFILE", error)
