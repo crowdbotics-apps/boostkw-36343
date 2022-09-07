@@ -1,3 +1,4 @@
+from dj_rest_auth.views import PasswordResetView
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.generics import *
@@ -66,3 +67,8 @@ class AccountAuthUserProfileAPIView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class AccountPasswordResetView(PasswordResetView):
+    authentication_classes = []
+    permission_classes = []
