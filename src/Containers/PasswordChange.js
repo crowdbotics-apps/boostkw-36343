@@ -79,13 +79,21 @@ const PasswordChange = ({ navigation }) => {
 
   const changePassword = async ({ newPassword, confirmNewPassword }) => {
     try {
+      const formData = new FormData();
+      newPassword && formData.append("new_password1", newPassword);
+      confirmNewPassword && formData.append("new_password2", confirmNewPassword);
+
       const response = await request.post(
         `accounts/password/change/`,
+        formData,
         {
-          new_password1: newPassword,
-          new_password2: confirmNewPassword
-        }
-      )
+          headers: {
+            Accept: "application/json",
+            "Content-Type": `multipart/form-data; boundary=${formData._boundary}`
+            // "Content-Type": "application/json"
+          },
+          // transformRequest: formData => formData
+        })
       if (response) {
         console.log('password: ', response.data)
         onClickBack()

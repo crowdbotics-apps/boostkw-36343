@@ -53,6 +53,8 @@ const ProfileContainer = () => {
     // }
   },[authUser])
 
+  const jobTitle = authUser?.profile?.job_title && Jobs.find(i => i.value === authUser?.profile?.job_title )
+
   const modalizeRef = useRef(null);
 
   const OpenModal = () => {
@@ -142,7 +144,20 @@ const ProfileContainer = () => {
 
   const onLogout = () => {
       dispatch(logOut())
-      dispatch(setLoggedIn({ loggedIn: false}))
+      doLogout();
+
+  }
+
+  const doLogout = async () => {
+    try {
+      const response = await request.post(`accounts/logout/`)
+      if (response) {
+        console.log('logged out')
+        dispatch(setLoggedIn({ loggedIn: false}))
+      }
+      } catch (error) {
+        console.log("Error: logout", error)
+      }
   }
 
   const doProfileUpdate = async ({ image, firstName, lastName, branch, crewName, jobTitle}) => {
@@ -151,20 +166,20 @@ const ProfileContainer = () => {
       const formData = new FormData();
       firstName && formData.append("first_name", firstName);
       lastName && formData.append("last_name", lastName);
-      // branch && formData.append("branch", branch);
+      branch && formData.append("profile.branch", branch);
       crewName && formData.append("crew", crewName);
-      // jobTitle && formData.append("job_title", jobTitle);
+      jobTitle && formData.append("profile.job_title", jobTitle);
       image && formData.append("profile_picture", {
         uri: image?.sourceURL || image?.path,
         type: image?.mime || 'image/jpg',
         name: image.filename || firstName+'profile.jpg',
       });
-      (branch || jobTitle) && formData.append("profile", JSON.stringify({
-        branch: branch || null,
-        job_title: jobTitle || null,
-      }));
+      // (branch || jobTitle) && formData.append("profile", JSON.stringify({
+      //   branch: branch || null,
+      //   job_title: jobTitle || null,
+      // }));
 
-      console.log(formData);
+      // console.log(formData);
       const response = await request.patch(
         `accounts/profile/`,
         formData, {
@@ -310,7 +325,7 @@ const ProfileContainer = () => {
             />
 
         {
-          (values?.branch || authUser?.branch) && 
+          (values?.branch || authUser?.profile?.branch) && 
           <View style={[Gutters.tinyTMargin]}>
             <Text style={[Fonts.labelText]}>{"Branch"}</Text>
           </View>
@@ -335,7 +350,7 @@ const ProfileContainer = () => {
           />
 
         {
-          values?.crewName && 
+          (values?.crewName || authUser?.crew?.id) && 
           <View style={[Gutters.tinyTMargin]}>
             <Text style={[Fonts.labelText]}>{"Crew Name"}</Text>
           </View>
@@ -360,7 +375,7 @@ const ProfileContainer = () => {
           />
 
           {
-          values?.jobTitle && 
+          (values?.jobTitle || authUser?.profile?.job_title) && 
           <View style={[Gutters.tinyTMargin]}>
             <Text style={[Fonts.labelText]}>{"Job Title"}</Text>
           </View>
@@ -371,7 +386,7 @@ const ProfileContainer = () => {
               onChange("jobTitle", selectedItem.value)
             }}
             data={Jobs}
-            defaultText={authUser?.profile?.job_title || "Job Title"}
+            defaultText={jobTitle?.name || "Job Title"}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
