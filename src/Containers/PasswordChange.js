@@ -11,6 +11,7 @@ import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
 import { request } from '@/Utils/http'
+import { checkPassword } from '@/Utils/Validations'
 
 const PasswordChange = ({ navigation }) => {
   const { Common, Fonts, Gutters, Layout } = useTheme()
@@ -38,6 +39,14 @@ const PasswordChange = ({ navigation }) => {
         ...errorMessage,
         password: "",
         newPassword: "This password is too short",
+        confirmNewPassword: ""
+      })
+    }
+    else if (!checkPassword(values.newPassword)) {
+      setErrorMessage({
+        ...errorMessage,
+        password: "",
+        newPassword: "Password must have at least one character and number",
         confirmNewPassword: ""
       })
     }
