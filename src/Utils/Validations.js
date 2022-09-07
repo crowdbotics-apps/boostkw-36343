@@ -9,7 +9,7 @@ export function checkEmail(email) {
 
 export function checkPassword(password) {
   const regex = 
-  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/i
+  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&^_-]{8,}$/i
 
   if (!password || regex.test(password) === false) {
     return false
