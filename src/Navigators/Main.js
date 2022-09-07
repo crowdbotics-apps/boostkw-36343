@@ -2,7 +2,6 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { ProfileContainer, FeedbackContainer, TrackerContainer, DashboardContainer } from '@/Containers'
 import FastImage from "react-native-fast-image"
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '@/Hooks'
 
 const Tab = createBottomTabNavigator()
@@ -13,7 +12,7 @@ const MainNavigator = ({ navigation }) => {
 
   return (
     <Tab.Navigator
-      initialRouteName="Profile"
+      initialRouteName="Dashboard"
       screenOptions={{
         headerShown: false,
         gestureEnabled: true,

@@ -10,6 +10,8 @@ import { navigationRef } from './utils'
 import LinearGradient from 'react-native-linear-gradient'
 import { setupHttpConfig, addTokenToHttp } from '@/Utils/http'
 import { useSelector } from 'react-redux'
+import { PasswordChange } from '@/Containers'
+import SplashScreen from 'react-native-splash-screen'
 
 const Stack = createStackNavigator()
 
@@ -22,6 +24,10 @@ const ApplicationNavigator = () => {
 
   useEffect(() => {
     setupHttpConfig()
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 3000);
+
   }, [])
 
   useEffect(() => {
@@ -30,7 +36,7 @@ const ApplicationNavigator = () => {
 
   const isLoggged = (auth?.user?.token && auth.remember) || isLoggedIn
 
-  console.log(auth)
+  // console.log(auth)
 
 
   // const { colors } = NavigationTheme
@@ -47,9 +53,18 @@ const ApplicationNavigator = () => {
             name="Main"
             component={MainNavigator}
             options={{
-              animationEnabled: false,
+              animationEnabled: true,
             }}
           />
+
+          <Stack.Screen
+            name="PasswordChange"
+            component={PasswordChange}
+            options={{
+              animationEnabled: true,
+            }}
+          />
+
         </Stack.Navigator>
         :
         <Stack.Navigator screenOptions={{ headerShown: false }}>

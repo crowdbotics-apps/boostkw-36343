@@ -1,4 +1,4 @@
-import React,  { useState }  from 'react'
+import React,  { useState, useRef }  from 'react'
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   TextInput
 } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { Brand, Input, Title } from '@/Components'
+import { FeedbackAction } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
-import { checkEmail } from '@/Utils/Validations'
 import Stars from 'react-native-stars';
+import { request } from '@/Utils/http'
 
 const FeedbackContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
@@ -21,21 +21,50 @@ const FeedbackContainer = () => {
   const [ star, setStar ] = useState(4);
   const [values, setValues] = useState({})
   const [errorMessage, setErrorMessage] = useState({
-    messgae: "",
+    comment: "",
   })
+
+  const modalizeRef = useRef(null);
+
+  const OpenModal = () => {
+    modalizeRef.current?.open();
+  }
+
+  const CloseModal = () => {
+    modalizeRef.current?.close();
+  }
 
 
   const onClickSubmit = () => {
     // do paswword reset request
-    if (!checkEmail(values.email)) {
+    if (!values.comment) {
       setErrorMessage({
         ...errorMessage,
-      messgae: "Please enter response"
+        comment: "Please enter response"
       })
     } else {
+      sendFeedback({comment: values?.comment, rating: star})
       setErrorMessage({
-        messgae: ''
+        comment: ''
       })
+    }
+  }
+
+  const sendFeedback = async ({ comment, rating }) => {
+    try {
+
+      const response = await request.post(
+        `feedbacks/user-feedback/`, {
+          rating: rating,
+          comment: comment
+        }
+        )
+      if (response) {
+        // console.log(response.data);
+        OpenModal()
+      } 
+    } catch (error) {
+      console.log("Error: user feedback failed", error)
     }
   }
 
@@ -45,20 +74,24 @@ const FeedbackContainer = () => {
       [key]: value
     })
   }
+
+  const onPressGotIt = () => {
+    onChange("comment", '')
+    CloseModal()
+  }
     
   // console.log(errorMessage);
 
   return (
+    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill]}>
+    
     <ScrollView
       style={[Layout.fill]}
       contentContainerStyle={[
-        Layout.fill,
         Layout.column,
+        Gutters.smallHPadding
       ]}
     >
-    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill, Gutters.smallHPadding,]}>
-        
-
       <View style={[
           Layout.column,
           Gutters.regularVMargin,
@@ -69,7 +102,7 @@ const FeedbackContainer = () => {
           How do you like
         </Text>
         <Text style={Fonts.titleBold}>
-          using TrackNapp?
+          using BOOSTKW?
         </Text>
       </View>
 
@@ -112,13 +145,20 @@ const FeedbackContainer = () => {
             placeholder={"Your response"}
             multiline={true}
             numberOfLines={5}
-            onChangeText={v => onChange("messgae", v.trim())}
+            onChangeText={v => onChange("comment", v.trim())}
             color={'#ffffff'}
             placeholderTextColor={
               "#ffffff"
             }
-            value={values?.messgae || null}
+            value={values?.comment || null}
           />
+
+        {
+          !!errorMessage?.comment?.length &&
+        <View style={[Gutters.smallVMargin,]}>
+          <Text style={[Fonts.errorText]}>{errorMessage?.comment}</Text>
+        </View>
+        }
             
       </View>
 
@@ -138,9 +178,18 @@ const FeedbackContainer = () => {
         </TouchableOpacity>
 
       </View>
-
-      </LinearGradient>
     </ScrollView>
+
+    <FeedbackAction
+        modalRef={modalizeRef}
+        OpenModal={OpenModal}
+        CloseModal={CloseModal}
+        onPress={onPressGotIt}
+        icon={Images.flash}
+        buttonStyle={Common.button.outlineRounded}
+      >
+        </FeedbackAction>
+    </LinearGradient>
   )
 }
 

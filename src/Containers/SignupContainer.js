@@ -164,9 +164,13 @@ const SignUpContainer = () => {
       formData.append("branch", branch);
       formData.append("crew", crewName);
       formData.append("job_title", jobTitle);
-      image && formData.append("profile_picture", image);
+      image && formData.append("profile_picture", {
+        uri: image?.sourceURL || image?.path,
+        type: image?.mime || 'image/jpg',
+        name: image.filename || firstName+'profile.jpg',
+      });
 
-      console.log(formData);
+      // console.log(formData);
       const response = await request.post(
         `accounts/signup/`,
         formData, {
@@ -175,7 +179,7 @@ const SignUpContainer = () => {
             "Content-Type": `multipart/form-data; boundary=${formData._boundary}`
             // "Content-Type": "application/json"
           },
-          transformRequest: formData => formData
+          // transformRequest: formData => formData
         })
       if (response) {
         console.log('user reg: ', response.data)
@@ -198,8 +202,9 @@ const SignUpContainer = () => {
     })
   }
 
-  const onPressImage = () => {
-    ImagePicker.openPicker({
+  const onPressImage = (camera) => {
+    if(camera) {
+      ImagePicker.openCamera({
         width: 500,
         height: 500,
         mediaType: "photo",
@@ -212,17 +217,33 @@ const SignUpContainer = () => {
         setProfileImage(res)
         CloseModal()
       })
+    }
+    else {
+      ImagePicker.openPicker({
+        width: 500,
+        height: 500,
+        mediaType: "photo",
+        cropping: true,
+        compressImageMaxHeight: 500,
+        compressImageMaxHeight: 500,
+        compressImageQuality: 0.5
+      }).then(res => {
+        console.log("Image", res)
+        setProfileImage(res)
+        CloseModal()
+      })
+    }
   }
 
   return (
+    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill]}>
     <ScrollView
       style={[Layout.fill]}
       contentContainerStyle={[
-        Layout.fill,
         Layout.column,
+        Gutters.smallHPadding
       ]}
     >
-    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill, Gutters.smallHPadding,]}>
       {
         !nextPage &&
         <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.regularBMargin, Gutters.largeTMargin]}>
@@ -274,7 +295,7 @@ const SignUpContainer = () => {
         nextPage &&
         <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.smallVMargin,]}>
             <ImageBackground
-              source={{ uri: profileImage?.sourceURL}}
+              source={{ uri: profileImage?.sourceURL || profileImage?.path}}
               style={[
                 Layout.colCenter,
                 {
@@ -292,7 +313,7 @@ const SignUpContainer = () => {
               resizeMode="cover"
               // source={}
             >
-              {!profileImage?.sourceURL &&
+              {!(profileImage?.sourceURL || profileImage?.path) &&
               <TouchableOpacity
                 style={[Layout.colCenter]}
                 onPress={OpenModal}
@@ -440,19 +461,19 @@ const SignUpContainer = () => {
           <SelectItem 
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index)
-              onChange("jobTitle", selectedItem.trim())
+              onChange("jobTitle", selectedItem.value)
             }}
             data={Jobs}
             defaultText="Job Title"
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
             }}
             rowTextForSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
           }}
           />
       </View>
@@ -500,7 +521,8 @@ const SignUpContainer = () => {
       </View>
       }
 
-      {
+    </ScrollView>
+    {
         nextPage &&
         <ActionSheet
           modalRef={modalizeRef}
@@ -510,9 +532,7 @@ const SignUpContainer = () => {
           icon={Images.imageIcon}
         />
       }
-
-      </LinearGradient>
-    </ScrollView>
+    </LinearGradient>
   )
 }
 

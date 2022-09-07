@@ -7,7 +7,7 @@ import {
   ImageBackground,
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { Brand, Input, Title, SelectItem, ActionSheet } from '@/Components'
+import { Input, Title, SelectItem, ActionSheet } from '@/Components'
 import { useTheme } from '@/Hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
@@ -16,12 +16,15 @@ import { Branch } from '@/Utils/Branch'
 import { Jobs } from '@/Utils/Jobs'
 import ImagePicker from "react-native-image-crop-picker"
 import { request } from '@/Utils/http'
+import FastImage from "react-native-fast-image"
+import { logOut, setProfile } from '@/Services/modules/auth'
+import { setLoggedIn } from '@/Services/modules/app'
 
 const ProfileContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
   const dispatch = useDispatch()
 
-  const authUser = useSelector((state) => state.auth?.user?.user)
+  const authUser = useSelector((state) => state.auth?.profile)
 
   const [profileImage, setProfileImage] = useState(null);
   const [crewList, setCrewList] = useState([]);
@@ -29,7 +32,26 @@ const ProfileContainer = () => {
 
   useEffect(() => {
     !crewList.length && fetchCrew()
+    !authUser && getProfile()
   }, [])
+
+  useEffect(() => {
+    if(authUser?.crew?.id) {
+      onChange("crewName", authUser?.crew?.id)
+    }
+    if(authUser?.profile?.branch){
+      onChange("branch", authUser?.profile?.branch)
+    }
+    if(authUser?.profile?.job_title){
+      onChange("jobTitle", authUser?.profile?.job_title)
+    }
+    // if(authUser?.first_name){
+    //   onChange("firstName", authUser?.first_name)
+    // }
+    // if(authUser?.last_name){
+    //   onChange("lastName", authUser?.last_name)
+    // }
+  },[authUser])
 
   const modalizeRef = useRef(null);
 
@@ -48,17 +70,7 @@ const ProfileContainer = () => {
 
 
   const onClickSave = () => {
-    // do paswword reset request
-    if (!checkEmail(values.email)) {
-      setErrorMessage({
-        ...errorMessage,
-      email: "Please enter email"
-      })
-    } else {
-      setErrorMessage({
-        email: ''
-      })
-    }
+    doProfileUpdate({...values, image: profileImage})
   }
 
   const onChange = (key, value) => {
@@ -82,8 +94,22 @@ const ProfileContainer = () => {
       }
   }
 
-  const onPressImage = () => {
-    ImagePicker.openPicker({
+  const getProfile = async () => {
+    try {
+      const response = await request.get(`accounts/profile/`)
+      if (response) {
+        // console.log('profile', response.data);
+        dispatch(setProfile({ profile: response.data }))
+  
+      }
+      } catch (error) {
+        console.log("Error: profile", error)
+      }
+  }
+
+  const onPressImage = (camera) => {
+    if(camera) {
+      ImagePicker.openCamera({
         width: 500,
         height: 500,
         mediaType: "photo",
@@ -96,23 +122,89 @@ const ProfileContainer = () => {
         setProfileImage(res)
         CloseModal()
       })
+    }
+    else {
+      ImagePicker.openPicker({
+        width: 500,
+        height: 500,
+        mediaType: "photo",
+        cropping: true,
+        compressImageMaxHeight: 500,
+        compressImageMaxHeight: 500,
+        compressImageQuality: 0.5
+      }).then(res => {
+        // console.log("Image", res)
+        setProfileImage(res)
+        CloseModal()
+      })
+    }
+  }
+
+  const onLogout = () => {
+      dispatch(logOut())
+      dispatch(setLoggedIn({ loggedIn: false}))
+  }
+
+  const doProfileUpdate = async ({ image, firstName, lastName, branch, crewName, jobTitle}) => {
+    try {
+      // console.log(firstName, lastName, branch, jobTitle);
+      const formData = new FormData();
+      firstName && formData.append("first_name", firstName);
+      lastName && formData.append("last_name", lastName);
+      // branch && formData.append("branch", branch);
+      crewName && formData.append("crew", crewName);
+      // jobTitle && formData.append("job_title", jobTitle);
+      image && formData.append("profile_picture", {
+        uri: image?.sourceURL || image?.path,
+        type: image?.mime || 'image/jpg',
+        name: image.filename || firstName+'profile.jpg',
+      });
+      (branch || jobTitle) && formData.append("profile", JSON.stringify({
+        branch: branch || null,
+        job_title: jobTitle || null,
+      }));
+
+      console.log(formData);
+      const response = await request.patch(
+        `accounts/profile/`,
+        formData, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": `multipart/form-data; boundary=${formData._boundary}`
+            // "Content-Type": "application/json"
+          },
+          // transformRequest: formData => formData
+        })
+      if (response) {
+        console.log('user profile: ', response.data)
+        dispatch(setProfile({ profile: response.data }))
+
+      }
+    } catch (error) {
+      console.log("Error: user PROFILE", error)
+    }
+  }
+
+  const navigatePasswordChange = () => {
+    navigate('PasswordChange')
   }
 
 
   console.log(authUser);
 
   return (
+    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill]}>
     <ScrollView
       style={[Layout.fill]}
       contentContainerStyle={[
-        Layout.column,
+        Layout.column
       ]}
     >
-    <LinearGradient colors={['#000A62', '#00063C']} style={[Layout.fill, Gutters.smallHPadding,]}>
 
       <View style={[
           Layout.column,
           Gutters.regularVMargin,
+          Gutters.smallHPadding
         ]} />
 
       <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.regularBMargin]}>
@@ -121,9 +213,9 @@ const ProfileContainer = () => {
         </Text>
       </View>
 
-      <View style={[Layout.colCenter, Gutters.smallHPadding, Gutters.smallVMargin,]}>
+      <View style={[Layout.colCenter, Gutters.mediumHPadding, Gutters.smallVMargin,]}>
             <ImageBackground
-              source={{ uri: profileImage?.sourceURL || authUser?.profile_picture}}
+              source={{ uri: profileImage?.sourceURL || profileImage?.path || authUser?.profile_picture}}
               style={[
                 Layout.colCenter,
                 {
@@ -147,11 +239,11 @@ const ProfileContainer = () => {
         <View
             style={[
             Layout.rowCenter,
-            Gutters.smallHPadding,
+            Gutters.mediumHPadding,
             Gutters.smallVMargin,
             ]}
         >
-            <Text onPress={onPressImage} style={[Fonts.textButton, { color: '#89BEFF'}]}>Change photo</Text>
+            <Text onPress={OpenModal} style={[Fonts.textButton, { color: '#89BEFF'}]}>Change photo</Text>
             
         </View>
 
@@ -159,30 +251,43 @@ const ProfileContainer = () => {
       <View
             style={[
             Layout.rowCenter,
-            Gutters.smallHPadding,
+            Gutters.mediumHPadding,
             Gutters.regularVMargin,
-            Fonts.textCenter
+            ]}
+        />
+
+        <View
+            style={[
+              Layout.colHCenter,
+              Gutters.regularBMargin,
+              {
+     
+                borderBottomWidth: 1,
+                borderTopWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.12)',
+              }
             ]}
         >
-            
-            
+          <Text style={[Gutters.mediumHPadding, Gutters.smallVMargin, Fonts.labelText]}>Email</Text>
+          <Text style={[Gutters.mediumHPadding, Gutters.smallBMargin, Fonts.textButton]}>{authUser?.email}</Text>
         </View>
+      
 
       <View
         style={[
           Layout.column,
-          Gutters.smallHPadding,
-          Gutters.smallVMargin,
+          Gutters.mediumHPadding,
+          Gutters.smallBMargin,
         ]}
       >
 
-        <Input
+        {/* <Input
             value={authUser?.email}
             placeholder="Email"
             placeholderTextColor={"#ffffff"}
             selectTextOnFocus
             editable={false}
-          />
+          /> */}
 
         <Input
             error={!!errorMessage?.firstName?.length}
@@ -191,7 +296,7 @@ const ProfileContainer = () => {
             value={values.firstName || authUser?.first_name}
             placeholder='First Name'
             placeholderTextColor={"#ffffff"}
-            selectTextOnFocus
+            selectTextOnFocus={true}
             />
 
         <Input
@@ -201,12 +306,12 @@ const ProfileContainer = () => {
             value={values.lastName || authUser?.last_name}
             placeholder='Last Name'
             placeholderTextColor={"#ffffff"}
-            selectTextOnFocus
+            selectTextOnFocus={true}
             />
 
         {
           (values?.branch || authUser?.branch) && 
-          <View>
+          <View style={[Gutters.tinyTMargin]}>
             <Text style={[Fonts.labelText]}>{"Branch"}</Text>
           </View>
         }
@@ -216,7 +321,7 @@ const ProfileContainer = () => {
             onChange("branch", selectedItem.trim())
           }}
           data={Branch}
-          defaultText="Branch"
+          defaultText={authUser?.profile?.branch || "Branch"}
           buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
@@ -231,7 +336,7 @@ const ProfileContainer = () => {
 
         {
           values?.crewName && 
-          <View>
+          <View style={[Gutters.tinyTMargin]}>
             <Text style={[Fonts.labelText]}>{"Crew Name"}</Text>
           </View>
         }
@@ -241,7 +346,7 @@ const ProfileContainer = () => {
               onChange("crewName", selectedItem.value)
             }}
             data={crewList}
-            defaultText="Crew Name"
+            defaultText={authUser?.crew?.name || "Crew Name"}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
@@ -256,26 +361,26 @@ const ProfileContainer = () => {
 
           {
           values?.jobTitle && 
-          <View>
+          <View style={[Gutters.tinyTMargin]}>
             <Text style={[Fonts.labelText]}>{"Job Title"}</Text>
           </View>
         }
           <SelectItem 
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index)
-              onChange("jobTitle", selectedItem.trim())
+              onChange("jobTitle", selectedItem.value)
             }}
             data={Jobs}
-            defaultText="Job Title"
+            defaultText={authUser?.profile?.job_title || "Job Title"}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
             }}
             rowTextForSelection={(selectedItem, index) => {
               // text represented after item is selected
               // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem
+              return selectedItem.name
           }}
           />
 
@@ -286,7 +391,7 @@ const ProfileContainer = () => {
       <View
         style={[
           Layout.column,
-          Gutters.smallHPadding,
+          Gutters.mediumHPadding,
           Gutters.smallVMargin,
         ]}
       >
@@ -299,16 +404,64 @@ const ProfileContainer = () => {
 
       </View>
 
-      </LinearGradient>
+      <View
+            style={[
+              Layout.rowHCenter,
+              Layout.justifyContentBetween,
+              Gutters.regularVMargin,
+              Gutters.regularVPadding,
+              {
+     
+                borderBottomWidth: 1,
+                borderTopWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.12)',
+              }
+            ]}
+        >
+          <Text onPress={navigatePasswordChange} style={[Gutters.mediumHPadding, Gutters.tinyVMargin, Fonts.textButton]}>Change Password</Text>
+          <TouchableOpacity style={[Gutters.mediumHPadding]} onPress={navigatePasswordChange}>
+            <FastImage
+                    style={[{ width: 9, height:15}]}
+                    source={Images.rightArrow}
+              />
+          </TouchableOpacity>
+          
+        </View>
 
-      {/* <ActionSheet
+        <View
+            style={[
+              Layout.rowHCenter,
+              Layout.justifyContentBetween,
+              Gutters.regularBMargin,
+              Gutters.regularBPadding,
+              {
+     
+                borderBottomWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.12)',
+              }
+            ]}
+        >
+          <Text onPress={onLogout} style={[Gutters.mediumHPadding, Gutters.tinyVMargin, Fonts.textButton]}>Sign Out</Text>
+          <TouchableOpacity style={[Gutters.mediumHPadding]} onPress={onLogout}>
+            <FastImage
+                    style={[{ width: 9, height:15}]}
+                    source={Images.rightArrow}
+              />
+          </TouchableOpacity>
+          
+        </View>
+
+    </ScrollView>
+
+    <ActionSheet
           modalRef={modalizeRef}
           OpenModal={OpenModal}
           CloseModal={CloseModal}
           onPress={onPressImage}
           icon={Images.imageIcon}
-        /> */}
-    </ScrollView>
+        />
+
+    </LinearGradient>
   )
 }
 

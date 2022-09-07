@@ -50,7 +50,7 @@ const PrivacyContainer = ({ navigation }) => {
           />
       </View>
 
-      <View
+      {/* <View
             style={[
             Layout.row,
             Gutters.smallHPadding,
@@ -58,6 +58,17 @@ const PrivacyContainer = ({ navigation }) => {
             ]}
         >
           <Text style={[Fonts.textTerms]}>Also see: <Text style={{ fontWeight: "700"}} onPress={goToTerms}>Terms and Conditions</Text></Text>
+            
+      </View> */}
+
+      <View
+            style={[
+            Layout.row,
+            Gutters.smallHPadding,
+            Gutters.smallVMargin
+            ]}
+        >
+          <Text style={[Fonts.textTerms]}>At SnapNrack, accessible from www.snapnrack.com, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by SnapNrack and how we use it.</Text>
             
       </View>
 
