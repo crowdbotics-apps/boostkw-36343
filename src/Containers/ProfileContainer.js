@@ -45,12 +45,12 @@ const ProfileContainer = () => {
     if(authUser?.profile?.job_title){
       onChange("jobTitle", authUser?.profile?.job_title)
     }
-    if(authUser?.first_name){
-      onChange("firstName", authUser?.first_name)
-    }
-    if(authUser?.last_name){
-      onChange("lastName", authUser?.last_name)
-    }
+    // if(authUser?.first_name){
+    //   onChange("firstName", authUser?.first_name)
+    // }
+    // if(authUser?.last_name){
+    //   onChange("lastName", authUser?.last_name)
+    // }
   },[authUser])
 
   const modalizeRef = useRef(null);
@@ -293,20 +293,20 @@ const ProfileContainer = () => {
             error={!!errorMessage?.firstName?.length}
             errorValue={errorMessage?.firstName}
             onChangeText={v => onChange("firstName", v.trim())}
-            value={values.firstName}
+            value={values.firstName || authUser?.first_name}
             placeholder='First Name'
             placeholderTextColor={"#ffffff"}
-            selectTextOnFocus
+            selectTextOnFocus={true}
             />
 
         <Input
             error={!!errorMessage?.lastName?.length}
             errorValue={errorMessage?.lastName}
             onChangeText={v => onChange("lastName", v.trim())}
-            value={values.lastName}
+            value={values.lastName || authUser?.last_name}
             placeholder='Last Name'
             placeholderTextColor={"#ffffff"}
-            selectTextOnFocus
+            selectTextOnFocus={true}
             />
 
         {

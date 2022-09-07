@@ -24,7 +24,8 @@ const Input = ({
   multiline,
   numberOfLines,
   hideColor,
-  editable=true
+  editable=true,
+  selectTextOnFocus
 }) => {
   const [hide, setHide] = useState(password)
   const { Common, Layout, Images, Colors, Fonts } = useTheme()
@@ -62,6 +63,7 @@ const Input = ({
             }
             value={value}
             keyboardType={type}
+            selectTextOnFocus={selectTextOnFocus}
           />
           {password ? (
             <TouchableOpacity style={[Common.textInput, error && { borderColor: Colors.error }]} onPress={() => setHide(!hide)}>
