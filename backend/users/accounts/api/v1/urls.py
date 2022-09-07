@@ -24,7 +24,7 @@ urlpatterns = [
     # path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 
     # password urls
-    path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
+    path('password/reset/', views.AccountPasswordResetView.as_view(), name='rest_password_reset'),
     path('password/reset/confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
     path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
     # end password urls
