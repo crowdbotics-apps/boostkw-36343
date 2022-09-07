@@ -34,11 +34,19 @@ const PasswordChange = ({ navigation }) => {
       confirmNewPassword: ""
       })
     }
+    else if (!values.newPassword) {
+      setErrorMessage({
+        ...errorMessage,
+        password: "",
+        newPassword: "Please enter new password",
+        confirmNewPassword: ""
+      })
+    }
     else if (values.newPassword?.length < 8) {
       setErrorMessage({
         ...errorMessage,
         password: "",
-        newPassword: "This password is too short",
+        newPassword: "This password should be minimum 8 character",
         confirmNewPassword: ""
       })
     }
@@ -50,20 +58,20 @@ const PasswordChange = ({ navigation }) => {
         confirmNewPassword: ""
       })
     }
-    else if (!values.newPassword) {
-      setErrorMessage({
-        ...errorMessage,
-        password: "",
-        newPassword: "Please enter new password",
-        confirmNewPassword: ""
-      })
-    }
     else if (!values.confirmNewPassword) {
       setErrorMessage({
         ...errorMessage,
         password: "",
         newPassword: "",
         confirmNewPassword: "Please confirm new password"
+      })
+    } 
+    else if (values.confirmNewPassword != values.newPassword) {
+      setErrorMessage({
+        ...errorMessage,
+        password: "",
+        newPassword: "",
+        confirmNewPassword: "Please doesn't match"
       })
     } else {
       setErrorMessage({

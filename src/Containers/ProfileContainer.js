@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ImageBackground,
+  Alert
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Input, Title, SelectItem, ActionSheet } from '@/Components'
@@ -189,7 +190,7 @@ const ProfileContainer = () => {
       if (response) {
         console.log('user profile: ', response.data)
         dispatch(setProfile({ profile: response.data }))
-
+        Alert.alert(null, 'Profile updated successfully.')
       }
     } catch (error) {
       console.log("Error: user PROFILE", error)
