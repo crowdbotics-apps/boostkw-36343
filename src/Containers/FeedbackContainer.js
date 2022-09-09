@@ -78,6 +78,7 @@ const FeedbackContainer = () => {
   const onPressGotIt = () => {
     onChange("comment", '')
     CloseModal()
+    navigate('Dashboard')
   }
     
   // console.log(errorMessage);
