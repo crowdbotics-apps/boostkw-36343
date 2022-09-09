@@ -16,7 +16,10 @@ import { checkEmail, checkPassword } from '@/Utils/Validations'
 import { Branch } from '@/Utils/Branch'
 import { Jobs } from '@/Utils/Jobs'
 import ImagePicker from "react-native-image-crop-picker"
-import { request } from '@/Utils/http'
+import { request, addTokenToHttp } from '@/Utils/http'
+import { setUser, setRemeberUser } from '@/Services/modules/auth'
+import { setLoggedIn } from '@/Services/modules/app'
+
 
 const SignUpContainer = () => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
@@ -193,7 +196,11 @@ const SignUpContainer = () => {
         })
       if (response) {
         console.log('user reg: ', response.data)
-        onNavigateLogin()
+        dispatch(setUser({ user: response.data }))
+        dispatch(setRemeberUser({ remember: false}))
+        dispatch(setLoggedIn({ loggedIn: true}))
+        addTokenToHttp(response?.data?.token)
+        navigateAndSimpleReset('Main');
       }
     } catch (error) {
       console.log("Error: user signup", error)

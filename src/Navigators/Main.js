@@ -8,7 +8,7 @@ const Tab = createBottomTabNavigator()
 
 // @refresh reset
 const MainNavigator = ({ navigation }) => {
-  const { Common, Fonts, Images } = useTheme()
+  const { Images } = useTheme()
 
   return (
     <Tab.Navigator

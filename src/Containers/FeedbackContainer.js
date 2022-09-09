@@ -78,6 +78,7 @@ const FeedbackContainer = () => {
   const onPressGotIt = () => {
     onChange("comment", '')
     CloseModal()
+    navigate('Dashboard')
   }
     
   // console.log(errorMessage);
@@ -145,7 +146,7 @@ const FeedbackContainer = () => {
             placeholder={"Your response"}
             multiline={true}
             numberOfLines={5}
-            onChangeText={v => onChange("comment", v.trim())}
+            onChangeText={v => onChange("comment", v)}
             color={'#ffffff'}
             placeholderTextColor={
               "#ffffff"
