@@ -40,17 +40,13 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app does not require access to the microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to the photo library.</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Montserrat-Bold.ttf</string>
-		<string>Montserrat-BoldItalic.ttf</string>
-		<string>Montserrat-Italic.ttf</string>
-		<string>Montserrat-Regular.ttf</string>
 		<string>Orbitron-Black.ttf</string>
 		<string>Orbitron-Bold.ttf</string>
 		<string>Orbitron-Medium.ttf</string>
@@ -69,6 +65,24 @@
 		<string>Foundation.ttf</string>
 		<string>Ionicons.ttf</string>
 		<string>MaterialIcons.ttf</string>
+		<string>Montserrat-Black.ttf</string>
+		<string>Montserrat-BlackItalic.ttf</string>
+		<string>Montserrat-Bold.ttf</string>
+		<string>Montserrat-BoldItalic.ttf</string>
+		<string>Montserrat-ExtraBold.ttf</string>
+		<string>Montserrat-ExtraBoldItalic.ttf</string>
+		<string>Montserrat-ExtraLight.ttf</string>
+		<string>Montserrat-ExtraLightItalic.ttf</string>
+		<string>Montserrat-Italic.ttf</string>
+		<string>Montserrat-Light.ttf</string>
+		<string>Montserrat-LightItalic.ttf</string>
+		<string>Montserrat-Medium.ttf</string>
+		<string>Montserrat-MediumItalic.ttf</string>
+		<string>Montserrat-Regular.ttf</string>
+		<string>Montserrat-SemiBold.ttf</string>
+		<string>Montserrat-SemiBoldItalic.ttf</string>
+		<string>Montserrat-Thin.ttf</string>
+		<string>Montserrat-ThinItalic.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
