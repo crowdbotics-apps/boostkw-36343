@@ -1,6 +1,6 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { LoginContainer, SignUpContainer, PasswordReset, TermsContainer, PrivacyContainer } from '@/Containers'
+import { LoginContainer, SignUpContainer, PasswordReset, TermsContainer, PrivacyContainer } from '@/OldContainers'
 
 const AuthStack = createStackNavigator()
 
