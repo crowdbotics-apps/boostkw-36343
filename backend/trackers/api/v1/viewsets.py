@@ -18,6 +18,9 @@ class CustomerTrackerInputViewSet(viewsets.ModelViewSet):
             'job_processes'
         ).filter(user=self.request.user)
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
     @action(detail=True, methods=['GET', 'POST'], url_path='job-processes', name='Job Processes',
             url_name='job_processes',
             serializer_class=JobProcessSerializer)

@@ -14,7 +14,7 @@ def get_options(module_slug, option_key):
     option_value = None
 
     if all_module_options:
-        module_options = all_module_options.get(model_slug, None)
+        module_options = all_module_options.get(module_slug, None)
         if module_options:
             option_value = module_options.get(option_key, None)
 
