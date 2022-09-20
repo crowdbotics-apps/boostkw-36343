@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 10,
+    paddingBottom: 100,
   },
   title: {
     flexDirection: 'row',

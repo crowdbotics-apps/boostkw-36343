@@ -98,7 +98,7 @@ export const FloatingInput = (props, ref) => {
           onSubmitEditing={onSubmitEditing}
           ref={ref}
         />
-        {showUnit && value ? <Text style={styles.unit}> kW</Text> : null}
+        {showUnit && value ? <Text style={[styles.unit]}>kW</Text> : null}
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>

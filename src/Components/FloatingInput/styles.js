@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     fontFamily: appStyles.FONT_FAMILY_MEDIUM,
     lineHeight: 21,
     color: '#fff',
-    width: '93%',
+    width: '90%',
   },
   inputError: {
     borderBottomColor: 'red',

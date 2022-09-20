@@ -58,7 +58,7 @@ const TabStack = () => {
       />
       <Tab.Screen
         name="TrackerStack"
-        options={{ title: 'TrackerStack' }}
+        options={{ title: 'Tracker' }}
         component={TrackerStackScreen}
       />
     </Tab.Navigator>
