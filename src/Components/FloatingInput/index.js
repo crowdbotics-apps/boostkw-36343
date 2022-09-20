@@ -8,15 +8,12 @@ export const FloatingInput = (props, ref) => {
   const {
     placeholder = '',
     onChangeText = () => {},
-    rightIcon = '',
-    onPressIcon = () => {},
-    onDatePress = () => {},
+    showUnit = false,
     secureTextEntry = false,
     value = '',
     error = '',
     label = '',
     editable = true,
-    isDate = false,
     autoCapitalize = 'sentences',
     keyboardType = 'default',
     returnKeyType = 'next',
@@ -60,6 +57,11 @@ export const FloatingInput = (props, ref) => {
                 outputRange: [16, 12],
               }),
               color: appStyles.WHITE_COLOR,
+              fontFamily: labelAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [16, 12],
+              }),
+              fontFamily: appStyles.FONT_FAMILY_MEDIUM,
             },
           ]}
         >
@@ -78,39 +80,25 @@ export const FloatingInput = (props, ref) => {
         </Text>
       ) : null}
 
-      <View
-        style={[
-          styles.inputContainer,
-          editable && styles.inputContainerEditable,
-        ]}
-      >
-        {isDate ? (
-          <TouchableOpacity onPress={onDatePress} style={styles.date}>
-            <Text style={styles.dateText}>{value}</Text>
-          </TouchableOpacity>
-        ) : (
-          <TextInput
-            // placeholder={placeholder}
-            style={styles.input}
-            placeholderTextColor={appStyles.WHITE_COLOR}
-            onChangeText={onChangeText}
-            secureTextEntry={secureTextEntry}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            value={value}
-            editable={editable}
-            selectTextOnFocus={editable}
-            autoCapitalize={autoCapitalize}
-            keyboardType={keyboardType}
-            returnKeyType={returnKeyType}
-            onSubmitEditing={onSubmitEditing}
-            ref={ref}
-          />
-        )}
-        <TouchableOpacity
-          style={styles.rightIcon}
-          onPress={onPressIcon}
-        ></TouchableOpacity>
+      <View style={[styles.inputContainer, error && styles.inputError]}>
+        <TextInput
+          // placeholder={placeholder}
+          style={[styles.input]}
+          placeholderTextColor={appStyles.WHITE_COLOR}
+          onChangeText={onChangeText}
+          secureTextEntry={secureTextEntry}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          value={value}
+          // editable={editable}
+          selectTextOnFocus={editable}
+          autoCapitalize={autoCapitalize}
+          keyboardType={keyboardType}
+          returnKeyType={returnKeyType}
+          onSubmitEditing={onSubmitEditing}
+          ref={ref}
+        />
+        {showUnit && value ? <Text style={styles.unit}> kW</Text> : null}
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>

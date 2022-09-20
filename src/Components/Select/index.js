@@ -4,6 +4,7 @@ import { Text, View } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown'
 
 import * as appStyles from '../../util/appStyles'
+import ChevronDown from '../../Assets/svg/chevron_down'
 import { styles } from './styles'
 
 export const Select = ({
@@ -59,19 +60,7 @@ export const Select = ({
         }}
         renderRightIcon={() => (
           <>
-            {/* {editable && (
-              <View>
-                {isFocus ? (
-                  <EIcon name="chevron-thin-up" size={16} style={styles.icon} />
-                ) : (
-                  <EIcon
-                    name="chevron-thin-down"
-                    size={16}
-                    style={styles.icon}
-                  />
-                )}
-              </View>
-            )} */}
+            <ChevronDown height={24} width={24} />
           </>
         )}
       />

@@ -21,8 +21,6 @@ const Dashboard = () => {
   return (
     <Layout>
       <Header title="Dashboard" />
-
-      <Text>Dashboard</Text>
     </Layout>
   )
 }
