@@ -11,7 +11,15 @@ export function validatePassword(password) {
     !/[a-zA-Z]/g.test(password) ||
     /^\w+$/.test(password)
   ) {
-    return "Password must be 6 to 30 characters with at least 1 number, 1 letter & 1 special character"
+    return 'Password must be 6 to 30 characters with at least 1 number, 1 letter & 1 special character'
   }
-  return ""
+  return ''
+}
+
+export function validateJobCode(code = '') {
+  let re =
+    /^[0-9][0-9][0-9][a-zA-Z]-[0-9][0-9][0-9][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z]/
+  console.log(re.test(String(code).toLowerCase()))
+
+  return re.test(String(code).toLowerCase())
 }
