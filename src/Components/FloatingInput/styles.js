@@ -21,6 +21,17 @@ export const styles = StyleSheet.create({
     color: '#fff',
     width: '90%',
   },
+  timeInput: {
+    height: 40,
+    width: '90%',
+  },
+  timeValue: {
+    fontSize: 16,
+    fontFamily: appStyles.FONT_FAMILY_MEDIUM,
+    lineHeight: 21,
+    color: '#fff',
+    marginTop: 10,
+  },
   inputError: {
     borderBottomColor: 'red',
     borderBottomWidth: 0.5,

@@ -6,7 +6,6 @@ import { styles } from './styles'
 
 export const FloatingInput = (props, ref) => {
   const {
-    placeholder = '',
     onChangeText = () => {},
     showUnit = false,
     secureTextEntry = false,
@@ -14,10 +13,12 @@ export const FloatingInput = (props, ref) => {
     error = '',
     label = '',
     editable = true,
-    autoCapitalize = 'sentences',
+    autoCapitalize = 'words',
     keyboardType = 'default',
     returnKeyType = 'next',
     onSubmitEditing = () => {},
+    onPressTime = () => {},
+    time = false,
   } = props
 
   const labelAnim = useRef(new Animated.Value(0)).current
@@ -81,23 +82,27 @@ export const FloatingInput = (props, ref) => {
       ) : null}
 
       <View style={[styles.inputContainer, error && styles.inputError]}>
-        <TextInput
-          // placeholder={placeholder}
-          style={[styles.input]}
-          placeholderTextColor={appStyles.WHITE_COLOR}
-          onChangeText={onChangeText}
-          secureTextEntry={secureTextEntry}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          value={value}
-          // editable={editable}
-          selectTextOnFocus={editable}
-          autoCapitalize={autoCapitalize}
-          keyboardType={keyboardType}
-          returnKeyType={returnKeyType}
-          onSubmitEditing={onSubmitEditing}
-          ref={ref}
-        />
+        {time ? (
+          <TouchableOpacity onPress={onPressTime} style={styles.timeInput}>
+            <Text style={styles.timeValue}>{value}</Text>
+          </TouchableOpacity>
+        ) : (
+          <TextInput
+            style={[styles.input]}
+            placeholderTextColor={appStyles.WHITE_COLOR}
+            onChangeText={onChangeText}
+            secureTextEntry={secureTextEntry}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            value={value}
+            selectTextOnFocus={editable}
+            autoCapitalize={autoCapitalize}
+            keyboardType={keyboardType}
+            returnKeyType={returnKeyType}
+            onSubmitEditing={onSubmitEditing}
+            ref={ref}
+          />
+        )}
         {showUnit && value ? <Text style={[styles.unit]}>kW</Text> : null}
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}

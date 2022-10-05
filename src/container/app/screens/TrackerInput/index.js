@@ -55,10 +55,7 @@ const TrackerInput = ({ route, navigation }) => {
   const [showBattery, setShowBattery] = useState(false)
   const [values, setValues] = useState(VALUES)
 
-  const [validation, setValidation] = useState({
-    email: '',
-    password: '',
-  })
+  const [validation, setValidation] = useState({})
 
   const handleSubmitFinalValues = () => {
     let finalValues = {}
