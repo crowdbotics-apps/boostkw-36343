@@ -1,5 +1,6 @@
 import { View, Text, Switch } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import {
@@ -8,7 +9,6 @@ import {
   useStartTracking,
 } from '../../hooks/useTracker'
 
-import { Input, SelectItem } from '@/components'
 import { Button } from '../../../../components/Button'
 import { Layout } from '@/layout'
 import { Header } from '@/components/Header'
@@ -16,41 +16,50 @@ import FloatingInput from '@/components/FloatingInput'
 import { Select } from '@/components/Select'
 
 import * as appStyles from '../../../../util/appStyles'
-import { styles } from './styles'
 import { validateJobCode } from '@/util/helpers'
+import { styles } from './styles'
 
 const LOCATIONS = [
   { name: 'Roof', id: 'roof' },
   { name: 'Ground', id: 'ground' },
 ]
-const TrackerInput = ({ navigation }) => {
+
+const VALUES = {
+  job_code: '',
+  customer_name: '',
+  system_size: '',
+  number_of_panels: '',
+  number_of_arrays: '',
+  location: '',
+  number_of_workers: '',
+  roof_type: '',
+  crew: '',
+}
+const TrackerInput = ({ route, navigation }) => {
   const { roofTypes } = useGetRoofTypes()
   const { crews } = useGetCrews()
-  const { startTracking, isLoading } = useStartTracking(onSuccessStartTracking)
+  const { startTracking, isLoading, error } = useStartTracking(
+    onSuccessStartTracking,
+  )
+
+  useFocusEffect(
+    useCallback(() => {
+      if (route?.params?.reset) {
+        console.log('reset')
+        setValues(VALUES)
+        setShowBattery(false)
+      }
+    }, [route]),
+  )
 
   const [showBattery, setShowBattery] = useState(false)
-  const [values, setValues] = useState({
-    job_code: '',
-    customer_name: '',
-    system_size: '',
-    number_of_panels: '',
-    number_of_arrays: '',
-    location: '',
-    number_of_workers: '',
-    roof_type: '',
-    crew: '',
-  })
+  const [values, setValues] = useState(VALUES)
 
-  const [validation, setValidation] = useState({
-    email: '',
-    password: '',
-  })
+  const [validation, setValidation] = useState({})
 
   const handleSubmitFinalValues = () => {
     let finalValues = {}
     for (const [key, value] of Object.entries(values)) {
-      // console.log(`${key}: ${value}`)
-
       if (typeof value === 'object') {
         console.log('value=>', value)
         console.log('value', value?.value)
@@ -71,12 +80,10 @@ const TrackerInput = ({ navigation }) => {
   const verifyInput = values => {
     let errors = {}
 
-    console.log('values verifyInput===>', values)
     for (const [key, value] of Object.entries(values)) {
       console.log(`${key}: ${value}`)
 
       if (key === 'job_code') {
-        console.log('validateJobCode(value)', validateJobCode(value))
         if (!validateJobCode(value)) {
           errors = {
             ...errors,
@@ -84,10 +91,29 @@ const TrackerInput = ({ navigation }) => {
           }
         }
       } else if (key === 'number_of_batteries') {
-        if (value?.length < 1 && showBattery) {
+        if ((value?.length < 1 || parseInt(value) == 0) && showBattery) {
           errors = {
             ...errors,
             ...{ [key]: `Invalid ${key.replace(/_/g, ' ')}` },
+          }
+        }
+      } else if (key === 'number_of_workers') {
+        if ((value?.length < 1 || parseInt(value) == 0) && showBattery) {
+          errors = {
+            ...errors,
+            ...{ [key]: `Invalid ${key.replace(/_/g, ' ')}` },
+          }
+        }
+      } else if (key === 'system_size') {
+        if (value?.length < 1) {
+          errors = {
+            ...errors,
+            ...{ [key]: `Invalid ${key.replace(/_/g, ' ')}` },
+          }
+        } else if (Number(value) > Number(30.0)) {
+          errors = {
+            ...errors,
+            ...{ [key]: 'Sytem size should not be more than 30.00 kW' },
           }
         }
       } else if (value?.length < 1) {
@@ -97,7 +123,6 @@ const TrackerInput = ({ navigation }) => {
         }
       }
     }
-    console.log('errors', errors)
     return errors
   }
 
@@ -116,14 +141,25 @@ const TrackerInput = ({ navigation }) => {
     startTracking(finalValues)
   }
   const onChange = (key, value) => {
-    setValues({
-      ...values,
-      [key]: value,
-    })
+    var decimals = value.split('.')
+
+    if (decimals.length > 1 && decimals[1] && key === 'system_size') {
+      setValues({
+        ...values,
+        system_size: (
+          Math.round((Number(value) + Number.EPSILON) * 100) / 100
+        ).toString(),
+      })
+    } else {
+      console.log('value', value)
+      setValues({
+        ...values,
+        [key]: value,
+      })
+    }
   }
 
   const handleDropdownChange = (key, value) => {
-    console.log('value', value)
     setValues({
       ...values,
       [key]: value,
@@ -152,7 +188,7 @@ const TrackerInput = ({ navigation }) => {
           placeholder="Job Code"
           value={values.job_code}
           onChangeText={val => onChange('job_code', val)}
-          error={validation?.job_code}
+          error={validation?.job_code || error?.response?.data?.job_code[0]}
           label="Job Code"
         />
 
@@ -264,13 +300,18 @@ const TrackerInput = ({ navigation }) => {
           customStyleDropdown={styles.customStyleDropdown}
           showTitle={true}
         />
-
         <FloatingInput
-          placeholder="Number Of Roof Workers"
+          placeholder=""
           value={values.number_of_workers}
           onChangeText={val => onChange('number_of_workers', val)}
           error={validation?.number_of_workers}
-          label="Number Of Roof Workers"
+          label={
+            values?.location?.id === 'roof'
+              ? 'Number Of Roof Workers'
+              : values?.location?.id === 'ground'
+              ? 'Number Of Ground Workers'
+              : 'Number Of Workers'
+          }
           keyboardType={'number-pad'}
         />
 

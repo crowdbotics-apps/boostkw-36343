@@ -29,8 +29,8 @@ const TrackerStackScreen = () => {
       screenOptions={{ headerShown: false }}
       initialRouteName="MyProfile"
     >
-      <TrackerStack.Screen name="TrackerInput" component={TrackerInput} />
       <TrackerStack.Screen name="Tracker" component={Tracker} />
+      <TrackerStack.Screen name="TrackerInput" component={TrackerInput} />
     </TrackerStack.Navigator>
   )
 }
@@ -58,7 +58,7 @@ const TabStack = () => {
       />
       <Tab.Screen
         name="TrackerStack"
-        options={{ title: 'TrackerStack' }}
+        options={{ title: 'Tracker' }}
         component={TrackerStackScreen}
       />
     </Tab.Navigator>

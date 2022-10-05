@@ -11,6 +11,7 @@ export const PRIMARY_COLOR = '#4D6A99'
 export const PRIMARY_LIGHT_COLOR = '#4F98FF'
 
 export const WHITE_COLOR = '#ffffff'
+export const WHITE_0_75 = "rgba(255, 255, 255, 0.75)"
 export const BLACK_COLOR = '#000'
 
 export const TEXT_COLOR_1 = '#85889D'

@@ -11,8 +11,4 @@
         <item name="colorPrimaryDark">@color/status_bar_color</item>
     </style>
     
-    <style name="SplashTheme" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/splash_screen</item>
-    </style>
-    
 </resources>
