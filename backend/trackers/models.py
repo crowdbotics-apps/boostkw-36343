@@ -119,6 +119,7 @@ class JobProcess(TimeStampModel):
         validators.MinValueValidator(1)
     ])
     is_active = models.BooleanField(_('Active'), default=False)
+    is_completed = models.BooleanField(_('Completed'), default=False)
     time_spent_seconds = models.PositiveIntegerField(default=0)
 
     def __str__(self):
