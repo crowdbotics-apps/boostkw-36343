@@ -23,7 +23,7 @@ def create_customer_tracker_job_process(instance, intial=False):
         items = []
         for item in initial_job_processes:
             items.append(
-                JobProcess(customer_tracker_input=instance, title=item.title, position=item.position,
+                JobProcess(customer_tracker=instance, title=item.title, position=item.position,
                            is_active=item.is_active)
             )
 
@@ -33,5 +33,6 @@ def create_customer_tracker_job_process(instance, intial=False):
             except Exception as err:
                 print(err)
                 return None
+        return None
 
     return None
