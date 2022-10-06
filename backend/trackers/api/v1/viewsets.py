@@ -47,4 +47,4 @@ class JobProcessViewSet(viewsets.ModelViewSet):
     filterset_class = JobProcessFilterSet
 
     def get_queryset(self):
-        return JobProcess.objects.filter(customer_tracker_input__user=self.request.user)
+        return JobProcess.objects.filter(customer_tracker__user=self.request.user)

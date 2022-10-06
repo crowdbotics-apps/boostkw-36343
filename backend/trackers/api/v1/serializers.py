@@ -21,8 +21,63 @@ class JobProcessSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'customer_tracker': {
                 'read_only': True
+            },
+            'total_paused_time_seconds': {
+                'read_only': True
             }
         }
+
+    def validate(self, attrs):
+        errors = {}
+        if self.instance.pk:
+            total_paused_time_seconds = self.instance.total_paused_time_seconds
+
+            if 'last_paused_datetime' in attrs:
+                last_paused_datetime = attrs.get('last_paused_datetime')
+                if last_paused_datetime < self.instance.start_datetime or \
+                        last_paused_datetime < self.instance.last_paused_datetime:
+                    # raise serializers.ValidationError({
+                    #         'last_paused_datetime': [
+                    #             _('Must be greater than Start Datetime.')
+                    #         ]
+                    #     })
+                    errors.update(
+                        {
+                            'last_paused_datetime': [
+                                _('Must be greater than Start Datetime/Previous Last Paused Datetime.')
+                            ]
+                        }
+
+                    )
+                if last_paused_datetime >= self.instance.last_paused_datetime:
+                    # second_difference_check = datetime_difference_in_seconds(self.instance.last_paused_datetime,
+                    #                                                    last_paused_datetime)
+                    second_difference = datetime_difference_in_seconds(self.instance.last_paused_datetime,
+                                                                       last_paused_datetime)
+                    print(round(second_difference))
+                    attrs['total_paused_time_seconds'] = total_paused_time_seconds + round(second_difference)
+
+            if 'end_datetime' in attrs:
+                end_datetime = attrs.get('end_datetime')
+                last_paused_datetime = self.instance.last_paused_datetime
+                if 'last_paused_datetime' in attrs:
+                    last_paused_datetime = attrs.get('last_paused_datetime')
+
+                if end_datetime < self.instance.start_datetime or end_datetime < last_paused_datetime:
+                    errors.update(
+                        {
+                            'end_datetime': [
+                                _('Must be greater than or equal to Start Datetime/Last '
+                                  'Paused Datetime.')
+                            ]
+                        }
+
+                    )
+
+            if len(errors) > 0:
+                raise serializers.ValidationError(errors)
+
+        return attrs
 
 
 class CustomerTrackerSerializer(serializers.ModelSerializer):

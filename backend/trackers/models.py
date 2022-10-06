@@ -6,8 +6,10 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 
-from modules.model_mixins import TimeStampModel
+from modules.model_mixins import TimeStampModel, ModelFieldChangeStatusMixin
+from modules.utils import datetime_difference_in_seconds
 from trackers.validators import job_code_validator
+from trackers.utils import (seconds_to_readable_time)
 
 LOCATION_ROOF = 'roof'
 LOCATION_GROUND = 'ground'
@@ -110,7 +112,7 @@ class CustomerTracker(TimeStampModel):
             })
 
 
-class JobProcess(TimeStampModel):
+class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
     customer_tracker = models.ForeignKey('trackers.CustomerTracker', on_delete=models.CASCADE,
                                          related_name='job_processes')
 
@@ -120,7 +122,12 @@ class JobProcess(TimeStampModel):
     ])
     is_active = models.BooleanField(_('Active'), default=False)
     is_completed = models.BooleanField(_('Completed'), default=False)
-    time_spent_seconds = models.PositiveIntegerField(default=0)
+    is_paused = models.BooleanField(_('Paused'), default=False)
+    # time_spent_seconds = models.PositiveIntegerField(default=0)
+    total_paused_time_seconds = models.PositiveIntegerField(default=0)
+    start_datetime = models.DateTimeField(_('Start Time'), null=True, blank=True, )
+    end_datetime = models.DateTimeField(_('End Time'), null=True, blank=True)
+    last_paused_datetime = models.DateTimeField(_('Last Paused Time'), null=True, blank=True)
 
     def __str__(self):
         return '%s' % self.title
@@ -131,11 +138,20 @@ class JobProcess(TimeStampModel):
         verbose_name_plural = _('Job Processes')
 
     @property
-    def get_time_spent(self):
-        if self.time_spent_seconds:
-            from trackers.utils import (seconds_to_readable_time)
+    def get_time_spent_seconds(self):
+        if self.start_datetime:
+            if not self.end_datetime:
+                seconds = datetime_difference_in_seconds(self.start_datetime, self.last_paused_datetime)
+                return round(seconds)
+            else:
+                start_end_seconds = datetime_difference_in_seconds(self.start_datetime, self.end_datetime)
+                return start_end_seconds - self.total_paused_time_seconds
+        return 0
 
-            return seconds_to_readable_time(self.time_spent_seconds)
+    @property
+    def get_time_spent(self):
+        if self.get_time_spent_seconds:
+            return seconds_to_readable_time(self.get_time_spent_seconds)
 
         return {
             'hours': 0,

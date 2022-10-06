@@ -1,4 +1,5 @@
 from django.contrib import admin
+from trackers.utils import (seconds_to_readable_time)
 
 from .models import *
 
@@ -24,19 +25,24 @@ class CustomerTrackerAdmin(admin.ModelAdmin):
 
 @admin.register(JobProcess)
 class JobProcessAdmin(admin.ModelAdmin):
-    list_display = ['display_job_code', 'title', 'position', 'display_job_location', 'is_active', 'display_time_spent',
-                    'time_spent_seconds', 'is_completed',
-                    'created', 'updated']
-    readonly_fields = ['display_time_spent']
+    list_display = ['display_job_code', 'title', 'position', 'display_job_location', 'is_active', 'is_completed',
+                    'is_paused', 'start_datetime', 'end_datetime', 'last_paused_datetime', 'created', 'updated']
+    readonly_fields = ['display_time_spent_seconds', 'display_time_spent',
+                       'display_paused_time']
 
-    search_fields = ['title', 'time_spent_seconds', 'customer_tracker__job_code']
+    search_fields = ['title', 'customer_tracker__job_code']
+
+    def display_time_spent_seconds(self, instance):
+        return instance.get_time_spent_seconds
+
+    display_time_spent_seconds.short_description = 'Time Spent Seconds'
 
     def display_time_spent(self, instance):
-        if instance.time_spent_seconds:
+        if instance.get_time_spent_seconds:
             time_spent = instance.get_time_spent
             hours = time_spent.get('hours')
             minutes = time_spent.get('minutes')
-            seconds = time_spent.get('left_seconds')
+            seconds = time_spent.get('seconds')
             body = f'Hours: {hours}, Mins: {minutes}, Seconds: {seconds}'
             return body
         return f'Hours: 0, Mins: 0, Seconds: 0'
@@ -52,3 +58,15 @@ class JobProcessAdmin(admin.ModelAdmin):
         return instance.customer_tracker.get_location_display()
 
     display_job_location.short_description = 'Location'
+
+    def display_paused_time(self, instance):
+        if instance.total_paused_time_seconds:
+            time_spent = seconds_to_readable_time(instance.total_paused_time_seconds)
+            hours = time_spent.get('hours')
+            minutes = time_spent.get('minutes')
+            seconds = time_spent.get('seconds')
+            body = f'Hours: {hours}, Mins: {minutes}, Seconds: {seconds}'
+            return body
+        return f'Hours: 0, Mins: 0, Seconds: 0'
+
+    display_paused_time.short_description = 'Paused Time'
