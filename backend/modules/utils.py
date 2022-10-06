@@ -23,3 +23,8 @@ def get_options(module_slug, option_key):
     )
 
     return option_value if option_value else default_value
+
+
+def datetime_difference_in_seconds(start_datetime, end_datetime):
+    datetime_difference = end_datetime - start_datetime
+    return datetime_difference.total_seconds()
