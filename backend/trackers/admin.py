@@ -24,4 +24,4 @@ class CustomerTrackerAdmin(admin.ModelAdmin):
 
 @admin.register(JobProcess)
 class JobProcessAdmin(admin.ModelAdmin):
-    list_display = ['title', 'position', 'is_active', 'get_time_spent', 'created', 'updated']
+    list_display = ['title', 'position', 'is_active', 'get_time_spent', 'is_completed', 'created', 'updated']
