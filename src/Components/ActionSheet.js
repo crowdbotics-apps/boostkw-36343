@@ -7,16 +7,26 @@ const ActionSheet = ({ onPress, modalRef, icon }) => (
   <Modalize
     ref={modalRef}
     snapPoint={300}
-    modalHeight={86}
+    modalHeight={100}
     modalStyle={styles.modal}
   >
-    <TouchableOpacity onPress={onPress} activeOpacity={1} style={styles.modalContainer}>
+    <TouchableOpacity onPress={() => onPress(false)} activeOpacity={1} style={styles.modalContainer}>
         <View style={{ flex: 1, flexDirection: "row",justifyContent: "center", alignItems: "center" }}>
           <FastImage
               style={[{width: 16, height: 16}]}
               source={icon}
           />
           <Text style={styles.modalTitle}>Open photo library</Text>
+        </View>
+    </TouchableOpacity>
+
+    <TouchableOpacity onPress={() => onPress(true)} activeOpacity={1} style={styles.modalContainer}>
+        <View style={{ flex: 1, flexDirection: "row",justifyContent: "center", alignItems: "center" }}>
+          <FastImage
+              style={[{width: 16, height: 16}]}
+              source={icon}
+          />
+          <Text style={styles.modalTitle}>Open Camera</Text>
         </View>
     </TouchableOpacity>
   </Modalize>

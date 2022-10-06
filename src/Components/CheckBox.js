@@ -9,6 +9,7 @@ const CheckBoxs = ({disabled, value, onValueChange}) => (
         disabled={disabled}
         value={value}
         onValueChange={onValueChange} 
+        tintColors="#ffffff"
         style ={ {width: 20, height: 20 } }   
     />
   </View>
