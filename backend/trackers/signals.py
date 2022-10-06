@@ -9,7 +9,8 @@ from .utils import create_customer_tracker_job_process
 def customer_tracker_post_save(sender, created, instance, **kwargs):
     print(created)
     print(instance)
-    create_customer_tracker_job_process(instance, intial=True)
+    if created:
+        create_customer_tracker_job_process(instance, intial=created)
 
     # if created:
     #     create_customer_tracker_job_process(instance, intial=True)

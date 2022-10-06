@@ -45,12 +45,47 @@ class CustomerTrackerSerializerWithJobProcess(serializers.ModelSerializer):
         extra_kwargs = {
             'user': {
                 'read_only': True
+            },
+            'location': {
+                'required': True
+            },
+            'roof_type': {
+                'required': True
+            },
+            'crew': {
+                'required': True
             }
         }
 
     def to_representation(self, instance):
         res = super(self.__class__, self).to_representation(instance)
-        res['roof_type'] = RoofTypeSerializer(instance.roof_type).data
-        res['crew'] = CrewSerializer(instance.crew).data
+        res['roof_type'] = None
+        if instance.roof_type:
+            res['roof_type'] = RoofTypeSerializer(instance.roof_type).data
+        res['crew'] = None
+        if instance.crew:
+            res['crew'] = CrewSerializer(instance.crew).data
         res['job_processes'] = JobProcessSerializer(instance.job_processes, many=True).data
         return res
+
+    def validate(self, attrs):
+        if self.instance:
+            if 'job_code' in attrs:
+                attrs.pop('job_code')
+
+        if not self.instance:
+            is_battery = attrs.get('is_battery', False)
+            number_of_batteries = attrs.get('number_of_batteries', None)
+            attrs['status'] = 'active'
+            if is_battery and number_of_batteries is None:
+                raise serializers.ValidationError({
+                    'number_of_batteries': _('This field is required if the battery is selected.')
+                })
+            if not is_battery and number_of_batteries:
+                raise serializers.ValidationError({
+                    'number_of_batteries': _('This field is required if the battery is selected.')
+                })
+
+            attrs['is_battery'] = is_battery
+
+        return attrs
