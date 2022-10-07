@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -41,6 +42,31 @@ class CustomerTrackerInputViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors)
 
         return Response(status=400)
+
+    @action(detail=True, methods=['GET', 'PATCH'], url_path=r'job-processes/(?P<job_process_id>\d+)',
+            url_name='job_process_detail',
+            name='Job Process Detail', serializer_class=JobProcessSerializer)
+    def get_job_process_detail(self, *args, **kwargs):
+        print(kwargs.get('pk'))
+        print(kwargs.get('job_process_id'))
+        customer_tracker_id = kwargs.get('pk')
+        try:
+            customer_tracker = CustomerTracker.objects.get(id=customer_tracker_id)
+        except CustomerTracker.DoesNotExist:
+            return Response({'detail': 'Invalid customer tracker request.'}, status=404)
+
+        job_process_id = kwargs.get('job_process_id')
+        try:
+            job_process = JobProcess.objects.get(id=job_process_id, customer_tracker_id=customer_tracker_id)
+        except JobProcess.DoesNotExist:
+            raise Http404
+
+        if self.request.method == 'GET':
+            serializer = JobProcessSerializer(job_process)
+            return Response(serializer.data)
+        # elif self.request.method == 'POST':
+        # instance = self.get_object()
+        return Response({'instance': 1})
 
 
 class JobProcessViewSet(viewsets.ModelViewSet):
