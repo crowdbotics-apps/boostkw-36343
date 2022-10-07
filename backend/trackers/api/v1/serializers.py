@@ -34,8 +34,9 @@ class JobProcessSerializer(serializers.ModelSerializer):
 
             if 'last_paused_datetime' in attrs:
                 last_paused_datetime = attrs.get('last_paused_datetime')
-                if last_paused_datetime < self.instance.start_datetime or \
-                        last_paused_datetime < self.instance.last_paused_datetime:
+                if (self.instance.start_datetime and last_paused_datetime < self.instance.start_datetime) or \
+                        (self.instance.last_paused_datetime and last_paused_datetime <
+                         self.instance.last_paused_datetime):
                     # raise serializers.ValidationError({
                     #         'last_paused_datetime': [
                     #             _('Must be greater than Start Datetime.')
@@ -49,7 +50,7 @@ class JobProcessSerializer(serializers.ModelSerializer):
                         }
 
                     )
-                if last_paused_datetime >= self.instance.last_paused_datetime:
+                if self.instance.last_paused_datetime and last_paused_datetime >= self.instance.last_paused_datetime:
                     # second_difference_check = datetime_difference_in_seconds(self.instance.last_paused_datetime,
                     #                                                    last_paused_datetime)
                     second_difference = datetime_difference_in_seconds(self.instance.last_paused_datetime,
@@ -63,7 +64,8 @@ class JobProcessSerializer(serializers.ModelSerializer):
                 if 'last_paused_datetime' in attrs:
                     last_paused_datetime = attrs.get('last_paused_datetime')
 
-                if end_datetime < self.instance.start_datetime or end_datetime < last_paused_datetime:
+                if (self.instance.start_datetime and end_datetime < self.instance.start_datetime) or (
+                                last_paused_datetime and end_datetime < last_paused_datetime):
                     errors.update(
                         {
                             'end_datetime': [
