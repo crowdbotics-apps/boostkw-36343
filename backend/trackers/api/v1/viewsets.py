@@ -28,7 +28,7 @@ class CustomerTrackerInputViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         if self.request.method == 'GET':
             if instance.job_processes.count() < 1:
-                from trackers.utils import  create_customer_tracker_job_process
+                from trackers.utils import create_customer_tracker_job_process
                 create_customer_tracker_job_process(instance, created=True)
             serializer = JobProcessSerializer(instance.job_processes, many=True)
             return Response(serializer.data)
