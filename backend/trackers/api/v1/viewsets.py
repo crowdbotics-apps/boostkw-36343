@@ -27,13 +27,16 @@ class CustomerTrackerInputViewSet(viewsets.ModelViewSet):
     def get_job_processes(self, *args, **kwargs):
         instance = self.get_object()
         if self.request.method == 'GET':
+            if instance.job_processes.count() < 1:
+                from trackers.utils import  create_customer_tracker_job_process
+                create_customer_tracker_job_process(instance, created=True)
             serializer = JobProcessSerializer(instance.job_processes, many=True)
             return Response(serializer.data)
 
         elif self.request.method == 'POST':
             serializer = JobProcessSerializer(data=self.request.data, context={'request': self.request})
             if serializer.is_valid(raise_exception=True):
-                serializer.save(customer_tracker_input=instance)
+                serializer.save(customer_tracker=instance)
                 return Response(serializer.data)
             return Response(serializer.errors)
 
