@@ -21,6 +21,8 @@ class CustomerTrackerAdmin(admin.ModelAdmin):
                     'is_battery', 'crew', 'location', 'number_of_workers', 'created', 'updated']
 
     autocomplete_fields = ('user',)
+    search_fields = ('job_code', 'user__username', 'user__email', 'customer_name', 'crew__name')
+    list_filter = ['location', 'is_battery']
 
 
 @admin.register(JobProcess)
@@ -31,6 +33,7 @@ class JobProcessAdmin(admin.ModelAdmin):
                        'display_paused_time']
 
     search_fields = ['title', 'customer_tracker__job_code']
+    list_filter = ['is_active', 'is_completed', 'is_paused']
 
     def display_time_spent_seconds(self, instance):
         return instance.get_time_spent_seconds
