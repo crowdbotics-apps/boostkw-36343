@@ -48,6 +48,7 @@ class CustomerTrackerJobProcessListAPIView(ListCreateAPIView):
 class CustomerTrackerJobProcessDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = JobProcessSerializer
     queryset = JobProcess.objects.none()
+    lookup_url_kwarg = 'job_process_id'
 
     def get_queryset(self):
         return JobProcess.objects.filter(customer_tracker_id=self.kwargs.get('pk'),
