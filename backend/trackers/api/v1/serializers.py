@@ -30,13 +30,46 @@ class JobProcessSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         errors = {}
         if self.instance.pk:
+            instance_last_paused_datetime = self.instance.last_paused_datetime
             total_paused_time_seconds = self.instance.total_paused_time_seconds
 
+            start_datetime = self.instance.start_datetime
+            end_datetime = self.instance.end_datetime
+            if 'start_datetime' in attrs:
+                start_datetime = attrs.get('start_datetime')
+
+            if not start_datetime or start_datetime == "":
+                errors.update({
+                    'start_datetime': _('Start Datetime is required.')
+                })
+
+            if 'end_datetime' in attrs:
+                end_datetime = attrs.get('end_datetime')
+
+            if end_datetime and end_datetime < start_datetime:
+                errors.update({
+                    'end_datetime': _('End Datetime must be greater than or equal to Start datetime.')
+                })
+
+            instance_is_paused = self.instance.is_paused
+
+            is_paused = attrs.get('is_paused', None)
+            if 'is_paused' in attrs and attrs.get('is_paused') is False and 'last_paused_datetime' in attrs:
+                attrs.pop('last_paused_datetime')
+
+            if 'last_paused_datetime' in attrs and (not is_paused or is_paused is not True):
+                errors.update({
+                    'is_paused': 'This field is required and value must be true for "last_paused_datetime" field.'
+                })
             if 'last_paused_datetime' in attrs:
                 last_paused_datetime = attrs.get('last_paused_datetime')
-                if (self.instance.start_datetime and last_paused_datetime < self.instance.start_datetime) or \
-                        (self.instance.last_paused_datetime and last_paused_datetime <
-                         self.instance.last_paused_datetime):
+                if end_datetime and last_paused_datetime > end_datetime:
+                    errors.update({
+                        'last_paused_datetime': _('Last paused Datetime must be less than or equal to end datetime.')
+                    })
+                if (start_datetime and last_paused_datetime < start_datetime) or \
+                        (instance_last_paused_datetime and last_paused_datetime <
+                         instance_last_paused_datetime):
                     # raise serializers.ValidationError({
                     #         'last_paused_datetime': [
                     #             _('Must be greater than Start Datetime.')
@@ -65,7 +98,7 @@ class JobProcessSerializer(serializers.ModelSerializer):
                     last_paused_datetime = attrs.get('last_paused_datetime')
 
                 if (self.instance.start_datetime and end_datetime < self.instance.start_datetime) or (
-                                last_paused_datetime and end_datetime < last_paused_datetime):
+                        last_paused_datetime and end_datetime < last_paused_datetime):
                     errors.update(
                         {
                             'end_datetime': [
