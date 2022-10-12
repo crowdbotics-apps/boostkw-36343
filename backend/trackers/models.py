@@ -113,6 +113,7 @@ class CustomerTracker(ModelFieldChangeStatusMixin, TimeStampModel):
 
 
 class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
+    STATUS_PENDING = 'pending'
     STATUS_ACTIVE = 'active'
     STATUS_COMPLETED = 'completed'
     STATUS_PAUSED = 'paused'
@@ -132,7 +133,7 @@ class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
     # is_active = models.BooleanField(_('Active'), default=False)
     # is_completed = models.BooleanField(_('Completed'), default=False)
     # is_paused = models.BooleanField(_('Paused'), default=False)
-    status = models.CharField(_('Status'), choices=STATUS_CHOICES, default=STATUS_ACTIVE, max_length=10)
+    status = models.CharField(_('Status'), choices=STATUS_CHOICES, default=STATUS_PENDING, max_length=10)
     # time_spent_seconds = models.PositiveIntegerField(default=0)
     total_paused_time_seconds = models.PositiveIntegerField(default=0)
     start_datetime = models.DateTimeField(_('Start Time'), null=True, blank=True, )

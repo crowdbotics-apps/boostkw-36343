@@ -45,10 +45,16 @@ def close_trackers_job_process(tracker):
     if tracker.status == CustomerTracker.STATUS_CLOSED:
         job_process_is_active = tracker.job_processes.filter(status=JobProcess.STATUS_ACTIVE,
                                                              end_datetime__isnull=True)
-        print(job_process_is_active, 'job_process_is_active')
+        # print(job_process_is_active, 'job_process_is_active')
         job_process_is_paused = tracker.job_processes.filter(status=JobProcess.STATUS_PAUSED,
                                                              end_datetime__isnull=True)
-        print('job_process_is_paused', job_process_is_paused)
+        job_process_is_pending = tracker.job_processes.filter(status=JobProcess.STATUS_PENDING,
+                                                              end_datetime__isnull=True)
+        # print('job_process_is_paused', job_process_is_paused)
         now = timezone.now()
         job_process_is_active.update(status=JobProcess.STATUS_COMPLETED, end_datetime=now)
         job_process_is_paused.update(status=JobProcess.STATUS_COMPLETED, end_datetime=models.F('last_paused_datetime'))
+        job_process_is_pending.update(
+            status=JobProcess.STATUS_COMPLETED, start_datetime=now,
+            last_paused_datetime=now, end_datetime=now,
+        )
