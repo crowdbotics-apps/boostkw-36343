@@ -21,12 +21,12 @@ def create_customer_tracker_job_process(instance, created=False):
     if created and instance.job_processes.count() < 1:
         initial_job_processes = InitialJobProcess.objects.filter(is_active=True, location=instance.location).order_by(
             'position')
-        print(initial_job_processes)
+        # print(initial_job_processes)
         items = []
         for item in initial_job_processes:
             items.append(
                 JobProcess(customer_tracker=instance, title=item.title, position=item.position,
-                           is_active=item.is_active)
+                           status=JobProcess.STATUS_PENDING)
             )
 
         if len(items) > 0:
