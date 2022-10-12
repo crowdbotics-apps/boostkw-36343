@@ -31,6 +31,7 @@ const SwipeableModal = ({
   showLogout = false,
   isSuccess = false,
   swipeDirection = 'down',
+  isLoading = false,
 }) => {
   return (
     <Modal
@@ -66,11 +67,14 @@ const SwipeableModal = ({
             ) : null}
             {children}
 
-            <Button
-              buttonText={buttonText}
-              onPress={onPressBtn}
-              // customStyle={[buttonDanger && styles.buttonDanger]}
-            />
+            {buttonText?.length > 0 ? (
+              <Button
+                buttonText={buttonText}
+                onPress={onPressBtn}
+                isLoading={isLoading}
+                // customStyle={[buttonDanger && styles.buttonDanger]}
+              />
+            ) : null}
 
             {showCancel && (
               <TouchableOpacity onPress={handleCancel}>

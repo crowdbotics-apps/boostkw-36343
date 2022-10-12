@@ -29,8 +29,8 @@ const TrackerStackScreen = () => {
       screenOptions={{ headerShown: false }}
       initialRouteName="MyProfile"
     >
-      <TrackerStack.Screen name="Tracker" component={Tracker} />
       <TrackerStack.Screen name="TrackerInput" component={TrackerInput} />
+      <TrackerStack.Screen name="Tracker" component={Tracker} />
     </TrackerStack.Navigator>
   )
 }

@@ -10,16 +10,22 @@ export const Button = ({
   onPress = () => {},
   customStyle = {},
   isLoading = false,
+  isDisabled = false,
 }) => {
   return (
     <Pressable
-      onPress={onPress}
+      onPress={isDisabled ? () => {} : onPress}
       style={({ pressed }) => [
         styles.container,
         {
-          backgroundColor: pressed
-            ? 'rgba(16, 56, 235, 0.7)'
-            : 'rgba(16, 56, 235, 1)',
+          backgroundColor:
+            pressed && !isDisabled
+              ? 'rgba(16, 56, 235, 0.7)'
+              : isDisabled
+              ? 'rgba(16, 56, 235, 0.4)'
+              : isDisabled && pressed
+              ? 'rgba(16, 56, 235, 0.4)'
+              : 'rgba(16, 56, 235, 1)',
         },
         customStyle,
       ]}
