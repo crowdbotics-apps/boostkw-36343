@@ -27,13 +27,13 @@ class CustomerTrackerAdmin(admin.ModelAdmin):
 
 @admin.register(JobProcess)
 class JobProcessAdmin(admin.ModelAdmin):
-    list_display = ['display_job_code', 'title', 'position', 'display_job_location', 'is_active', 'is_completed',
-                    'is_paused', 'start_datetime', 'end_datetime', 'last_paused_datetime', 'created', 'updated']
+    list_display = ['display_job_code', 'title', 'position', 'display_job_location', 'status', 'start_datetime',
+                    'end_datetime', 'last_paused_datetime', 'created', 'updated']
     readonly_fields = ['display_time_spent_seconds', 'display_time_spent',
                        'display_paused_time']
 
     search_fields = ['title', 'customer_tracker__job_code']
-    list_filter = ['is_active', 'is_completed', 'is_paused']
+    list_filter = ['status']
 
     def display_time_spent_seconds(self, instance):
         return instance.get_time_spent_seconds

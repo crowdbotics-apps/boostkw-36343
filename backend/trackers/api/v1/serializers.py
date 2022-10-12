@@ -32,9 +32,11 @@ class JobProcessSerializer(serializers.ModelSerializer):
         if self.instance.pk:
             instance_last_paused_datetime = self.instance.last_paused_datetime
             total_paused_time_seconds = self.instance.total_paused_time_seconds
-
             start_datetime = self.instance.start_datetime
             end_datetime = self.instance.end_datetime
+            instance_status = self.instance.status
+            if 'status' in attrs:
+                status = attrs.get('status')
             if 'start_datetime' in attrs:
                 start_datetime = attrs.get('start_datetime')
 
@@ -51,15 +53,17 @@ class JobProcessSerializer(serializers.ModelSerializer):
                     'end_datetime': _('End Datetime must be greater than or equal to Start datetime.')
                 })
 
-            instance_is_paused = self.instance.is_paused
+            # instance_is_paused = self.instance.is_paused
 
-            is_paused = attrs.get('is_paused', None)
-            if 'is_paused' in attrs and attrs.get('is_paused') is False and 'last_paused_datetime' in attrs:
+            # is_paused = attrs.get('is_paused', None)
+            if 'status' in attrs and attrs.get('status') != JobProcess.STATUS_PAUSED and 'last_paused_datetime' in \
+                    attrs:
                 attrs.pop('last_paused_datetime')
 
-            if 'last_paused_datetime' in attrs and (not is_paused or is_paused is not True):
+            if 'last_paused_datetime' in attrs and (
+                    'status' not in attrs or attrs.get('status') != JobProcess.STATUS_PAUSED):
                 errors.update({
-                    'is_paused': 'This field is required and value must be true for "last_paused_datetime" field.'
+                    'status': 'This field is required and value must be "paused" for "last_paused_datetime" field.'
                 })
             if 'last_paused_datetime' in attrs:
                 last_paused_datetime = attrs.get('last_paused_datetime')
@@ -91,8 +95,18 @@ class JobProcessSerializer(serializers.ModelSerializer):
                     print(round(second_difference))
                     attrs['total_paused_time_seconds'] = total_paused_time_seconds + round(second_difference)
 
+            if 'status' in attrs and attrs.get('status') == JobProcess.STATUS_COMPLETED:
+                if 'end_datetime' not in attrs:
+                    errors.update({
+                        'end_datetime': _('`end_datetime` is required for status `completed`.')
+                    })
+
             if 'end_datetime' in attrs:
                 end_datetime = attrs.get('end_datetime')
+                if 'status' not in attrs or attrs.get('status') != JobProcess.STATUS_COMPLETED:
+                    errors.update({
+                        'status': _('Status `completed` is required for `end_datetime`.')
+                    })
                 last_paused_datetime = self.instance.last_paused_datetime
                 if 'last_paused_datetime' in attrs:
                     last_paused_datetime = attrs.get('last_paused_datetime')

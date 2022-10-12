@@ -1,5 +1,6 @@
 from rest_framework.generics import *
 
+from .filtersets import CustomerTrackerFilterSet
 from .serializers import *
 
 
@@ -12,6 +13,8 @@ class CustomerTrackerListAPIView(ListCreateAPIView):
     serializer_class = CustomerTrackerSerializerWithJobProcess
     queryset = CustomerTracker.objects.all()
     search_fields = ['job_code', 'customer_name']
+    filterset_class = CustomerTrackerFilterSet
+    ordering_fields = ['created', 'updated']
 
     def get_queryset(self):
         return CustomerTracker.objects.select_related(
@@ -33,6 +36,10 @@ class CustomerTrackerDetailAPIView(RetrieveUpdateDestroyAPIView):
         ).prefetch_related(
             'job_processes'
         ).filter(user=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        print(request.headers)
+        return super(CustomerTrackerDetailAPIView, self).update(request, *args, **kwargs)
 
 
 class CustomerTrackerJobProcessListAPIView(ListCreateAPIView):

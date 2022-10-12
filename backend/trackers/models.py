@@ -61,7 +61,7 @@ class InitialJobProcess(TimeStampModel):
         verbose_name_plural = _('Initial Job Processes')
 
 
-class CustomerTracker(TimeStampModel):
+class CustomerTracker(ModelFieldChangeStatusMixin, TimeStampModel):
     STATUS_ACTIVE = 'active'
     STATUS_CLOSED = 'closed'
     STATUS_CANCELLED = 'cancelled'
@@ -113,6 +113,15 @@ class CustomerTracker(TimeStampModel):
 
 
 class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
+    STATUS_ACTIVE = 'active'
+    STATUS_COMPLETED = 'completed'
+    STATUS_PAUSED = 'paused'
+
+    STATUS_CHOICES = (
+        (STATUS_ACTIVE, _('Active')),
+        (STATUS_COMPLETED, _('Closed')),
+        (STATUS_PAUSED, _('Paused')),
+    )
     customer_tracker = models.ForeignKey('trackers.CustomerTracker', on_delete=models.CASCADE,
                                          related_name='job_processes')
 
@@ -120,9 +129,10 @@ class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
     position = models.PositiveIntegerField(default=1, validators=[
         validators.MinValueValidator(1)
     ])
-    is_active = models.BooleanField(_('Active'), default=False)
-    is_completed = models.BooleanField(_('Completed'), default=False)
-    is_paused = models.BooleanField(_('Paused'), default=False)
+    # is_active = models.BooleanField(_('Active'), default=False)
+    # is_completed = models.BooleanField(_('Completed'), default=False)
+    # is_paused = models.BooleanField(_('Paused'), default=False)
+    status = models.CharField(_('Status'), choices=STATUS_CHOICES, default=STATUS_ACTIVE, max_length=10)
     # time_spent_seconds = models.PositiveIntegerField(default=0)
     total_paused_time_seconds = models.PositiveIntegerField(default=0)
     start_datetime = models.DateTimeField(_('Start Time'), null=True, blank=True, )

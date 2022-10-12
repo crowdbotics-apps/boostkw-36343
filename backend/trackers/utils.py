@@ -1,3 +1,7 @@
+from django.utils import timezone
+from django.db import models
+
+
 def seconds_to_readable_time(seconds):
     seconds = seconds % (24 * 3600)
     hours = seconds // 3600
@@ -34,3 +38,17 @@ def create_customer_tracker_job_process(instance, created=False):
         return None
 
     return None
+
+
+def close_trackers_job_process(tracker):
+    from .models import CustomerTracker, JobProcess
+    if tracker.status == CustomerTracker.STATUS_CLOSED:
+        job_process_is_active = tracker.job_processes.filter(status=JobProcess.STATUS_ACTIVE,
+                                                             end_datetime__isnull=True)
+        print(job_process_is_active, 'job_process_is_active')
+        job_process_is_paused = tracker.job_processes.filter(status=JobProcess.STATUS_PAUSED,
+                                                             end_datetime__isnull=True)
+        print('job_process_is_paused', job_process_is_paused)
+        now = timezone.now()
+        job_process_is_active.update(status=JobProcess.STATUS_COMPLETED, end_datetime=now)
+        job_process_is_paused.update(status=JobProcess.STATUS_COMPLETED, end_datetime=models.F('last_paused_datetime'))
