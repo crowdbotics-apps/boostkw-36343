@@ -10,6 +10,24 @@ class TrackerInputListAPI(ListAPIView):
     queryset = TrackerInput.objects.all()
 
 
+class CustomerTrackerActiveDetailAPIView(RetrieveAPIView):
+    serializer_class = CustomerTrackerSerializerWithJobProcess
+    queryset = CustomerTracker.objects.none()
+
+    def get_queryset(self):
+        return CustomerTracker.objects.select_related(
+            'user', 'crew', 'roof_type'
+        ).prefetch_related(
+            'job_processes'
+        ).filter(user=self.request.user, status=CustomerTracker.STATUS_ACTIVE)
+
+    def get_object(self):
+        try:
+            return self.get_queryset().first()
+        except CustomerTracker.DoesNotExist:
+            raise Http404
+
+
 class CustomerTrackerListAPIView(ListCreateAPIView):
     serializer_class = CustomerTrackerSerializerWithJobProcess
     queryset = CustomerTracker.objects.all()
