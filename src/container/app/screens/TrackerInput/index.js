@@ -127,6 +127,8 @@ const TrackerInput = ({ route, navigation }) => {
   }
 
   const handleSubmit = () => {
+    // navigation.navigate('Tracker', { params: { id: 29 } })
+
     const finalValues = handleSubmitFinalValues()
 
     const errors = verifyInput(finalValues)
@@ -175,8 +177,10 @@ const TrackerInput = ({ route, navigation }) => {
   }
 
   function onSuccessStartTracking(data) {
-    navigation.navigate('Tracker', { location: data.location })
+    console.log('trackInfo', data)
+    navigation.navigate('Tracker', { params: data })
   }
+
   return (
     <Layout>
       <Header title="Tracker Inputs" />

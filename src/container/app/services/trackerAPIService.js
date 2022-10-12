@@ -36,8 +36,51 @@ function trackerInputs(payload) {
     })
 }
 
+function closeProject(payload) {
+  console.log('closeProject')
+  return request
+    .patch(`trackers/customer-tracker-inputs/${payload.id}/`, payload)
+    .then(res => {
+      return res.data
+    })
+    .catch(function (error) {
+      console.log('error=>', error)
+      throw error
+    })
+}
+
+function getCustomerTruckerInputsProcesses(payload) {
+  console.log('payload tracker_id', payload)
+  return request
+    .get(`trackers/customer-tracker-inputs/${payload.tracker_id}/`)
+    .then(res => {
+      return res.data
+    })
+    .catch(function (error) {
+      console.log('error=>', error)
+      throw error
+    })
+}
+
+function startStopProcess(payload) {
+  return request
+    .patch(
+      `trackers/customer-tracker-inputs/${payload.tracker_id}/job-processes/${payload.job_process_id}/`,
+      payload.jobProcessItem,
+    )
+    .then(res => {
+      return res.data
+    })
+    .catch(function (error) {
+      console.log('error=>', error)
+      throw error
+    })
+}
 export const trackerAPIService = {
   getRoofTypes,
   getCrews,
+  getCustomerTruckerInputsProcesses,
   trackerInputs,
+  closeProject,
+  startStopProcess,
 }
