@@ -1,4 +1,5 @@
 from rest_framework.generics import *
+from rest_framework.response import Response
 
 from .filtersets import CustomerTrackerFilterSet
 from .serializers import *
@@ -7,6 +8,24 @@ from .serializers import *
 class TrackerInputListAPI(ListAPIView):
     serializer_class = TrackerInputSerializer
     queryset = TrackerInput.objects.all()
+
+
+class CustomerTrackerActiveDetailAPIView(RetrieveAPIView):
+    serializer_class = CustomerTrackerSerializerWithJobProcess
+    queryset = CustomerTracker.objects.none()
+
+    def get_queryset(self):
+        return CustomerTracker.objects.select_related(
+            'user', 'crew', 'roof_type'
+        ).prefetch_related(
+            'job_processes'
+        ).filter(user=self.request.user, status=CustomerTracker.STATUS_ACTIVE)
+
+    def get_object(self):
+        try:
+            return self.get_queryset().first()
+        except CustomerTracker.DoesNotExist:
+            raise Http404
 
 
 class CustomerTrackerListAPIView(ListCreateAPIView):
@@ -25,6 +44,14 @@ class CustomerTrackerListAPIView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        check_active = self.get_queryset().filter(status=CustomerTracker.STATUS_ACTIVE).exists()
+        if check_active:
+            return Response({
+                'detail': 'You already have an active project.'
+            }, status=400)
+        return super(CustomerTrackerListAPIView, self).create(request, *args, **kwargs)
 
 
 class CustomerTrackerDetailAPIView(RetrieveUpdateDestroyAPIView):

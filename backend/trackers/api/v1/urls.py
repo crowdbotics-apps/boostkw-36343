@@ -11,6 +11,8 @@ app_name = 'trackers'
 urlpatterns = [
     path('', include(router.urls)),
     path('input-types/', views.TrackerInputListAPI.as_view(), name='tracker_inputs'),
+    path('customer-tracker-active/', views.CustomerTrackerActiveDetailAPIView.as_view(),
+         name='customer_tracker_active'),
     path('customer-tracker-inputs/', views.CustomerTrackerListAPIView.as_view(), name='customer_tracker_inputs'),
     path('customer-tracker-inputs/<int:pk>/', views.CustomerTrackerDetailAPIView.as_view(),
          name='customer_tracker_input_detail'),
