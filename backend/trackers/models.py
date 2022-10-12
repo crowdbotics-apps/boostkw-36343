@@ -140,10 +140,10 @@ class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
     @property
     def get_time_spent_seconds(self):
         if self.start_datetime:
-            if not self.end_datetime:
+            if not self.end_datetime and (self.start_datetime and self.last_paused_datetime):
                 seconds = datetime_difference_in_seconds(self.start_datetime, self.last_paused_datetime)
                 return round(seconds)
-            else:
+            elif self.end_datetime and self.start_datetime:
                 start_end_seconds = datetime_difference_in_seconds(self.start_datetime, self.end_datetime)
                 return start_end_seconds - self.total_paused_time_seconds
         return 0
