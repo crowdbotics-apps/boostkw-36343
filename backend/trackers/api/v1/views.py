@@ -1,4 +1,5 @@
 from rest_framework.generics import *
+from rest_framework.response import Response
 
 from .filtersets import CustomerTrackerFilterSet
 from .serializers import *
@@ -25,6 +26,14 @@ class CustomerTrackerListAPIView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        check_active = self.get_queryset().filter(status=CustomerTracker.STATUS_ACTIVE).exists()
+        if check_active:
+            return Response({
+                'detail': 'You already have an active project.'
+            }, status=400)
+        return super(CustomerTrackerListAPIView, self).create(request, *args, **kwargs)
 
 
 class CustomerTrackerDetailAPIView(RetrieveUpdateDestroyAPIView):

@@ -104,8 +104,25 @@ class CustomerTracker(ModelFieldChangeStatusMixin, TimeStampModel):
         verbose_name = _('Customer Tracker')
         verbose_name_plural = _('Customer Trackers')
 
+        constraints = [
+            models.UniqueConstraint(
+                fields=['status', 'user'],
+                name='user_customer_tracker_active_unique',
+                condition=models.Q(status='active')
+            )
+        ]
+
     def clean(self):
+        user = self.user
+        status = self.status
         is_battery = self.is_battery
+        if not self.pk and status == CustomerTracker.STATUS_ACTIVE:
+            check_active = CustomerTracker.objects.filter(user=user, status=status)
+            if check_active.exists():
+                raise ValidationError({
+                    'user': _('User already have an active project.')
+                })
+
         if is_battery and (not self.number_of_batteries or self.number_of_batteries < 1):
             raise ValidationError({
                 'number_of_batteries': _('Field is required and number must be greater than 0.')
