@@ -9,10 +9,10 @@ from .utils import create_customer_tracker_job_process
 
 @receiver(post_save, sender=CustomerTracker)
 def model_customer_tracker_post_save(sender, created, instance, **kwargs):
-    if created:
-        create_customer_tracker_job_process(instance, created=created)
+    if created or instance.job_processes.count() < 1:
+        create_customer_tracker_job_process(instance, created=True)
     status_changed = instance.data_changed(['status'])
-    print(status_changed)
+    # print(status_changed)
     if status_changed and instance.status == CustomerTracker.STATUS_CLOSED:
         from trackers.utils import close_trackers_job_process
         close_trackers_job_process(instance)

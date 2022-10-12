@@ -119,6 +119,7 @@ class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
     STATUS_PAUSED = 'paused'
 
     STATUS_CHOICES = (
+        (STATUS_PENDING, _('Pending')),
         (STATUS_ACTIVE, _('Active')),
         (STATUS_COMPLETED, _('Closed')),
         (STATUS_PAUSED, _('Paused')),
