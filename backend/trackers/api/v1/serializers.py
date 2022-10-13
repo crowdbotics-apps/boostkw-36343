@@ -87,13 +87,19 @@ class JobProcessSerializer(serializers.ModelSerializer):
                         }
 
                     )
-                if self.instance.last_paused_datetime and last_paused_datetime >= self.instance.last_paused_datetime:
-                    # second_difference_check = datetime_difference_in_seconds(self.instance.last_paused_datetime,
-                    #                                                    last_paused_datetime)
+            if 'status' in attrs and attrs.get('status') == JobProcess.STATUS_ACTIVE:
+                if instance_status == JobProcess.STATUS_PAUSED:
                     second_difference = datetime_difference_in_seconds(self.instance.last_paused_datetime,
-                                                                       last_paused_datetime)
-                    print(round(second_difference))
+                                                                       attrs.get('resuming_datetime'))
                     attrs['total_paused_time_seconds'] = total_paused_time_seconds + round(second_difference)
+
+                # if self.instance.last_paused_datetime and last_paused_datetime >= self.instance.last_paused_datetime:
+                #     # second_difference_check = datetime_difference_in_seconds(self.instance.last_paused_datetime,
+                #     #                                                    last_paused_datetime)
+                #     second_difference = datetime_difference_in_seconds(self.instance.last_paused_datetime,
+                #                                                        last_paused_datetime)
+                #     print(round(second_difference))
+                #     attrs['total_paused_time_seconds'] = total_paused_time_seconds + round(second_difference)
 
             if 'status' in attrs and attrs.get('status') == JobProcess.STATUS_COMPLETED:
                 if 'end_datetime' not in attrs:

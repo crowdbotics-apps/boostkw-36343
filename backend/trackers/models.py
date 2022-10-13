@@ -157,6 +157,7 @@ class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
     start_datetime = models.DateTimeField(_('Start Time'), null=True, blank=True, )
     end_datetime = models.DateTimeField(_('End Time'), null=True, blank=True)
     last_paused_datetime = models.DateTimeField(_('Last Paused Time'), null=True, blank=True)
+    resuming_datetime = models.DateTimeField(_('Resuming Time'), null=True, blank=True)
 
     def __str__(self):
         return '%s' % self.title
@@ -169,7 +170,10 @@ class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
     @property
     def get_time_spent_seconds(self):
         if self.start_datetime:
-            if not self.end_datetime and (self.start_datetime and self.last_paused_datetime):
+            if not self.end_datetime and self.resuming_datetime and self.status == JobProcess.STATUS_ACTIVE:
+                seconds = datetime_difference_in_seconds(self.start_datetime, self.resuming_datetime)
+                return round(seconds) - self.total_paused_time_seconds
+            if not self.end_datetime and self.last_paused_datetime and self.status == JobProcess.STATUS_PAUSED:
                 seconds = datetime_difference_in_seconds(self.start_datetime, self.last_paused_datetime)
                 return round(seconds) - self.total_paused_time_seconds
             elif self.end_datetime and self.start_datetime:
