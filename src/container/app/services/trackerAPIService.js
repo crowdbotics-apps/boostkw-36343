@@ -36,8 +36,19 @@ function trackerInputs(payload) {
     })
 }
 
+function getActiveProject() {
+  return request
+    .get('/trackers/customer-tracker-active/')
+    .then(res => {
+      return res.data
+    })
+    .catch(function (error) {
+      console.log('error=>', error)
+      throw error
+    })
+}
+
 function closeProject(payload) {
-  console.log('closeProject')
   return request
     .patch(`trackers/customer-tracker-inputs/${payload.id}/`, payload)
     .then(res => {
@@ -82,5 +93,6 @@ export const trackerAPIService = {
   getCustomerTruckerInputsProcesses,
   trackerInputs,
   closeProject,
+  getActiveProject,
   startStopProcess,
 }

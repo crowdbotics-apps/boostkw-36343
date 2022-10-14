@@ -18,6 +18,7 @@ import { TabBar } from './tabs'
 import Dashboard from '@/container/app/screens/Dashboard'
 import TrackerInput from '@/container/app/screens/TrackerInput'
 import Tracker from '@/container/app/screens/Tracker'
+import CheckActiveProject from '@/container/app/screens/CheckActiveProject'
 
 const RootStack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -27,8 +28,12 @@ const TrackerStackScreen = () => {
   return (
     <TrackerStack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="MyProfile"
+      initialRouteName="CheckActiveProject"
     >
+      <TrackerStack.Screen
+        name="CheckActiveProject"
+        component={CheckActiveProject}
+      />
       <TrackerStack.Screen name="TrackerInput" component={TrackerInput} />
       <TrackerStack.Screen name="Tracker" component={Tracker} />
     </TrackerStack.Navigator>
