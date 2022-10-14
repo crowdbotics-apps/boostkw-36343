@@ -29,7 +29,30 @@ export const useGetCrews = payload => {
     ['useGetCrews'],
     () => trackerAPIService.getCrews(payload),
     {
-      staleTime: 1000,
+      staleTime: 0,
+      cacheTime: 0,
+    },
+    {
+      onError: e => {
+        console.error(e)
+      },
+      refetchInterval: 2000,
+    },
+  )
+
+  return {
+    crewList: data,
+    isLoading,
+    error,
+  }
+}
+
+export const useGetActiveProject = payload => {
+  const { data, isLoading, error, isSuccess } = useQuery(
+    ['useGetCrews'],
+    () => trackerAPIService.getActiveProject(payload),
+    {
+      staleTime: 0,
       cacheTime: 0,
     },
     {
@@ -41,7 +64,8 @@ export const useGetCrews = payload => {
   )
 
   return {
-    crews: data,
+    activeProject: data,
+    isSuccess,
     isLoading,
     error,
   }

@@ -53,4 +53,35 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 20,
   },
+  header: {
+    borderBottomColor: appStyles.COLOR_GRAY_2,
+    borderBottomWidth: 1,
+    marginBottom: 10,
+  },
+  message: {
+    fontSize: 14,
+    color: appStyles.WHITE_COLOR,
+    fontFamily: appStyles.FONT_FAMILY_MEDIUM,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  title: {
+    fontSize: 20,
+    color: appStyles.WHITE_COLOR,
+    fontFamily: appStyles.FONT_FAMILY_MEDIUM,
+    textAlign: 'center',
+  },
+  hours: {
+    fontSize: 14,
+    color: appStyles.WHITE_COLOR,
+    fontFamily: appStyles.FONT_FAMILY_MEDIUM,
+    textAlign: 'center',
+  },
+  cancel: {
+    fontSize: 14,
+    color: appStyles.WHITE_COLOR,
+    fontFamily: appStyles.FONT_FAMILY_SEMI_BOLD,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
 })

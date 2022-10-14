@@ -1,6 +1,5 @@
 export { default as Brand } from './Brand'
 export { default as Loading } from './Loading'
-export { default as PopupModal } from './Modal'
 export { default as Input } from './Input'
 export { default as TopStatusBar } from './StatusBar'
 export { default as CheckBoxs } from './CheckBox'

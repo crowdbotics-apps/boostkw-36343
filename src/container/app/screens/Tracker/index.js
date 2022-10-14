@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
@@ -14,6 +14,7 @@ import { Button } from '@/components/Button'
 import TimePicker, { getDateTimePicker } from '@/components/TimePicker'
 import { JobProcessItem } from '@/components/JobProcessItem'
 import { LoadingModal } from '@/components/LoadingModal'
+import { Modal } from '@/components/Modal'
 import {
   useCloseProject,
   useGetCustomerTruckerInputsProcesses,
@@ -44,6 +45,9 @@ const Tracker = ({ route, navigation }) => {
   const [editDetails, setEditDetails] = useState({})
   const [showEndTimePicker, setShowEndTimePicker] = useState(false)
   const [selectedProcesses, setSelectedProcesses] = useState([])
+
+  const [showDone, setShowDone] = useState(false)
+  const [selectedProcessToDone, setSelectedProcessToDone] = useState([])
 
   const [dateStart, setDateStart] = useState(new Date())
   const [dateEnd, setDateEnd] = useState(new Date())
@@ -81,8 +85,6 @@ const Tracker = ({ route, navigation }) => {
       const newProcess = trackingInfo?.job_processes?.map(job_process => {
         let item = {}
 
-        // console.log(job_process?.start_datetime && !job_process?.is_paused)
-
         if (job_process.status === 'active') {
           const startTime = new Date(job_process?.start_datetime).getTime()
           const now = new Date().getTime()
@@ -91,25 +93,15 @@ const Tracker = ({ route, navigation }) => {
             job_process?.total_paused_time_seconds * 1000
 
           const timeDifference = now - startTime - totalPausedTimeSeconds
-          // const timePaused = job_process?.total_paused_time_seconds
-          // const timeDifferencePaused = timeDifference - timePaused
-          // console.log('startTime', startTime)
-          // console.log('timePaused', timePaused)
-          // console.log('timeDifference running', timeDifference)
 
-          // console.log('timeDifferencePaused', timeDifferencePaused)
+          console.log('totalPausedTimeSeconds', totalPausedTimeSeconds)
+
           const date1 = dayjs(job_process?.start_datetime)
           const date2 = dayjs()
 
           let hoursss = date2.diff(date1, 'hours')
           let min = date2.diff(date1, 'hours')
 
-          // console.log(date2)
-          // console.log(date1)
-          // console.log('minute', hoursss)
-          // console.log('min', min)
-
-          // console.log('date1.diff(date2)', date2.diff(date1))
           totalTotal = totalTotal + timeDifference
 
           const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
@@ -121,9 +113,9 @@ const Tracker = ({ route, navigation }) => {
           )
           const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000)
           // console.log(startTime)
-          console.log('days', days)
-          console.log('minutes', minutes)
-          console.log('seconds', seconds)
+          // console.log('days', days)
+          // console.log('minutes', minutes)
+          // console.log('seconds', seconds)
           // console.log('hours', hours)
           let processTime = days + ':' + hours + ':' + minutes + ':' + seconds
           // console.log('time', time)
@@ -137,11 +129,45 @@ const Tracker = ({ route, navigation }) => {
 
           const totalPausedTimeSeconds =
             job_process?.total_paused_time_seconds * 1000
+          // const totalPausedTimeSeconds = 2 * 1000
 
           const timeDifference =
             lastPausedDatetime - startTime - totalPausedTimeSeconds
 
-          // console.log('timeDifference paused', timeDifference)
+          if (job_process?.id == 210) {
+            console.log('totalPausedTimeSeconds', totalPausedTimeSeconds)
+            console.log('timeDifference paused', timeDifference)
+            console.log(
+              'job_process?.last_paused_datetime',
+              job_process?.last_paused_datetime,
+            )
+          }
+          // console.log('timeDifference', timeDifference)
+
+          totalTotal = totalTotal + timeDifference
+
+          const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+          const hours = Math.floor(
+            (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+          )
+          const minutes = Math.floor(
+            (timeDifference % (1000 * 60 * 60)) / (1000 * 60),
+          )
+          const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000)
+
+          let processTime = days + ':' + hours + ':' + minutes + ':' + seconds
+
+          item = { ...job_process, ...{ time: processTime } }
+        } else if (job_process.status === 'completed') {
+          const startTime = new Date(job_process?.start_datetime).getTime()
+
+          const endDatetime = new Date(job_process?.end_datetime).getTime()
+
+          const totalPausedTimeSeconds =
+            job_process?.total_paused_time_seconds * 1000
+
+          const timeDifference =
+            endDatetime - startTime - totalPausedTimeSeconds
 
           totalTotal = totalTotal + timeDifference
 
@@ -158,13 +184,10 @@ const Tracker = ({ route, navigation }) => {
 
           item = { ...job_process, ...{ time: processTime } }
         }
-
         item = { ...job_process, ...item }
 
         return item
       })
-
-      // console.log('totalTotal', totalTotal)
 
       const days = Math.floor(totalTotal / (1000 * 60 * 60 * 24))
       const hours = Math.floor(
@@ -178,13 +201,6 @@ const Tracker = ({ route, navigation }) => {
       // console.log('processesTime', processesTime)
       // console.log('processesTime', processesTime)
       setTotalTime(processesTime)
-      console.log(
-        'job_processes   sjs',
-        processesTime,
-        //  customerTruckerInputsProcesses?.job_processes,
-      )
-
-      // console.log('getTime newProcess', newProcess)
 
       setProcesses(newProcess)
     }
@@ -233,14 +249,17 @@ const Tracker = ({ route, navigation }) => {
     let payload = {}
 
     if (jobProcess.status === 'pending') {
+      //Start the project
       payload['start_datetime'] = nowDateTime
       payload['status'] = 'active'
     } else if (jobProcess.status === 'active') {
+      //Pause the project
       payload['last_paused_datetime'] = nowDateTime
       payload['status'] = 'paused'
     } else if (jobProcess.status === 'paused') {
-      payload['last_paused_datetime'] = jobProcess.last_paused_datetime
+      //continue tracking
       payload['status'] = 'active'
+      payload['resuming_datetime'] = nowDateTime
     }
 
     startStopProcess({
@@ -250,31 +269,23 @@ const Tracker = ({ route, navigation }) => {
     })
   }
 
+  const handleDone = jobProcess => {
+    console.log('jobProcess', jobProcess)
+    if (
+      jobProcess?.time &&
+      jobProcess?.status !== 'pending' &&
+      jobProcess?.status !== 'completed'
+    ) {
+      setShowDone(true)
+      setSelectedProcessToDone(jobProcess)
+    }
+  }
+
   function onSuccessFetch(data) {
     console.log('onSuccessFetch', data)
   }
 
   const handleClose = async () => {
-    console.log('clear')
-
-    for (const jobProcess of trackingInfo?.job_processes) {
-      let payload = {
-        ...jobProcess,
-        end_datetime: dayjs().format(),
-        is_completed: true,
-        is_paused: true,
-      }
-
-      // console.log('payload', payload)
-
-      startStopProcess({
-        tracker_id: jobProcess?.customer_tracker,
-        job_process_id: jobProcess?.id,
-        jobProcessItem: payload,
-      })
-    }
-    console.log('payload', params?.id)
-
     closeProject({ id: params?.id, status: 'closed' })
   }
 
@@ -302,8 +313,7 @@ const Tracker = ({ route, navigation }) => {
     const jobProcessItem = {
       start_datetime: editDetails.start_datetime,
       end_datetime: editDetails.end_datetime,
-      is_completed: true,
-      is_paused: true,
+      status: 'completed',
     }
     console.log('editDetails', editDetails)
     console.log('jobProcessItem', jobProcessItem)
@@ -386,6 +396,7 @@ const Tracker = ({ route, navigation }) => {
               isSelected={isSelected}
               key={idx}
               handleStartStop={handleStartStop}
+              handleDone={handleDone}
             />
           )
         })}
@@ -460,6 +471,22 @@ const Tracker = ({ route, navigation }) => {
         </SwipeableModal>
 
         <LoadingModal isLoading={isLoading || isClosing} />
+        <Modal visible={showDone}>
+          <View style={styles.header}>
+            <Text style={styles.title}>{selectedProcessToDone?.title}</Text>
+          </View>
+          <Text style={styles.hours}>
+            Total Spent: {selectedProcessToDone?.time} hrs
+          </Text>
+
+          <Text style={styles.message}>Mark job process as Done?</Text>
+
+          <Button buttonText="Done" />
+
+          <TouchableOpacity onPress={() => setShowDone(false)}>
+            <Text style={styles.cancel}>Cancel</Text>
+          </TouchableOpacity>
+        </Modal>
         <View style={{ height: 100 }} />
       </ScrollView>
     </Layout>

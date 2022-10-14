@@ -21,17 +21,16 @@ import ImagePicker from 'react-native-image-crop-picker'
 import { request, addTokenToHttp } from '@/Utils/http'
 import { setUser, setRemeberUser } from '@/Services/modules/auth'
 import { setLoggedIn } from '@/Services/modules/app'
+import { useGetCrews } from '@/container/app/hooks/useTracker'
 
 const SignUpContainer = ({ navigation }) => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
   const dispatch = useDispatch()
   const [nextPage, setNextPage] = useState(false)
   const [profileImage, setProfileImage] = useState(null)
-  const [crewList, setCrewList] = useState([])
+  const [crews, setCrews] = useState([])
 
-  useEffect(() => {
-    !crewList.length && fetchCrew()
-  }, [])
+  const { crewList, refetch } = useGetCrews()
 
   const modalizeRef = useRef(null)
 
@@ -43,6 +42,16 @@ const SignUpContainer = ({ navigation }) => {
     modalizeRef.current?.close()
   }
 
+  useEffect(() => {
+    handleSetCrews()
+  }, [crewList])
+
+  const handleSetCrews = () => {
+    if (crewList?.length > 0) {
+      setCrews(crewList)
+    }
+  }
+
   const [values, setValues] = useState({})
   const [errorMessage, setErrorMessage] = useState({
     email: '',
@@ -51,20 +60,6 @@ const SignUpContainer = ({ navigation }) => {
     firstName: '',
     lastName: '',
   })
-
-  const fetchCrew = async () => {
-    try {
-      const response = await request.get(`crews/`)
-      if (response) {
-        const data = response.data?.map(item => {
-          return { name: item.name, value: item.id }
-        })
-        setCrewList(data)
-      }
-    } catch (error) {
-      console.log('Error: crew list', error)
-    }
-  }
 
   const onNavigateLogin = () => {
     navigation.navigate('Login')
@@ -465,7 +460,7 @@ const SignUpContainer = ({ navigation }) => {
                   console.log(selectedItem, index)
                   onChange('crewName', selectedItem.value)
                 }}
-                data={crewList}
+                data={crews}
                 defaultText="Crew Name"
                 buttonTextAfterSelection={(selectedItem, index) => {
                   // text represented after item is selected

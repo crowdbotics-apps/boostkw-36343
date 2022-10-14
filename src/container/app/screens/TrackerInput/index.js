@@ -1,5 +1,5 @@
 import { View, Text, Switch } from 'react-native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -37,10 +37,13 @@ const VALUES = {
 }
 const TrackerInput = ({ route, navigation }) => {
   const { roofTypes } = useGetRoofTypes()
-  const { crews } = useGetCrews()
+  const { crewList, refetch } = useGetCrews()
   const { startTracking, isLoading, error } = useStartTracking(
     onSuccessStartTracking,
   )
+
+  const [crews, setCrews] = useState([])
+  console.log('crews', crewList)
 
   useFocusEffect(
     useCallback(() => {
@@ -51,6 +54,16 @@ const TrackerInput = ({ route, navigation }) => {
       }
     }, [route]),
   )
+
+  useEffect(() => {
+    handleSetCrews()
+  }, [crewList])
+
+  const handleSetCrews = () => {
+    if (crewList?.length > 0) {
+      setCrews(crewList)
+    }
+  }
 
   const [showBattery, setShowBattery] = useState(false)
   const [values, setValues] = useState(VALUES)
@@ -225,7 +238,7 @@ const TrackerInput = ({ route, navigation }) => {
 
         <Select
           label="Roof Type"
-          items={roofTypes}
+          items={roofTypes || []}
           handleChange={val => handleDropdownChange('roof_type', val)}
           selected={values?.roof_type}
           showDefault={true}
@@ -276,7 +289,6 @@ const TrackerInput = ({ route, navigation }) => {
             />
           )}
         </View>
-
         <Select
           label="Select Crew"
           items={crews}
@@ -293,7 +305,7 @@ const TrackerInput = ({ route, navigation }) => {
 
         <Select
           label="Location"
-          items={LOCATIONS}
+          items={LOCATIONS || []}
           handleChange={val => handleDropdownChange('location', val)}
           selected={values?.location}
           showDefault={true}

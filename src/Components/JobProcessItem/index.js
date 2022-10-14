@@ -24,12 +24,12 @@ export const JobProcessItem = ({
     <View style={styles.container}>
       <View style={styles.left}>
         <TouchableOpacity style={styles.doneBtn}>
-          {isSelected ? (
-            <TouchableOpacity onPress={() => handleSelect(jobProcess)}>
+          {jobProcess?.status === 'completed' ? (
+            <TouchableOpacity onPress={() => handleDone(jobProcess)}>
               <DoneCheckIcon height={24} width={24} />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={() => handleSelect(jobProcess)}>
+            <TouchableOpacity onPress={() => handleDone(jobProcess)}>
               <DoneUnCheckIcon height={24} width={24} />
             </TouchableOpacity>
           )}
@@ -47,18 +47,19 @@ export const JobProcessItem = ({
           <EditIcon height={24} width={24} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.playBtn}
-          onPress={() => handleStartStop(jobProcess)}
-        >
-          {jobProcess?.status === 'paused' ||
-          jobProcess?.status === 'pending' ? (
-            <PlayIcon height={24} width={24} />
-          ) : (
-            <PauseIcon height={24} width={24} />
-          )}
-        </TouchableOpacity>
-        {/* ) : null} */}
+        {jobProcess?.status !== 'completed' ? (
+          <TouchableOpacity
+            style={styles.playBtn}
+            onPress={() => handleStartStop(jobProcess)}
+          >
+            {jobProcess?.status === 'paused' ||
+            jobProcess?.status === 'pending' ? (
+              <PlayIcon height={24} width={24} />
+            ) : (
+              <PauseIcon height={24} width={24} />
+            )}
+          </TouchableOpacity>
+        ) : null}
       </View>
     </View>
   )
