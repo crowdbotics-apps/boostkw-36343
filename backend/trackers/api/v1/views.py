@@ -1,8 +1,11 @@
+from datetime import timedelta
+
 from rest_framework.generics import *
 from rest_framework.response import Response
-
+from django.db.models.functions import Coalesce
 from .filtersets import CustomerTrackerFilterSet
 from .serializers import *
+from ...db_utils import customer_tracker_job_process_subqs
 
 
 class TrackerInputListAPI(ListAPIView):
@@ -36,11 +39,15 @@ class CustomerTrackerListAPIView(ListCreateAPIView):
     ordering_fields = ['created', 'updated']
 
     def get_queryset(self):
-        return CustomerTracker.objects.select_related(
+        queryset = CustomerTracker.objects.select_related(
             'user', 'crew', 'roof_type'
         ).prefetch_related(
             'job_processes'
         ).filter(user=self.request.user)
+        queryset = queryset.annotate(
+            total_time_spent_seconds=customer_tracker_job_process_subqs(),
+        )
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -55,14 +62,19 @@ class CustomerTrackerListAPIView(ListCreateAPIView):
 
 
 class CustomerTrackerDetailAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = CustomerTrackerSerializerWithJobProcess
+    # serializer_class = CustomerTrackerSerializerWithJobProcess
+    serializer_class = CustomerTrackerDetailSerializer
 
     def get_queryset(self):
-        return CustomerTracker.objects.select_related(
+        queryset = CustomerTracker.objects.select_related(
             'user', 'crew', 'roof_type'
         ).prefetch_related(
             'job_processes'
         ).filter(user=self.request.user)
+        queryset = queryset.annotate(
+            total_time_spent_seconds=customer_tracker_job_process_subqs(),
+        )
+        return queryset
 
     def update(self, request, *args, **kwargs):
         print(request.headers)
@@ -70,13 +82,15 @@ class CustomerTrackerDetailAPIView(RetrieveUpdateDestroyAPIView):
 
 
 class CustomerTrackerJobProcessListAPIView(ListCreateAPIView):
-    serializer_class = JobProcessSerializer
+    serializer_class = JobProcessListSerializer
     queryset = JobProcess.objects.none()
     pagination_class = None
 
     def get_queryset(self):
-        return JobProcess.objects.filter(customer_tracker_id=self.kwargs.get('pk'),
-                                         customer_tracker__user=self.request.user)
+        queryset = JobProcess.objects.filter(customer_tracker_id=self.kwargs.get('pk'),
+                                             customer_tracker__user=self.request.user)
+
+        return queryset
 
 
 class CustomerTrackerJobProcessDetailAPIView(RetrieveUpdateDestroyAPIView):
