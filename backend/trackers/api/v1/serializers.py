@@ -135,6 +135,23 @@ class JobProcessSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class JobProcessListSerializer(serializers.ModelSerializer):
+    time_spent = serializers.JSONField(source='get_time_spent', read_only=True)
+    time_spent_seconds = serializers.JSONField(source='get_time_spent_seconds', read_only=True)
+
+    class Meta:
+        model = JobProcess
+        fields = '__all__'
+        extra_kwargs = {
+            'customer_tracker': {
+                'read_only': True
+            },
+            'total_paused_time_seconds': {
+                'read_only': True
+            }
+        }
+
+
 class CustomerTrackerSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerTracker
@@ -148,6 +165,7 @@ class CustomerTrackerSerializer(serializers.ModelSerializer):
 
 class CustomerTrackerSerializerWithJobProcess(serializers.ModelSerializer):
     # job_processes = JobProcessSerializer(many=True, read_only=True)
+    total_time_spent_seconds = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = CustomerTracker
@@ -199,3 +217,33 @@ class CustomerTrackerSerializerWithJobProcess(serializers.ModelSerializer):
             attrs['is_battery'] = is_battery
 
         return attrs
+
+
+class CustomerTrackerDetailSerializer(serializers.ModelSerializer):
+    # total_time_spent_seconds = serializers.IntegerField(source='get_total_time_spent_seconds', read_only=True)
+    total_time_spent_seconds = serializers.IntegerField(read_only=True)
+    total_time_spent_display = serializers.SerializerMethodField(method_name='get_total_time_spent_display')
+
+    class Meta:
+        model = CustomerTracker
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        res = super(self.__class__, self).to_representation(instance)
+        res['roof_type'] = None
+        if instance.roof_type:
+            res['roof_type'] = RoofTypeSerializer(instance.roof_type).data
+        res['crew'] = None
+        if instance.crew:
+            res['crew'] = CrewSerializer(instance.crew).data
+        res['job_processes'] = JobProcessSerializer(instance.job_processes, many=True).data
+        return res
+
+    def get_total_time_spent_display(self, instance):
+        if instance.total_time_spent_seconds:
+            return seconds_to_readable_time(instance.total_time_spent_seconds)
+        return {
+            'hours': 0,
+            'minutes': 0,
+            'left_seconds': 0,
+        }

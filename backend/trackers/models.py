@@ -112,6 +112,44 @@ class CustomerTracker(ModelFieldChangeStatusMixin, TimeStampModel):
             )
         ]
 
+    @property
+    def get_total_time_spent_seconds(self):
+        from modules.database_utils import Epoch
+        diff_resuming_datetime = Epoch(models.F('resuming_datetime') - models.F('start_datetime'))
+        diff_last_paused_datetime = Epoch(models.F('last_paused_datetime') - models.F('start_datetime'))
+        queryset = self.job_processes.annotate(
+            time_spent_seconds=models.Case(
+                models.When(start_datetime__isnull=False, resuming_datetime__isnull=False,
+                            end_datetime__isnull=True,
+                            status=JobProcess.STATUS_ACTIVE,
+                            then=diff_resuming_datetime - models.F('total_paused_time_seconds')
+                            ),
+                models.When(end_datetime__isnull=True, last_paused_datetime__isnull=False,
+                            status=JobProcess.STATUS_PAUSED,
+                            then=diff_last_paused_datetime - models.F('total_paused_time_seconds')
+                            ),
+                models.When(start_datetime__isnull=False,
+                            end_datetime__isnull=False,
+                            then=diff_last_paused_datetime - models.F('total_paused_time_seconds')
+                            ),
+
+                output_field=models.IntegerField(),
+                default=0
+            ),
+        ).aggregate(
+            total_time_spent_seconds=models.Sum('time_spent_seconds')
+        )
+        return queryset['total_time_spent_seconds']
+
+    def get_total_time_spent_display(self):
+        if self.get_total_time_spent_seconds:
+            return seconds_to_readable_time(self.get_total_time_spent_seconds)
+        return {
+            'hours': 0,
+            'minutes': 0,
+            'left_seconds': 0,
+        }
+
     def clean(self):
         user = self.user
         status = self.status
