@@ -18,10 +18,12 @@ import { checkEmail, checkPassword } from '@/Utils/Validations'
 import { Branch } from '@/Utils/Branch'
 import { Jobs } from '@/Utils/Jobs'
 import ImagePicker from 'react-native-image-crop-picker'
-import { request, addTokenToHttp } from '@/Utils/http'
+import { addTokenToHttp } from '@/Utils/http'
+import { request } from '@/util/http'
 import { setUser, setRemeberUser } from '@/Services/modules/auth'
 import { setLoggedIn } from '@/Services/modules/app'
 import { useGetCrews } from '@/container/app/hooks/useTracker'
+import { Select } from '@/components/Select'
 
 const SignUpContainer = ({ navigation }) => {
   const { Common, Fonts, Gutters, Layout, Images } = useTheme()
@@ -123,6 +125,13 @@ const SignUpContainer = ({ navigation }) => {
     }
   }
 
+  const handleDropdownChange = (key, value) => {
+    setValues({
+      ...values,
+      [key]: value,
+    })
+  }
+
   const onClickSignUp = () => {
     if (!values.firstName) {
       setErrorMessage({
@@ -181,13 +190,9 @@ const SignUpContainer = ({ navigation }) => {
           name: image.filename || firstName + 'profile.jpg',
         })
 
-      // console.log(formData);
+      console.log(formData)
+      console.log(values)
       const response = await request.post(`accounts/signup/`, formData, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-          // "Content-Type": "application/json"
-        },
         // transformRequest: formData => formData
       })
       if (response) {
@@ -457,12 +462,14 @@ const SignUpContainer = ({ navigation }) => {
               )}
               <SelectItem
                 onSelect={(selectedItem, index) => {
+                  console.log('selectedItem, index')
                   console.log(selectedItem, index)
-                  onChange('crewName', selectedItem.value)
+                  onChange('crewName', selectedItem.id)
                 }}
                 data={crews}
                 defaultText="Crew Name"
                 buttonTextAfterSelection={(selectedItem, index) => {
+                  console.log('selectedItem', selectedItem)
                   // text represented after item is selected
                   // if data array is an array of objects then return selectedItem.property to render after item is selected
                   return selectedItem.name
@@ -473,6 +480,19 @@ const SignUpContainer = ({ navigation }) => {
                   return selectedItem.name
                 }}
               />
+              {/* <Select
+                label="Select Crew"
+                items={crews}
+                handleChange={val => handleDropdownChange('crew', val)}
+                // selected={values?.crew}
+                showDefault={true}
+                // error={validation?.crew}
+                labelName="name"
+                valueName="id"
+                placeholder="Select Crew"
+                // customStyleDropdown={styles.customStyleDropdown}
+                showTitle={true}
+              /> */}
 
               {values?.jobTitle && (
                 <View>

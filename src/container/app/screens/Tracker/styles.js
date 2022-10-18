@@ -32,31 +32,33 @@ export const styles = StyleSheet.create({
   },
   infoPlatform: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     paddingVertical: 20,
     paddingHorizontal: 10,
+    marginTop: 30,
     borderRadius: 6,
-    marginVertical: 10,
   },
   timeSpent: {
     fontSize: 20,
     color: appStyles.WHITE_COLOR,
     fontFamily: appStyles.FONT_FAMILY_MEDIUM,
     textAlign: 'center',
-    marginVertical: 20,
+    marginVertical: 35,
   },
   jobProcess: {
     fontSize: 20,
     color: appStyles.WHITE_COLOR,
     fontFamily: appStyles.FONT_FAMILY_MEDIUM,
     textAlign: 'center',
-    marginVertical: 20,
+    marginBottom: 10,
+    marginTop: 20,
   },
   header: {
     borderBottomColor: appStyles.COLOR_GRAY_2,
-    borderBottomWidth: 1,
-    marginBottom: 10,
+    borderBottomWidth: 0.2,
+    marginBottom: 20,
+    paddingBottom: 10,
   },
   message: {
     fontSize: 14,
@@ -64,6 +66,7 @@ export const styles = StyleSheet.create({
     fontFamily: appStyles.FONT_FAMILY_MEDIUM,
     textAlign: 'center',
     marginVertical: 10,
+    marginBottom: 20,
   },
   title: {
     fontSize: 20,
@@ -83,5 +86,8 @@ export const styles = StyleSheet.create({
     fontFamily: appStyles.FONT_FAMILY_SEMI_BOLD,
     textAlign: 'center',
     marginVertical: 10,
+  },
+  processes: {
+    marginBottom: 30,
   },
 })
