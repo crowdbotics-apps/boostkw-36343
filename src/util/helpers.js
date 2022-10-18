@@ -23,3 +23,21 @@ export function validateJobCode(code = '') {
 
   return re.test(String(code).toLowerCase())
 }
+
+export function processesTime(time) {
+  const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60))
+  const seconds = Math.floor((time % (1000 * 60)) / 1000)
+
+  let processesTime =
+    (hours < 10 ? '0' : '') +
+    hours +
+    ':' +
+    (minutes < 10 ? '0' : '') +
+    minutes +
+    ':' +
+    (seconds < 10 ? '0' : '') +
+    seconds
+
+  return processesTime
+}

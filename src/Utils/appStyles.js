@@ -32,7 +32,6 @@ export const FONT_FAMILY_BOLD = "Roboto-Bold" //700
 
 export const styles = StyleSheet.create({
   main: {
-    backgroundColor: "red",
     flex: 1
   }
 })

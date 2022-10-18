@@ -11,16 +11,20 @@ export const styles = StyleSheet.create({
     borderRadius: 6,
     marginVertical: 10,
   },
+  containerSelected: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
   title: {
     fontSize: 14,
     fontFamily: appStyles.FONT_FAMILY_MEDIUM,
     lineHeight: 17,
     color: appStyles.WHITE_COLOR,
+    marginBottom: 7
   },
   time: {
     fontSize: 12,
     fontFamily: appStyles.FONT_FAMILY_MEDIUM,
-    lineHeight: 14,
+    lineHeight: 15,
     color: appStyles.WHITE_0_75,
   },
   right: {

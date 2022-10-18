@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
   container: {
     height: 41,
     backgroundColor: appStyles.white,
-    borderRadius: 100,
+    borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center"

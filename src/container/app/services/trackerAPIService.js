@@ -74,6 +74,7 @@ function getCustomerTruckerInputsProcesses(payload) {
 }
 
 function startStopProcess(payload) {
+  console.log('jobProcessItem', payload)
   return request
     .patch(
       `trackers/customer-tracker-inputs/${payload.tracker_id}/job-processes/${payload.job_process_id}/`,

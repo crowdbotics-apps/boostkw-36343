@@ -18,33 +18,33 @@ export const JobProcessItem = ({
   handleSelect = () => {},
   handleShowEdit = () => {},
   handlePlayPause = () => {},
-  handleDone = () => {},
+  handleShowDone = () => {},
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isSelected && styles.containerSelected]}>
       <View style={styles.left}>
         <TouchableOpacity style={styles.doneBtn}>
           {jobProcess?.status === 'completed' ? (
-            <TouchableOpacity onPress={() => handleDone(jobProcess)}>
-              <DoneCheckIcon height={24} width={24} />
+            <TouchableOpacity onPress={() => handleShowDone(jobProcess)}>
+              <DoneCheckIcon height={28} width={28} />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={() => handleDone(jobProcess)}>
-              <DoneUnCheckIcon height={24} width={24} />
+            <TouchableOpacity onPress={() => handleShowDone(jobProcess)}>
+              <DoneUnCheckIcon height={28} width={28} />
             </TouchableOpacity>
           )}
         </TouchableOpacity>
 
-        <View>
+        <TouchableOpacity onPress={() => handleSelect(jobProcess)}>
           <Text style={styles.title}>{jobProcess?.title}</Text>
           <Text style={styles.time}>
             {jobProcess?.time ? jobProcess?.time : '-'}
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.right}>
         <TouchableOpacity onPress={() => handleShowEdit(jobProcess)}>
-          <EditIcon height={24} width={24} />
+          <EditIcon height={28} width={28} />
         </TouchableOpacity>
 
         {jobProcess?.status !== 'completed' ? (
@@ -54,9 +54,9 @@ export const JobProcessItem = ({
           >
             {jobProcess?.status === 'paused' ||
             jobProcess?.status === 'pending' ? (
-              <PlayIcon height={24} width={24} />
+              <PlayIcon height={28} width={28} />
             ) : (
-              <PauseIcon height={24} width={24} />
+              <PauseIcon height={28} width={28} />
             )}
           </TouchableOpacity>
         ) : null}
