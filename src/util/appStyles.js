@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
   inputError: {
     borderBottomColor: 'red',
     borderBottomWidth: 0.5,
-    marginVertical: 10,
+    marginVertical: 20,
     textAlign: 'center',
     color: 'red',
   },

@@ -21,8 +21,6 @@ export const Select = ({
 }) => {
   const [isFocus, setIsFocus] = useState(false)
 
-  console.log('items', items)
-
   return (
     <View style={{ ...styles.container }}>
       {showTitle ? <Text style={styles.label}>{label}</Text> : null}

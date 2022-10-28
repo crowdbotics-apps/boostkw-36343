@@ -165,6 +165,11 @@ const TrackerInput = ({ route, navigation }) => {
           Math.round((Number(value) + Number.EPSILON) * 100) / 100
         ).toString(),
       })
+    } else if (key === 'job_code') {
+      setValues({
+        ...values,
+        [key]: value.toUpperCase(),
+      })
     } else {
       console.log('value', value)
       setValues({

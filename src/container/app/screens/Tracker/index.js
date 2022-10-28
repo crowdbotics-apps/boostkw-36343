@@ -12,6 +12,7 @@ import utc from 'dayjs/plugin/utc'
 import ArraysIcon from '../../../../Assets/svg/arrays'
 import PanelsIcon from '../../../../Assets/svg/panels'
 import RoofTypeIcon from '../../../../Assets/svg/roof_type'
+import BatteryIcon from '../../../../Assets/svg/battery'
 import SwipeableModal from '@/components/SwipeableModal'
 import FloatingInput from '@/components/FloatingInput'
 import { Layout } from '@/layout'
@@ -35,6 +36,8 @@ dayjs.extend(utc)
 
 const Tracker = ({ route, navigation }) => {
   const params = route.params?.params
+
+  // console.log('params', params)
 
   const { customerTruckerInputsProcesses, refetch, isFetching } =
     useGetCustomerTruckerInputsProcesses(onSuccessFetch, {
@@ -146,6 +149,7 @@ const Tracker = ({ route, navigation }) => {
     setEditDetails({})
     setShowEdit(false)
     setSelectedProcessToDone({})
+    setSelectedProcess({})
     setShowDone(false)
     refetch()
   }
@@ -154,7 +158,7 @@ const Tracker = ({ route, navigation }) => {
     console.log('handleSelect jobProcess', jobProcess)
     if (jobProcess?.id === selectedProcess?.id) {
       setSelectedProcess({})
-    } else {
+    } else if (jobProcess?.status !== 'completed') {
       setSelectedProcess(jobProcess)
     }
   }
@@ -166,10 +170,9 @@ const Tracker = ({ route, navigation }) => {
       selectedProcess?.status === 'active'
     ) {
       handleStartStop(selectedProcess)
+      setSelectedProcess({})
     }
   }
-
-  const handleCheck = () => {}
 
   const handleShowEdit = jobProcess => {
     let details = { ...jobProcess }
@@ -274,32 +277,40 @@ const Tracker = ({ route, navigation }) => {
   }
 
   const handleSaveTime = () => {
+    const nowDateTime = dayjs().format()
+
     const jobProcessItem = {
-      start_datetime: editDetails.start_datetime,
+      start_datetime: editDetails.start_datetime || nowDateTime,
       end_datetime: editDetails.end_datetime,
       status: 'completed',
     }
     console.log('editDetails', editDetails)
     console.log('jobProcessItem', jobProcessItem)
 
+    if (editDetails.end_datetime == null) {
+      setSaveTimeError('Please select End Datetime')
+      return
+    }
+
+    setSaveTimeError('')
+
     if (
-      new Date(editDetails.start_datetime) < new Date(editDetails.end_datetime)
+      new Date(jobProcessItem.end_datetime) <
+      new Date(jobProcessItem.start_datetime)
     ) {
-      setSaveTimeError(
-        'End Datetime must be greater than or equal to Start datetime.',
-      )
+      setSaveTimeError('End time must be greater than or equal to start time.')
       return
     }
     setSaveTimeError('')
-    // if (params?.id && editDetails?.id) {
-    //   startStopProcess({
-    //     jobProcessItem: jobProcessItem,
-    //     tracker_id: params?.id,
-    //     job_process_id: editDetails?.id,
-    //   })
-    // } else {
-    //   console.log('Not saved')
-    // }
+    if (params?.id && editDetails?.id) {
+      startStopProcess({
+        jobProcessItem: jobProcessItem,
+        tracker_id: params?.id,
+        job_process_id: editDetails?.id,
+      })
+    } else {
+      console.log('Not saved')
+    }
   }
 
   return (
@@ -353,12 +364,21 @@ const Tracker = ({ route, navigation }) => {
             <Text style={styles.label}>Arrays</Text>
             <Text style={styles.value}>{trackingInfo?.number_of_arrays}</Text>
           </View>
+
+          {params?.is_battery ? (
+            <View style={styles.itemLabelValue}>
+              <View style={{ marginLeft: 9 }}>
+                <BatteryIcon height={30} width={30} />
+              </View>
+              <Text style={styles.label}>Battery</Text>
+              <Text style={styles.value}>
+                {trackingInfo?.number_of_batteries}
+              </Text>
+            </View>
+          ) : null}
         </View>
 
-        <Text style={styles.jobProcess}>
-          {/* {processes?.length} */}
-          Job Process
-        </Text>
+        <Text style={styles.jobProcess}>Job Process</Text>
 
         <View style={styles.processes}>
           {processes?.map((jobProcess, idx) => {
@@ -392,22 +412,36 @@ const Tracker = ({ route, navigation }) => {
             showStartTimePicker || showEndTimePicker ? 'Done' : 'Save'
           }
           showCancel={showStartTimePicker || showEndTimePicker ? false : true}
-          handleCancel={() => setShowEdit(false)}
+          handleCancel={() => {
+            setSaveTimeError('')
+            setShowEdit(false)
+          }}
           onPressBtn={
             showStartTimePicker || showEndTimePicker
               ? handleCloseTime
               : handleSaveTime
           }
           title={editDetails?.title ? editDetails?.title : ''}
-          onClose={() => setShowEdit(false)}
+          onClose={() => {
+            setSaveTimeError('')
+            setShowEdit(false)
+          }}
           isLoading={isLoading}
         >
-          <View style={{ height: 20 }} />
-          {saveTimeError?.length > 0 ? (
-            <View>
-              <Text style={appStyles.styles.inputError}>{saveTimeError}</Text>
-            </View>
-          ) : null}
+          <View
+            style={{
+              minHeight: 20,
+              alignItems: 'center',
+              marginBottom: 10,
+            }}
+          >
+            {saveTimeError?.length > 0 ? (
+              <View>
+                <Text style={appStyles.styles.inputError}>{saveTimeError}</Text>
+              </View>
+            ) : null}
+          </View>
+
           <FloatingInput
             placeholder="Start Time"
             value={dayjs(editDetails?.start_datetime || new Date()).format(
@@ -487,7 +521,11 @@ const Tracker = ({ route, navigation }) => {
 
               <Button buttonText="Done" onPress={() => handleDone()} />
 
-              <TouchableOpacity onPress={() => setShowDone(false)}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowDone(false)
+                }}
+              >
                 <Text style={styles.cancel}>Cancel</Text>
               </TouchableOpacity>
             </>
