@@ -23,7 +23,8 @@ export const JobProcessItem = ({
   return (
     <View style={[styles.container, isSelected && styles.containerSelected]}>
       <View style={styles.left}>
-        <TouchableOpacity style={styles.doneBtn}>
+        <View />
+        {/* <TouchableOpacity style={styles.doneBtn}>
           {jobProcess?.status === 'completed' ? (
             <TouchableOpacity onPress={() => handleShowDone(jobProcess)}>
               <DoneCheckIcon height={28} width={28} />
@@ -33,13 +34,13 @@ export const JobProcessItem = ({
               <DoneUnCheckIcon height={28} width={28} />
             </TouchableOpacity>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity onPress={() => handleSelect(jobProcess)}>
           <Text style={styles.title}>{jobProcess?.title}</Text>
-          <Text style={styles.time}>
+          {/* <Text style={styles.time}>
             {jobProcess?.time ? jobProcess?.time : '-'}
-          </Text>
+          </Text> */}
         </TouchableOpacity>
       </View>
       <View style={styles.right}>

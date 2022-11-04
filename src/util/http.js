@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { store } from "../Store"
+import { store } from '../Store'
 
-const cbUrl = 'https://sunrun-solar-projec-36343.botics.co/api/v1/'
+const cbUrl = 'https://boostkw-36343.botics.co/api/v1/'
 
 export const request = axios.create({
   baseURL: cbUrl,
@@ -11,7 +11,7 @@ request.interceptors.request.use(function (config) {
   const token = store.getState().auth?.user?.token
 
   if (token) {
-    config.headers.Authorization = "Token " + token
+    config.headers.Authorization = 'Token ' + token
   }
 
   return config

@@ -396,15 +396,7 @@ const Tracker = ({ route, navigation }) => {
           })}
         </View>
 
-        <Button
-          buttonText="Close Project"
-          onPress={handleClose}
-          isDisabled={
-            !processes.every(
-              jobProcess => jobProcess?.status === 'completed',
-            ) || processes.length === 0
-          }
-        />
+        <Button buttonText="Close Project" onPress={handleClose} />
 
         <SwipeableModal
           visible={showEdit}

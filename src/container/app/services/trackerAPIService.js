@@ -43,7 +43,7 @@ function getActiveProject() {
       return res.data
     })
     .catch(function (error) {
-      console.log('error=>', error)
+      console.log(error?.response)
       throw error
     })
 }
