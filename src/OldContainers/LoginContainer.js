@@ -70,7 +70,7 @@ const LoginContainer = ({ navigation }) => {
         // console.log('user: ', response.data)
       }
     } catch (error) {
-      console.log('Error: user login', error)
+      console.log('Error: user login', error?.response)
       addTokenToHttp(null)
       dispatch(setLoggedIn({ loggedIn: false }))
       setErrorMessage({
