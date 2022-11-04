@@ -37,4 +37,3 @@ django-debug-toolbar = "*"
 dj-rest-auth = "==2.2.5"
 django-import-export = "*"
 django-cors-headers = "*"
-
