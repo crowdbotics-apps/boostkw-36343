@@ -28,13 +28,13 @@ class CustomerTrackerAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request).annotate(
-            _total_time_spent_seconds=customer_tracker_job_process_subqs(),
+            total_time_spent_seconds=customer_tracker_job_process_subqs(),
             total_job_process=models.Count('job_processes'),
         )
         return queryset
 
     def display_total_time_spent_seconds(self, instance):
-        return instance._total_time_spent_seconds
+        return instance.total_time_spent_seconds
         # return 0
     display_total_time_spent_seconds.short_description = 'Time Spent Seconds'
 
@@ -46,8 +46,8 @@ class CustomerTrackerAdmin(admin.ModelAdmin):
     display_total_job_process.admin_order_field = 'total_job_process'
 
     def display_total_time_spent(self, instance):
-        if instance._total_time_spent_seconds:
-            time_spent = seconds_to_readable_time(instance._total_time_spent_seconds)
+        if instance.total_time_spent_seconds:
+            time_spent = seconds_to_readable_time(instance.total_time_spent_seconds)
             hours = time_spent.get("hours")
             minutes = time_spent.get("minutes")
             seconds = time_spent.get("seconds")
@@ -55,7 +55,7 @@ class CustomerTrackerAdmin(admin.ModelAdmin):
         return f'Hours: {0}, Minutes: {0}, Seconds: {0}'
 
     display_total_time_spent.short_description = 'Time Spent'
-    display_total_time_spent.admin_order_field = '_total_time_spent_seconds'
+    display_total_time_spent.admin_order_field = 'total_time_spent_seconds'
 
 
 @admin.register(JobProcess)
@@ -63,7 +63,7 @@ class JobProcessAdmin(admin.ModelAdmin):
     list_display = ['display_job_code', 'title', 'position', 'display_job_location', 'status', 'start_datetime',
                     'end_datetime', 'last_paused_datetime', 'created', 'updated']
     readonly_fields = ['display_time_spent_seconds', 'display_time_spent',
-                       'display_paused_time']
+                       'display_paused_time', 'get_seconds_per_job']
 
     search_fields = ['title', 'customer_tracker__job_code']
     list_filter = ['status']

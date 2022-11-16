@@ -22,4 +22,6 @@ urlpatterns = [
     path('customer-tracker-inputs/<int:pk>/job-processes/<int:job_process_id>/',
          views.CustomerTrackerJobProcessDetailAPIView.as_view(),
          name='customer_tracker_input_job_process_detail'),
+
+    path('stats/', views.UserTrackerStatsDetailView.as_view(), name='user_tracker_stats'),
 ]

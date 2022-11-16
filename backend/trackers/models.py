@@ -117,6 +117,7 @@ class CustomerTracker(ModelFieldChangeStatusMixin, TimeStampModel):
         from modules.database_utils import Epoch
         diff_resuming_datetime = Epoch(models.F('resuming_datetime') - models.F('start_datetime'))
         diff_last_paused_datetime = Epoch(models.F('last_paused_datetime') - models.F('start_datetime'))
+        diff_start_end_datetime = Epoch(models.F('end_datetime') - models.F('start_datetime'))
         queryset = self.job_processes.annotate(
             time_spent_seconds=models.Case(
                 models.When(start_datetime__isnull=False, resuming_datetime__isnull=False,
@@ -130,7 +131,7 @@ class CustomerTracker(ModelFieldChangeStatusMixin, TimeStampModel):
                             ),
                 models.When(start_datetime__isnull=False,
                             end_datetime__isnull=False,
-                            then=diff_last_paused_datetime - models.F('total_paused_time_seconds')
+                            then=diff_start_end_datetime - models.F('total_paused_time_seconds')
                             ),
 
                 output_field=models.IntegerField(),
@@ -222,10 +223,20 @@ class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
     @property
     def get_time_spent(self):
         if self.get_time_spent_seconds:
-            return seconds_to_readable_time(self.get_time_spent_seconds)
+            print(self.get_time_spent_seconds)
+            readable_seconds = seconds_to_readable_time(self.get_time_spent_seconds)
+            print(readable_seconds)
+            return readable_seconds
 
         return {
             'hours': 0,
             'minutes': 0,
             'left_seconds': 0,
         }
+
+    @property
+    def get_seconds_per_job(self):
+        time_spent_seconds = self.get_time_spent_seconds
+        return time_spent_seconds * self.customer_tracker.number_of_workers
+
+        # return 0
