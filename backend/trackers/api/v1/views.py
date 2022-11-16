@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from django.db.models.functions import Coalesce
 from .filtersets import CustomerTrackerFilterSet
 from .serializers import *
-from ...db_utils import customer_tracker_job_process_subqs
 
 
 class TrackerInputListAPI(ListAPIView):
@@ -39,6 +38,7 @@ class CustomerTrackerListAPIView(ListCreateAPIView):
     ordering_fields = ['created', 'updated']
 
     def get_queryset(self):
+        from trackers.db_utils import customer_tracker_job_process_subqs
         queryset = CustomerTracker.objects.select_related(
             'user', 'crew', 'roof_type'
         ).prefetch_related(
@@ -66,6 +66,7 @@ class CustomerTrackerDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = CustomerTrackerDetailSerializer
 
     def get_queryset(self):
+        from trackers.db_utils import customer_tracker_job_process_subqs
         queryset = CustomerTracker.objects.select_related(
             'user', 'crew', 'roof_type'
         ).prefetch_related(
@@ -77,7 +78,6 @@ class CustomerTrackerDetailAPIView(RetrieveUpdateDestroyAPIView):
         return queryset
 
     def update(self, request, *args, **kwargs):
-        print(request.headers)
         return super(CustomerTrackerDetailAPIView, self).update(request, *args, **kwargs)
 
 
@@ -101,3 +101,80 @@ class CustomerTrackerJobProcessDetailAPIView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return JobProcess.objects.filter(customer_tracker_id=self.kwargs.get('pk'),
                                          customer_tracker__user=self.request.user)
+
+
+class UserTrackerStatsDetailView(RetrieveAPIView):
+    def get_queryset(self):
+        return self.request.user.customer_trackers.all()
+
+    def get(self, request, *args, **kwargs):
+        from trackers.db_utils import customer_tracker_job_process_subqs, job_process_time_spend_seconds_sub_qs
+
+        trackers = CustomerTracker.objects.filter(user=self.request.user,
+                                                  status=CustomerTracker.STATUS_CLOSED).annotate(
+            total_job_process=models.Count('job_processes'),
+        )
+
+        job_processes = JobProcess.objects.filter(
+            customer_tracker__user=self.request.user,
+            customer_tracker__status=CustomerTracker.STATUS_CLOSED
+        ).annotate(
+            time_spent_seconds=job_process_time_spend_seconds_sub_qs(),
+            # seconds_per_job=models.F('time_spent_seconds') * models.F('customer_tracker__number_of_workers')
+            system_size=models.F('customer_tracker__system_size'),
+            number_of_workers=models.F('customer_tracker__number_of_workers')
+        ).annotate(
+            seconds_per_job=models.ExpressionWrapper(
+                models.F('time_spent_seconds') * models.F('number_of_workers'),
+                output_field=models.IntegerField(),
+            ),
+            seconds_per_kw=models.ExpressionWrapper(
+                models.F('seconds_per_job') / models.F('system_size'),
+                output_field=models.DecimalField(default=0, decimal_places=2),
+            )
+
+        )
+        total_job_process = job_processes.count()
+        job_processes_result = job_processes.aggregate(
+            total_time_spent_seconds=models.Sum('time_spent_seconds', output_field=models.IntegerField(default=0)),
+            total_seconds_per_job=models.Sum('seconds_per_job', output_field=models.IntegerField(default=0)),
+            total_system_size=models.Sum('system_size', output_field=models.DecimalField(default=0, decimal_places=2)),
+            avg_seconds_per_kw=models.Avg('seconds_per_kw',
+                                          output_field=models.DecimalField(default=0, decimal_places=2)),
+        )
+
+        monthly_list_avg = job_processes.annotate(
+            month=models.functions.ExtractMonth('created'),
+            year=models.functions.ExtractYear('created'),
+        ).order_by().values(
+            'year', 'month'
+        ).annotate(
+            avg_time_spent_seconds=models.Avg('time_spent_seconds'),
+            avg_seconds_per_kw=models.Avg('seconds_per_kw'),
+        ).values('year', 'month', 'avg_time_spent_seconds', 'avg_seconds_per_kw')[:12]
+
+        # for m in monthly_list_avg:
+        #     print(m)
+
+        for job in job_processes:
+            print('time_spent_seconds', job.time_spent_seconds)
+            # print('seconds_per_job', job.seconds_per_job)
+        #     print('seconds_per_kw', job.seconds_per_kw)
+            # print('seconds_per_job', job.number_of_workers * int(job.time_spent_seconds))
+        response = {
+            'success': True,
+            'total_job_process': total_job_process,
+            'total_time_spent_seconds': job_processes_result['total_time_spent_seconds'],
+            'total_seconds_per_job': job_processes_result['total_seconds_per_job'],
+            'total_system_size': job_processes_result['total_system_size'],
+            'avg_seconds_per_kw': 0,
+            'total_installations': trackers.count(),
+            # 'working_time': working_time,
+        }
+        if job_processes_result['avg_seconds_per_kw']:
+            response['avg_seconds_per_kw'] = round(job_processes_result['avg_seconds_per_kw'], 2),
+
+        if monthly_list_avg:
+            response['monthly_list_avg'] = monthly_list_avg
+
+        return Response(response)
