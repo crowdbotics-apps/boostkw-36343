@@ -35,6 +35,7 @@ urlpatterns = [
     # Override email confirm to use allauth's HTML view instead of rest_auth's API view
     # path("rest-auth/registration/account-confirm-email/<str:key>/", confirm_email),
     # path("rest-auth/registration/", include("rest_auth.registration.urls")),
+    path('admin/analytics/', include('analytics.custom_admin.urls', namespace='admin_analytics')),
 ]
 
 admin.site.site_header = "BOOSTKW"

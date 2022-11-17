@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+
+from trackers.models import CustomerTracker
+from .db_utils import crew_counter_subqs
 from .models import *
 
 
@@ -9,7 +12,15 @@ class CrewAdmin(admin.ModelAdmin):
     readonly_fields = ['slug']
     search_fields = ['name']
 
+    def get_queryset(self, request):
+        queryset = super(self.__class__, self).get_queryset(request)
+        # queryset.annotate(**crew_counter_subqs())
+        queryset = queryset.annotate(installations=models.Sum('customer_trackers__system_size', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED)))
+        return queryset
+
     def get_hours_worked(self, instance):
+        print(instance.__dict__)
         return 0
 
     get_hours_worked.short_description = _('Hours Worked')
