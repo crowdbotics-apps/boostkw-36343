@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.utils import timezone
 from rest_framework.generics import *
 from rest_framework.response import Response
 from django.db.models.functions import Coalesce
@@ -143,7 +144,9 @@ class UserTrackerStatsDetailView(RetrieveAPIView):
                                           output_field=models.DecimalField(default=0, decimal_places=2)),
         )
 
-        monthly_list_avg = job_processes.annotate(
+        now_year = timezone.now().year
+
+        monthly_list_avg = job_processes.filter(created__year=now_year).annotate(
             month=models.functions.ExtractMonth('created'),
             year=models.functions.ExtractYear('created'),
         ).order_by().values(
@@ -151,7 +154,7 @@ class UserTrackerStatsDetailView(RetrieveAPIView):
         ).annotate(
             avg_time_spent_seconds=models.Avg('time_spent_seconds'),
             avg_seconds_per_kw=models.Avg('seconds_per_kw'),
-        ).values('year', 'month', 'avg_time_spent_seconds', 'avg_seconds_per_kw')[:12]
+        ).values('year', 'month', 'avg_time_spent_seconds', 'avg_seconds_per_kw')
 
         # for m in monthly_list_avg:
         #     print(m)
@@ -160,7 +163,7 @@ class UserTrackerStatsDetailView(RetrieveAPIView):
             print('time_spent_seconds', job.time_spent_seconds)
             # print('seconds_per_job', job.seconds_per_job)
         #     print('seconds_per_kw', job.seconds_per_kw)
-            # print('seconds_per_job', job.number_of_workers * int(job.time_spent_seconds))
+        # print('seconds_per_job', job.number_of_workers * int(job.time_spent_seconds))
         response = {
             'success': True,
             'total_job_process': total_job_process,
