@@ -188,11 +188,20 @@ class UserTrackerStatsDailyChartDetailView(RetrieveAPIView):
         return self.request.user.customer_trackers.all()
 
     def get(self, request, *args, **kwargs):
+        month = request.GET.get('month', None)
+        year = request.GET.get('year', None)
+        now_datetime = timezone.now()
+
+        if not month:
+            month = now_datetime.month
+        if not year:
+            year = now_datetime.year
         from trackers.db_utils import customer_tracker_job_process_subqs, job_process_time_spend_seconds_sub_qs
 
         job_processes = JobProcess.objects.filter(
             customer_tracker__user=self.request.user,
-            customer_tracker__status=CustomerTracker.STATUS_CLOSED
+            customer_tracker__status=CustomerTracker.STATUS_CLOSED,
+            created__year=year, created__month=month
         ).annotate(
             time_spent_seconds=job_process_time_spend_seconds_sub_qs(),
             # seconds_per_job=models.F('time_spent_seconds') * models.F('customer_tracker__number_of_workers')
@@ -209,9 +218,8 @@ class UserTrackerStatsDailyChartDetailView(RetrieveAPIView):
             )
 
         )
-        now_year = timezone.now().year
 
-        daily_list_avg = job_processes.filter(created__year=now_year).annotate(
+        daily_list_avg = job_processes.annotate(
             day=models.functions.ExtractDay('created'),
             month=models.functions.ExtractMonth('created'),
             year=models.functions.ExtractYear('created'),
@@ -223,6 +231,8 @@ class UserTrackerStatsDailyChartDetailView(RetrieveAPIView):
         ).values('year', 'month', 'day', 'avg_time_spent_seconds', 'avg_seconds_per_kw').order_by(
             '-day', '-month', '-year',
         )
+
         if daily_list_avg and len(daily_list_avg):
             return Response(daily_list_avg)
+
         return Response([])
