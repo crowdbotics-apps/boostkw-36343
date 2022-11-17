@@ -181,3 +181,48 @@ class UserTrackerStatsDetailView(RetrieveAPIView):
             response['monthly_list_avg'] = monthly_list_avg
 
         return Response(response)
+
+
+class UserTrackerStatsDailyChartDetailView(RetrieveAPIView):
+    def get_queryset(self):
+        return self.request.user.customer_trackers.all()
+
+    def get(self, request, *args, **kwargs):
+        from trackers.db_utils import customer_tracker_job_process_subqs, job_process_time_spend_seconds_sub_qs
+
+        job_processes = JobProcess.objects.filter(
+            customer_tracker__user=self.request.user,
+            customer_tracker__status=CustomerTracker.STATUS_CLOSED
+        ).annotate(
+            time_spent_seconds=job_process_time_spend_seconds_sub_qs(),
+            # seconds_per_job=models.F('time_spent_seconds') * models.F('customer_tracker__number_of_workers')
+            system_size=models.F('customer_tracker__system_size'),
+            number_of_workers=models.F('customer_tracker__number_of_workers')
+        ).annotate(
+            seconds_per_job=models.ExpressionWrapper(
+                models.F('time_spent_seconds') * models.F('number_of_workers'),
+                output_field=models.IntegerField(),
+            ),
+            seconds_per_kw=models.ExpressionWrapper(
+                models.F('seconds_per_job') / models.F('system_size'),
+                output_field=models.DecimalField(default=0, decimal_places=2),
+            )
+
+        )
+        now_year = timezone.now().year
+
+        daily_list_avg = job_processes.filter(created__year=now_year).annotate(
+            day=models.functions.ExtractDay('created'),
+            month=models.functions.ExtractMonth('created'),
+            year=models.functions.ExtractYear('created'),
+        ).order_by().values(
+            'day', 'month', 'year',
+        ).annotate(
+            avg_time_spent_seconds=models.Avg('time_spent_seconds'),
+            avg_seconds_per_kw=models.Avg('seconds_per_kw'),
+        ).values('year', 'month', 'day', 'avg_time_spent_seconds', 'avg_seconds_per_kw').order_by(
+            '-day', '-month', '-year',
+        )
+        if daily_list_avg and len(daily_list_avg):
+            return Response(daily_list_avg)
+        return Response([])

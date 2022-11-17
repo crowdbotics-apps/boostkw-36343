@@ -24,4 +24,6 @@ urlpatterns = [
          name='customer_tracker_input_job_process_detail'),
 
     path('stats/', views.UserTrackerStatsDetailView.as_view(), name='user_tracker_stats'),
+    path('stats/chart/daily/', views.UserTrackerStatsDailyChartDetailView.as_view(),
+         name='user_tracker_stats_daily_avg'),
 ]

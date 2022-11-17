@@ -88,7 +88,8 @@ class CustomerTracker(ModelFieldChangeStatusMixin, TimeStampModel):
         validators.MinValueValidator(1)
     ])
 
-    crew = models.ForeignKey('crews.Crew', on_delete=models.SET_NULL, null=True, blank=True)
+    crew = models.ForeignKey('crews.Crew', on_delete=models.SET_NULL, null=True, blank=True,
+                             related_name='customer_trackers')
 
     location = models.CharField(choices=LOCATION_CHOICES, max_length=10, default='', null=True, blank=True)
 
