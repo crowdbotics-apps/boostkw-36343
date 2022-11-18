@@ -6,26 +6,40 @@ import { styles } from './styles'
 
 const TimePicker = ({ visible, value, onChange, onClose }) => {
   const handleChange = (event, dateSelected) => {
+    if (Platform.OS === 'android') {
+      onClose()
+    }
     onChange(dateSelected)
   }
 
-  if (!visible) return null
-
-  return (
+  const getDateTimePicker = () => (
     <RNDateTimePicker
       mode="time"
       value={value}
-      // value={new Date()}
       onChange={handleChange}
       textColor="light"
-      display="spinner"
-      minuteInterval={1}
-      is24Hour={true}
       themeVariant="dark"
+      display="spinner"
       testID="dateTimePicker"
       style={styles.picker}
     />
   )
+
+  if (Platform.OS === 'ios') {
+    return (
+      <DateModal
+        visible={visible}
+        submitText="Done"
+        cancelText="Cancel"
+        onSubmit={onClose}
+        onClose={onClose}
+      >
+        {getDateTimePicker()}
+      </DateModal>
+    )
+  }
+
+  return visible ? getDateTimePicker('date') : null
 }
 
 export default TimePicker

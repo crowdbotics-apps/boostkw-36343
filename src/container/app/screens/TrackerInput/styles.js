@@ -3,10 +3,9 @@ import * as appStyles from '../../../../util/appStyles'
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: appStyles.lightBlackColor,
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 20,
   },
   title: {
     flexDirection: 'row',

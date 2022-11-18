@@ -1,11 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import {
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
@@ -37,8 +31,6 @@ dayjs.extend(utc)
 const Tracker = ({ route, navigation }) => {
   const params = route.params?.params
 
-  // console.log('params', params)
-
   const { customerTruckerInputsProcesses, refetch, isFetching } =
     useGetCustomerTruckerInputsProcesses(onSuccessFetch, {
       tracker_id: params.id,
@@ -55,14 +47,17 @@ const Tracker = ({ route, navigation }) => {
   const [showEdit, setShowEdit] = useState(false)
   const [editDetails, setEditDetails] = useState({})
   const [showEndTimePicker, setShowEndTimePicker] = useState(false)
+  const [showDatePicker, setShowDatePicker] = useState(false)
   const [selectedProcess, setSelectedProcess] = useState({})
   const [saveTimeError, setSaveTimeError] = useState('')
   const [showDone, setShowDone] = useState(false)
   const [selectedProcessToDone, setSelectedProcessToDone] = useState({})
 
   const [dateStart, setDateStart] = useState(new Date())
+  const [date, setDate] = useState(new Date())
   const [dateEnd, setDateEnd] = useState(new Date())
   const [totalTime, setTotalTime] = useState('')
+  const [runningProcesses, setRunningProcesses] = useState(0)
 
   const handleTimeChange = (key, value) => {
     setEditDetails({
@@ -92,6 +87,7 @@ const Tracker = ({ route, navigation }) => {
   const calculateTime = () => {
     if (trackingInfo?.id) {
       let totalTime = 0
+      let runningProcessesCount = 0
 
       const newProcess = trackingInfo?.job_processes?.map(job_process => {
         let item = {}
@@ -109,6 +105,7 @@ const Tracker = ({ route, navigation }) => {
           const time = processesTime(timeDifference)
 
           item = { ...job_process, ...{ time: time } }
+          runningProcessesCount = runningProcessesCount + 1
         } else if (job_process.status === 'paused') {
           const lastPausedDatetime = new Date(
             job_process?.last_paused_datetime,
@@ -139,6 +136,7 @@ const Tracker = ({ route, navigation }) => {
 
       const time = processesTime(totalTime)
 
+      setRunningProcesses(runningProcessesCount)
       setTotalTime(time)
 
       setProcesses(newProcess)
@@ -339,9 +337,16 @@ const Tracker = ({ route, navigation }) => {
         </View>
 
         <Text style={styles.timeSpent}>Time Spent: {totalTime} hrs</Text>
-
         <Button
-          buttonText={selectedProcess?.status === 'active' ? 'Stop' : 'Start'}
+          buttonText={
+            selectedProcess?.id
+              ? selectedProcess?.status === 'active'
+                ? 'Stop'
+                : 'Start'
+              : runningProcesses > 0
+              ? 'Stop'
+              : 'Start'
+          }
           isDisabled={!selectedProcess?.id}
           onPress={handleStartSelectedProcess}
         />
@@ -448,21 +453,6 @@ const Tracker = ({ route, navigation }) => {
             onPressTime={handleShowStartTimePicker}
           />
 
-          <View>
-            <TimePicker
-              value={dateStart}
-              onChange={val => {
-                const date = dayjs(val).format()
-                setDateStart(val)
-                handleTimeChange('start_datetime', date)
-                console.log('val', date)
-
-                console.log('val', typeof dayjs(val).format('h:mm:ss A'))
-              }}
-              visible={showStartTimePicker}
-            />
-          </View>
-
           <FloatingInput
             placeholder="End Time"
             value={
@@ -477,19 +467,40 @@ const Tracker = ({ route, navigation }) => {
             onPressTime={handleShowEndTimePicker}
           />
 
-          <View>
-            <TimePicker
-              value={dateEnd}
-              onChange={val => {
-                const date = dayjs(val).format()
-                const time = dayjs(val).format('h:mm:ss A')
-                setDateEnd(val)
-                handleTimeChange('end_datetime', date)
-                console.log('val', typeof dayjs(val).format('h:mm:ss A'))
-              }}
-              visible={showEndTimePicker}
-            />
-          </View>
+          {useMemo(() => {
+            return (
+              <TimePicker
+                value={dateStart || new Date()}
+                onChange={val => {
+                  const date = dayjs(val).format()
+                  setDateStart(val)
+                  handleTimeChange('start_datetime', date)
+                  console.log('val', date)
+
+                  console.log('val', typeof dayjs(val).format('h:mm:ss A'))
+                }}
+                visible={showStartTimePicker}
+                onClose={() => setShowStartTimePicker(false)}
+              />
+            )
+          }, [showStartTimePicker])}
+
+          {useMemo(() => {
+            return (
+              <TimePicker
+                value={new Date()}
+                onChange={val => {
+                  const date = dayjs(val).format()
+                  const time = dayjs(val).format('h:mm:ss A')
+                  setDateEnd(val)
+                  handleTimeChange('end_datetime', date)
+                  console.log('val', typeof dayjs(val).format('h:mm:ss A'))
+                }}
+                visible={showEndTimePicker}
+                onClose={() => setShowEndTimePicker(false)}
+              />
+            )
+          }, [showEndTimePicker])}
         </SwipeableModal>
 
         <LoadingModal isLoading={isLoading || isClosing} />

@@ -42,8 +42,10 @@ const TrackerInput = ({ route, navigation }) => {
     onSuccessStartTracking,
   )
 
+  const [showBattery, setShowBattery] = useState(false)
+  const [values, setValues] = useState(VALUES)
+  const [validation, setValidation] = useState({})
   const [crews, setCrews] = useState([])
-  console.log('crews', crewList)
 
   useFocusEffect(
     useCallback(() => {
@@ -65,10 +67,6 @@ const TrackerInput = ({ route, navigation }) => {
     }
   }
 
-  const [showBattery, setShowBattery] = useState(false)
-  const [values, setValues] = useState(VALUES)
-
-  const [validation, setValidation] = useState({})
 
   const handleSubmitFinalValues = () => {
     let finalValues = {}
@@ -165,13 +163,7 @@ const TrackerInput = ({ route, navigation }) => {
           Math.round((Number(value) + Number.EPSILON) * 100) / 100
         ).toString(),
       })
-    } else if (key === 'job_code') {
-      setValues({
-        ...values,
-        [key]: value.toUpperCase(),
-      })
     } else {
-      console.log('value', value)
       setValues({
         ...values,
         [key]: value,
@@ -204,7 +196,7 @@ const TrackerInput = ({ route, navigation }) => {
       <Header title="Tracker Inputs" />
       <KeyboardAwareScrollView
         style={styles.container}
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingTop: 20 }}
       >
         <FloatingInput
           placeholder="Job Code"
@@ -212,6 +204,7 @@ const TrackerInput = ({ route, navigation }) => {
           onChangeText={val => onChange('job_code', val)}
           error={validation?.job_code || error?.response?.data?.job_code[0]}
           label="Job Code"
+          autoCapitalize="characters"
         />
 
         <FloatingInput
@@ -343,7 +336,6 @@ const TrackerInput = ({ route, navigation }) => {
             isLoading={isLoading}
           />
         </View>
-        {/* "Invalid Format. Example: 123A-456BCDE" */}
       </KeyboardAwareScrollView>
     </Layout>
   )

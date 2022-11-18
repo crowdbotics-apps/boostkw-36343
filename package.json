@@ -14,8 +14,9 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.7",
     "@react-native-community/checkbox": "^0.5.12",
-    "@react-native-community/datetimepicker": "^6.5.0",
+    "@react-native-community/datetimepicker": "5.0.1",
     "@react-native-masked-view/masked-view": "^0.2.7",
+    "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/bottom-tabs": "^6.3.2",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/stack": "^6.2.2",
@@ -27,6 +28,7 @@
     "react": "18.0.0",
     "react-i18next": "^11.18.3",
     "react-native": "0.69.3",
+    "react-native-chart-kit": "^6.12.0",
     "react-native-element-dropdown": "^2.3.0",
     "react-native-fast-image": "^8.5.11",
     "react-native-flipper": "^0.156.0",
@@ -45,12 +47,14 @@
     "react-native-select-dropdown": "^2.0.4",
     "react-native-splash-screen": "^3.3.0",
     "react-native-stars": "^1.2.2",
-    "react-native-svg": "^13.2.0",
+    "react-native-svg": "^13.6.0",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-wheel-pick": "^1.2.0",
     "react-redux": "^8.0.2",
     "redux-flipper": "^2.0.2",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "victory-native": "^36.6.8"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

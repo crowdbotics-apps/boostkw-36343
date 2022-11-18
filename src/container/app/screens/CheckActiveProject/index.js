@@ -1,4 +1,3 @@
-import { View, Text } from 'react-native'
 import React, { useEffect } from 'react'
 import { Layout } from '@/layout'
 import { useGetActiveProject } from '../../hooks/useTracker'
