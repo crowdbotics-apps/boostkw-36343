@@ -53,3 +53,9 @@ def job_process_time_spend_seconds_sub_qs():
             output_field=models.IntegerField(),
             default=0
         )
+
+
+def job_process_workers_seconds():
+    time_spent_seconds = job_process_time_spend_seconds_sub_qs(),
+    # seconds_per_job=models.F('time_spent_seconds') * models.F('customer_tracker__number_of_workers')
+    system_size = models.F('customer_tracker__system_size')

@@ -76,6 +76,7 @@ LOCAL_APPS = [
     'crews.apps.CrewsConfig',
     'feedbacks.apps.FeedbacksConfig',
     'analytics.apps.AnalyticsConfig',
+    # 'analytics.apps.CustomAnalyticsAdminConfig',
     'roofs.apps.RoofsConfig',
     'trackers.apps.TrackersConfig',
 ]
