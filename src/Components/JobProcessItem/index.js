@@ -38,9 +38,9 @@ export const JobProcessItem = ({
 
         <TouchableOpacity onPress={() => handleSelect(jobProcess)}>
           <Text style={styles.title}>{jobProcess?.title}</Text>
-          {/* <Text style={styles.time}>
+          <Text style={styles.time}>
             {jobProcess?.time ? jobProcess?.time : '-'}
-          </Text> */}
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.right}>
