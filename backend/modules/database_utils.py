@@ -34,3 +34,8 @@ class SubquerySum(models.Subquery):
         if 'zero_value' not in extra_context and 'zero_value' not in self.extra:
             extra_context['zero_value'] = 0
         return super().as_sql(compiler, connection, template=template, **extra_context)
+
+
+class DistinctSum(models.Sum):
+    function = "SUM"
+    template = "%(function)s(DISTINCT %(expressions)s)"
