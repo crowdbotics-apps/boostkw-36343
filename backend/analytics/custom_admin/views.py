@@ -102,6 +102,7 @@ def admin_crew_performance_graph(request):
     return render(request, 'analytics/admin/graphs/crew_graph_performance.html', data)
 
 
+# graph 3
 @login_required
 @staff_member_required
 def graph_duration_steps(request):
@@ -158,6 +159,7 @@ def graph_duration_steps(request):
     return render(request, 'analytics/admin/graphs/duration_of_steps.html', data)
 
 
+# graph 4
 @login_required
 @staff_member_required
 def admin_roof_type_graph_view(request):
@@ -186,3 +188,29 @@ def admin_roof_type_graph_view(request):
         'chart_data': chart_data,
     }
     return render(request, 'analytics/admin/graphs/roof_type_graphs.html', data)
+
+
+# graph 5
+@login_required
+@staff_member_required
+def admin_graph_app_feedback(request):
+    from feedbacks.models import UserFeedback
+    user_feedbacks = UserFeedback.objects.all().aggregate(
+        total_users_review=models.Count('user', distinct=True),
+        avg_rating=models.Avg('rating', output_field=models.DecimalField(default=0, decimal_places=2)),
+    )
+    from users.models import User
+    users = User.objects.filter(is_active=True)
+
+    avg_rating = 0
+    if user_feedbacks['avg_rating']:
+        avg_rating = user_feedbacks['avg_rating']
+
+    data = {
+        'title': 'App Feedback',
+        'total_users': users.count(),
+        'total_users_review': user_feedbacks['total_users_review'],
+        'avg_rating': round(avg_rating, 1),
+    }
+
+    return render(request, 'analytics/admin/graphs/app_feedback.html', data)

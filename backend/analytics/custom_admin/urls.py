@@ -9,5 +9,6 @@ urlpatterns = [
     path('crew/performance/', admin_crew_performance_graph, name='admin_crew_performance_graph'),
     path('location/duration-steps/', graph_duration_steps, name='graph_duration_steps'),
     path('roof-types/graph/', admin_roof_type_graph_view, name='roof_type_graph_view'),
+    path('feedbacks/graph/', admin_graph_app_feedback, name='admin_graph_app_feedback'),
 
 ]
