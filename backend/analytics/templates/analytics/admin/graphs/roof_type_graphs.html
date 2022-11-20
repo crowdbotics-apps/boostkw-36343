@@ -52,17 +52,15 @@
     <script type="text/javascript">
         google.charts.load('current', {'packages': ['corechart']});
 
-        google.charts.setOnLoadCallback(drawBasic);
-
         const chart_data = []
+        const total_roof_types = parseInt({{ roof_types.count }})
 
         function drawBasic() {
             let data = google.visualization.arrayToDataTable([
-                ['Name', 'Hours'],
+                ['Name', 'Hours', {role: 'style'}, 'Hours'],
                 {% for item in chart_data %}
-                    ['{{ item.name }}', parseInt({{ item.hours }})],
+                    ['{{ item.name }}', parseInt({{ item.hours }}), 'color: #1038EB', parseInt({{ item.hours }}), ],
                 {% endfor %}
-                ['Test', 7],
 
             ]);
 
@@ -71,8 +69,15 @@
                 vAxis: {title: 'Hours'},
                 hAxis: {title: 'Roof Types'},
                 seriesType: 'bars',
-                series: {2: {type: 'line'}},
+                series: {
+                    1: {
+                        type: 'line',
+                        color: '#f26900',
+                        pointSize: 10
+                    }
+                },
             };
+
 
             let chart = new google.visualization.ComboChart(
                 document.getElementById('chart_div'));

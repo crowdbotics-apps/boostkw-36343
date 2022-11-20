@@ -20,11 +20,11 @@
                     <tbody>
                     <tr>
                         <td>Crew Ground</td>
-                        <td>{{ avg_minutes_worked_ground }}</td>
+                        <td>{{ avg_minutes_per_job_ground }}</td>
                     </tr>
                     <tr>
                         <td>Crew Roof</td>
-                        <td>{{ avg_minutes_worked_roof }}</td>
+                        <td>{{ avg_minutes_per_job_roof }}</td>
                     </tr>
                     </tbody>
 
@@ -41,32 +41,26 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         google.charts.load('current', {'packages': ['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+
 
         function drawChart() {
-            let ground = `{{ avg_minutes_worked_ground }}`
-            let roof = `{{ avg_minutes_worked_roof }}`
+            let ground = parseInt(`{{ avg_minutes_per_job_ground }}`);
+            let roof = parseInt(`{{ avg_minutes_per_job_roof }}`);
 
-            let data = google.visualization.arrayToDataTable([
-                ['Crew Ground', ground],
-                ['Crew Roof', roof],
+            var data = google.visualization.arrayToDataTable([
+                ['Name', 'Avg in Mins'],
+                ['Ground', ground],
+                ['Roof', roof],
             ]);
 
-            let options = {
-                title: 'Crew Mix by Location (in mins)',
-                slices: {
-                    0: {
-                        color: '#4472C4'
-                    },
-                    1: {
-                        color: '#ED7D31'
-                    }
-                }
+            var options = {
+                title: 'Crew Mix by Location (in mins)'
             };
-
             let chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
             chart.draw(data, options);
         }
+
+        google.charts.setOnLoadCallback(drawChart);
     </script>
 {% endblock %}

@@ -13,7 +13,7 @@
                 <thead>
                 <tr>
                     <th>Type</th>
-                    <th>Duration Steps (in mins)</th>
+                    <th>Duration Steps</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -21,11 +21,20 @@
                     <td valign="center">Roof</td>
                     <td>
                         <table>
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Total</th>
+                                <th>in Mins</th>
+                                <th>Avg in Mins</th>
+                            </tr>
+                            </thead>
                             {% for item in roof_list %}
                                 <tr>
                                     <td>{{ item.title }}</td>
-                                    {#                                <td>{{ item.total }}</td>#}
-                                    <td>{{ item.total_workers_mins }}</td>
+                                    <td>{{ item.total }}</td>
+                                    <td>{{ item.total_seconds_per_job_mins }}</td>
+                                    <td>{{ item.avg_total_seconds_per_job_mins }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
@@ -35,11 +44,20 @@
                     <td valign="center">Ground</td>
                     <td>
                         <table>
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Total</th>
+                                <th>in Mins</th>
+                                <th>Avg in Mins</th>
+                            </tr>
+                            </thead>
                             {% for item in ground_list %}
                                 <tr>
                                     <td>{{ item.title }}</td>
-                                    {#                                <td>{{ item.total }}</td>#}
-                                    <td>{{ item.total_workers_mins }}</td>
+                                    <td>{{ item.total }}</td>
+                                    <td>{{ item.total_seconds_per_job_mins }}</td>
+                                    <td>{{ item.avg_total_seconds_per_job_mins }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
@@ -78,12 +96,12 @@
 
         function drawBasic() {
             var data = google.visualization.arrayToDataTable([
-                ['Title', 'Mins', {role: 'style'}],
+                ['Title', 'Avg Mins', {role: 'style'}],
                 {% for item in roof_list %}
-                    ['{{item.title}}', {{item.total_workers_mins}}, 'color: #1038EB'],
+                    ['{{item.title}}', {{item.avg_total_seconds_per_job_mins}}, 'color: #1038EB'],
                 {% endfor %}
                 {% for item in ground_list %}
-                    ['{{item.title}}', {{item.total_workers_mins}}, 'color: #ff7600'],
+                    ['{{item.title}}', {{item.avg_total_seconds_per_job_mins}}, 'color: #ff7600'],
                 {% endfor %}
             ]);
             let series = {};
@@ -103,17 +121,16 @@
                     position: 'none',
                 },
                 hAxis: {
+                    title: 'Name',
                     textStyle: {color: 'grey'}
+                },
+                vAxis: {
+                    title: 'Avg in Mins',
                 },
 
                 series: {
                     0: {targetAxisIndex: 0},
                     1: {targetAxisIndex: 1}
-                },
-                vAxes: {
-                    // Adds titles to each axis.
-                    0: {title: 'Mins'},
-                    1: {title: 'Title'}
                 },
 
                 {#colors: colors#}
