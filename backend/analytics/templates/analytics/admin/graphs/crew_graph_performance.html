@@ -1,0 +1,116 @@
+{% extends "analytics/admin/base.html" %}
+{% load i18n %}
+{% load read_time_seconds %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin_analytics:analytics_index' %}">{% trans 'Analytics' %}</a> &rsaquo; {{ title }}
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Total kW Installations</th>
+                        <th>AVG hr/kw</th>
+                        <th># of Installations</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for crew in crews %}
+                        <tr>
+                            <td>{{ crew.name }}</td>
+                            <td>
+                                {% if crew.total_kw_installations %}
+                                    {{ crew.total_kw_installations }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if crew.avg_seconds_per_kw %}
+                                    {{ crew.avg_seconds_per_kw|seconds_to_hours }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
+                            <td>{{ crew.total_installations }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <div id="chart_div" style="width: 900px; height: 500px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+
+
+        function drawChart() {
+            let ground = parseInt(`{{ avg_minutes_per_job_ground }}`);
+            let roof = parseInt(`{{ avg_minutes_per_job_roof }}`);
+
+            var data = google.visualization.arrayToDataTable([
+                ['name', 'kW installed', 'Avg hr/kW', '# Installations'],
+                {% for crew in crews %}
+                    [
+                        '{{ crew.name }}',
+                        {% if crew.total_kw_installations %}
+                            {{ crew.total_kw_installations }}
+                        {% else %}
+                            0
+                        {% endif %}
+                        ,
+                        {% if crew.avg_seconds_per_kw %}
+                            {{ crew.avg_seconds_per_kw|seconds_to_hours }}
+                        {% else %}
+                            0
+                        {% endif %},
+                        {{ crew.total_installations }},],
+                {% endfor %}
+            ]);
+
+            var options = {
+                title: '{{title}}',
+                hAxis: {
+                    title: 'Crew'
+                },
+                series: {
+                    0: {
+                        type: 'line',
+                        color: '#0055b8',
+                        pointSize: 10
+                    },
+                     1: {
+                        type: 'line',
+                        color: '#f26900',
+                        pointSize: 10
+                    },
+                     2: {
+                        type: 'line',
+                        color: '#27a600',
+                        pointSize: 10
+                    },
+
+                },
+            };
+            let chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+            chart.draw(data, options);
+        }
+
+        google.charts.setOnLoadCallback(drawChart);
+    </script>
+{% endblock %}

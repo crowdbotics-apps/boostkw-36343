@@ -20,6 +20,7 @@ def analytics_index(request):
     return render(request, 'analytics/admin/index.html', data)
 
 
+# Graph 1
 @login_required
 @staff_member_required
 def admin_crew_graph_by_location(request):
@@ -77,6 +78,28 @@ def admin_crew_graph_by_location(request):
     }
 
     return render(request, 'analytics/admin/graphs/crew_mins_by_location.html', data)
+
+
+# Graph 2
+@login_required
+@staff_member_required
+def admin_crew_performance_graph(request):
+    crews = Crew.objects.annotate(
+        total_installations=models.Count('customer_trackers', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED
+        )),
+        total_kw_installations=models.Sum('customer_trackers__system_size', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED
+        ), output_field=models.IntegerField(0)),
+        avg_seconds_per_kw=models.Avg('customer_trackers__seconds_per_kw', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED
+        ), output_field=models.IntegerField(0))
+    )
+    data = {
+        'title': 'Summary of Crew Performance',
+        'crews': crews,
+    }
+    return render(request, 'analytics/admin/graphs/crew_graph_performance.html', data)
 
 
 @login_required
