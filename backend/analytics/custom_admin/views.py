@@ -2,11 +2,13 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.utils.translation import ugettext_lazy as _
 from crews.models import Crew
 from crews.db_utils import crew_counter_subqs
 from django.db import models
 
-from trackers.models import JobProcess, InitialJobProcess
+from trackers.models import JobProcess, InitialJobProcess, CustomerTracker
+from trackers.utils import seconds_to_readable_time
 
 
 @login_required
@@ -147,3 +149,82 @@ def graph_duration_steps(request):
     }
     # print(data)
     return render(request, 'analytics/admin/graphs/duration_of_steps.html', data)
+
+
+@login_required
+@staff_member_required
+def admin_roof_type_graph_view(request):
+    from roofs.models import RoofType
+    from roofs.db_utils import roof_type_counter_subqs
+    # trackers = CustomerTracker.objects.filter(
+    #     roof_type=models.OuterRef('pk'),
+    #     status=CustomerTracker.STATUS_CLOSED
+    # ).annotate(
+    #     seconds_per_job=models.ExpressionWrapper(
+    #         models.Sum('job_processes__seconds_per_job') / models.F('system_size'),
+    #         output_field=models.IntegerField()
+    #     ),
+    # )
+    # seconds_per_kw_subqs = models.Subquery(
+    #     CustomerTracker.objects.filter(
+    #         roof_type=models.OuterRef('pk'),
+    #         status=CustomerTracker.STATUS_CLOSED
+    #     ).annotate(
+    #         seconds_per_kw=models.ExpressionWrapper(
+    #             models.Sum('job_processes__seconds_per_job') / models.F('system_size'),
+    #             output_field=models.IntegerField()
+    #         ),
+    #         hours_per_kw=models.ExpressionWrapper(
+    #             models.Sum('job_processes__seconds_per_job') / 60 / models.F('system_size'),
+    #             output_field=models.IntegerField()
+    #         )
+    #     ).values('seconds_per_kw')[:1],
+    #     output_field=models.IntegerField()
+    #
+    # )
+
+    from django.db.models.functions import Coalesce
+    # subqs = CustomerTracker.objects.filter(
+    #     # roof_type=models.OuterRef('pk'),
+    #     roof_type=3,
+    #     status=CustomerTracker.STATUS_CLOSED
+    # ).annotate(
+    #     seconds_per_kw=models.ExpressionWrapper(
+    #         models.Sum('job_processes__seconds_per_job') / models.F('system_size'),
+    #         output_field=models.IntegerField()
+    #     ),
+    #     # hours_per_kw=models.ExpressionWrapper(
+    #     #     models.Sum('job_processes__seconds_per_job') / 60 / models.F('system_size'),
+    #     #     output_field=models.IntegerField()
+    #     # )
+    #     # ).values('seconds_per_kw')[:1]
+    # ).aggregate(avg=Coalesce(models.Avg('seconds_per_kw'), 0)).get('avg', 0)
+
+    from modules.database_utils import SubqueryAvg, SubquerySum
+    roof_types = RoofType.objects.filter(
+        customer_trackers__status=CustomerTracker.STATUS_CLOSED,
+    ).annotate(
+        **roof_type_counter_subqs()
+    ).annotate(
+        # avg_seconds_per_kw=models.Subquery(subqs, output_field=models.FloatField()),
+        avg_seconds_per_kw=models.Avg('customer_trackers__seconds_per_kw')
+        # avg_seconds_per_kw=models.Exists(
+        #     CustomerTracker.objects.filter(roof_type=models.OuterRef('pk'))
+        # )
+    )
+
+    chart_data = []
+    for roof in roof_types:
+        print(roof.avg_seconds_per_kw)
+        hours = seconds_to_readable_time(roof.avg_seconds_per_kw).get('hours')
+        chart_data.append({
+            'name': roof.name,
+            'hours': int(hours)
+        })
+
+    data = {
+        'title': _('Roof Types'),
+        'roof_types': roof_types,
+        'chart_data': chart_data,
+    }
+    return render(request, 'analytics/admin/graphs/roof_type_graphs.html', data)

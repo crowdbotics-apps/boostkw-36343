@@ -37,6 +37,7 @@ urlpatterns = [
     # path("rest-auth/registration/account-confirm-email/<str:key>/", confirm_email),
     # path("rest-auth/registration/", include("rest_auth.registration.urls")),
     path('admin/analytics/', include('analytics.custom_admin.urls', namespace='admin_analytics')),
+    path('trackers/', include('trackers.urls', namespace='trackers')),
 ]
 
 admin.site.site_header = "BOOSTKW"
@@ -45,9 +46,9 @@ admin.site.index_title = "BOOSTKW Admin"
 
 # swagger
 api_info = openapi.Info(
-    title="SunRun Solar project-2 API",
+    title="BoostKW API",
     default_version="v1",
-    description="API documentation for SunRun Solar project-2 App",
+    description="API documentation for BoostKW App",
 )
 
 schema_view = get_schema_view(

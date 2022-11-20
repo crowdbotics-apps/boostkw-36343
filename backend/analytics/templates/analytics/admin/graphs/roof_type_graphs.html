@@ -1,0 +1,87 @@
+{% extends "analytics/admin/base.html" %}
+{% load i18n %}
+{% load read_time_seconds %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin_analytics:analytics_index' %}">{% trans 'Analytics' %}</a> &rsaquo; {{ title }}
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="content-main">
+        <div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Job Processes</th>
+                    <th>Trackers</th>
+                    <th>Installations</th>
+                    <th>System Size</th>
+                    <th>Panels</th>
+                    <th>Total Seconds</th>
+                    <th>Avg Seconds/kW</th>
+                    <th>Avg hr/kW</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for roof in roof_types %}
+                    <tr>
+                        <td>{{ roof.name }}</td>
+                        <td>{{ roof.total_job_process }}</td>
+                        <td>{{ roof.total_customer_trackers_closed }}</td>
+                        <td>{{ roof.total_installations }}</td>
+                        <td>{{ roof.total_system_size }}</td>
+                        <td>{{ roof.total_number_of_panels }}</td>
+                        <td>{{ roof.total_seconds_per_job }}</td>
+                        <td>{{ roof.avg_seconds_per_kw }}</td>
+                        <td>
+                            {{ roof.avg_seconds_per_kw|seconds_to_hours }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <div id="chart_div" style="height: 400px; width: 100%; max-width: 600px"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js">
+    </script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+
+        google.charts.setOnLoadCallback(drawBasic);
+
+        const chart_data = []
+
+        function drawBasic() {
+            let data = google.visualization.arrayToDataTable([
+                ['Name', 'Hours'],
+                {% for item in chart_data %}
+                    ['{{ item.name }}', parseInt({{ item.hours }})],
+                {% endfor %}
+                ['Test', 7],
+
+            ]);
+
+            let options = {
+                title: 'Roof Type Performance',
+                vAxis: {title: 'Hours'},
+                hAxis: {title: 'Roof Types'},
+                seriesType: 'bars',
+                series: {2: {type: 'line'}},
+            };
+
+            let chart = new google.visualization.ComboChart(
+                document.getElementById('chart_div'));
+
+            chart.draw(data, options);
+        }
+
+        google.charts.setOnLoadCallback(drawBasic);
+
+    </script>
+
+{% endblock %}
