@@ -14,13 +14,10 @@
                 <thead>
                 <tr>
                     <th>Title</th>
-                    <th>Job Processes</th>
-                    <th>Trackers</th>
                     <th>Installations</th>
-                    <th>System Size</th>
-                    <th>Panels</th>
-                    <th>Total Seconds</th>
-                    <th>Avg Seconds/kW</th>
+                    <th>Total kw Installations</th>
+                    <th>Total Number of Arrays</th>
+                    <th>Avg Duration (in Mins)</th>
                     <th>Avg hr/kW</th>
                 </tr>
                 </thead>
@@ -28,13 +25,12 @@
                 {% for roof in roof_types %}
                     <tr>
                         <td>{{ roof.name }}</td>
-                        <td>{{ roof.total_job_process }}</td>
                         <td>{{ roof.total_customer_trackers_closed }}</td>
-                        <td>{{ roof.total_installations }}</td>
                         <td>{{ roof.total_system_size }}</td>
-                        <td>{{ roof.total_number_of_panels }}</td>
-                        <td>{{ roof.total_seconds_per_job }}</td>
-                        <td>{{ roof.avg_seconds_per_kw }}</td>
+                        <td>{{ roof.total_number_of_arrays }}</td>
+                        <td>
+                            {% widthratio roof.total_seconds_per_job|seconds_to_minutes roof.total_customer_trackers_closed 1 %}
+                        </td>
                         <td>
                             {{ roof.avg_seconds_per_kw|seconds_to_hours }}
                         </td>
@@ -44,7 +40,13 @@
             </table>
         </div>
         <div>
-            <div id="chart_div" style="height: 400px; width: 100%; max-width: 600px"></div>
+            <div id="chart_div1" style="height: 400px; width: 100%; max-width: 800px"></div>
+        </div>
+        <div>
+            <div id="chart_div2" style="height: 400px; width: 100%; max-width: 800px"></div>
+        </div>
+      <div>
+            <div id="chart_div3" style="height: 400px; width: 100%; max-width: 800px"></div>
         </div>
     </div>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js">
@@ -55,18 +57,18 @@
         const chart_data = []
         const total_roof_types = parseInt({{ roof_types.count }})
 
-        function drawBasic() {
+        function drawRoofTypePerformance() {
             let data = google.visualization.arrayToDataTable([
-                ['Name', 'Hours', {role: 'style'}, 'Hours'],
+                ['Name', 'Avg Durations (in Mins)', {role: 'style'}, 'Avg hr/kW'],
                 {% for item in chart_data %}
-                    ['{{ item.name }}', parseInt({{ item.hours }}), 'color: #1038EB', parseInt({{ item.hours }}), ],
+                    ['{{ item.name }}', parseInt({{ item.avg_duration_in_mins }}), 'color: #1038EB', parseInt({{ item.avg_hours }}),],
                 {% endfor %}
 
             ]);
 
             let options = {
                 title: 'Roof Type Performance',
-                vAxis: {title: 'Hours'},
+                vAxis: {title: 'AVG Mins'},
                 hAxis: {title: 'Roof Types'},
                 seriesType: 'bars',
                 series: {
@@ -80,12 +82,74 @@
 
 
             let chart = new google.visualization.ComboChart(
-                document.getElementById('chart_div'));
+                document.getElementById('chart_div1'));
 
             chart.draw(data, options);
         }
 
-        google.charts.setOnLoadCallback(drawBasic);
+        function drawAVGRoofType() {
+            let data = google.visualization.arrayToDataTable([
+                ['Name', 'kW Installed', {role: 'style'}, 'Avg hr/kW'],
+                {% for item in chart_data %}
+                    ['{{ item.name }}', parseInt({{ item.kw_installations }}), 'color: #1038EB', parseInt({{ item.avg_hours }}),],
+                {% endfor %}
+
+            ]);
+
+            let options = {
+                title: 'AVG hr/kW by Roof Type',
+                vAxis: {title: 'kW Installed'},
+                hAxis: {title: 'Roof Types'},
+                seriesType: 'bars',
+                series: {
+                    1: {
+                        type: 'line',
+                        color: '#f26900',
+                        pointSize: 10
+                    }
+                },
+            };
+
+
+            let chart = new google.visualization.ComboChart(
+                document.getElementById('chart_div2'));
+
+            chart.draw(data, options);
+        }
+
+         function drawAVGRoofTypeArrays() {
+            let data = google.visualization.arrayToDataTable([
+                ['Name', 'AVG hr/kW', {role: 'style'}, 'Number of Arrays'],
+                {% for item in chart_data %}
+                    ['{{ item.name }}', parseInt({{ item.avg_hours }}), 'color: #1038EB', parseInt({{ item.total_number_of_arrays }}),],
+                {% endfor %}
+
+            ]);
+
+            let options = {
+                title: 'Roof Type by Array Count',
+                vAxis: {title: 'AVG hr/kW'},
+                hAxis: {title: 'Roof Types'},
+                seriesType: 'bars',
+                series: {
+                    1: {
+                        type: 'line',
+                        color: '#f26900',
+                        pointSize: 10
+                    }
+                },
+            };
+
+
+            let chart = new google.visualization.ComboChart(
+                document.getElementById('chart_div3'));
+
+            chart.draw(data, options);
+        }
+
+        google.charts.setOnLoadCallback(drawRoofTypePerformance);
+        google.charts.setOnLoadCallback(drawAVGRoofType);
+        google.charts.setOnLoadCallback(drawAVGRoofTypeArrays);
 
     </script>
 

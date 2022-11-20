@@ -169,17 +169,19 @@ def admin_roof_type_graph_view(request):
         customer_trackers__status=CustomerTracker.STATUS_CLOSED,
     ).annotate(
         **roof_type_counter_subqs()
-    ).annotate(
-        avg_seconds_per_kw=models.Avg('customer_trackers__seconds_per_kw')
     )
 
     chart_data = []
     for roof in roof_types:
         # print(roof.avg_seconds_per_kw)
-        hours = seconds_to_readable_time(roof.avg_seconds_per_kw).get('hours')
+        avg_hours = round(int(roof.avg_seconds_per_kw) / 3600)
+        avg_duration_in_mins = round(int(roof.total_seconds_per_job) / 60 / roof.total_customer_trackers_closed)
         chart_data.append({
             'name': roof.name,
-            'hours': int(hours)
+            'avg_hours': int(avg_hours),
+            'avg_duration_in_mins': int(avg_duration_in_mins),
+            'kw_installations': roof.total_system_size,
+            'total_number_of_arrays': roof.total_number_of_arrays,
         })
 
     data = {

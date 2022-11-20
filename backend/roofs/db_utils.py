@@ -57,7 +57,10 @@ def roof_type_counter_subqs():
             customer_trackers__status=CustomerTracker.STATUS_CLOSED
         )),
 
-        'total_installations': DistinctSum('customer_trackers__system_size', filter=models.Q(
+        'total_installations': DistinctSum('customer_trackers', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED,
+        )),
+        'total_number_of_arrays': DistinctSum('customer_trackers__number_of_arrays', filter=models.Q(
             customer_trackers__status=CustomerTracker.STATUS_CLOSED,
         )),
         'total_system_size': DistinctSum('customer_trackers__system_size', filter=models.Q(
@@ -68,10 +71,14 @@ def roof_type_counter_subqs():
         )),
         'total_customer_trackers_closed': models.Count('customer_trackers', filter=models.Q(
             customer_trackers__status=CustomerTracker.STATUS_CLOSED,
-        )),
+        ), distinct=True),
         'total_seconds_per_job': models.Sum(
             'customer_trackers__job_processes__seconds_per_job',
-            filter=models.Q(customer_trackers__status=CustomerTracker.STATUS_CLOSED)
+            filter=models.Q(customer_trackers__status=CustomerTracker.STATUS_CLOSED),
+        ),
+        'avg_seconds_per_kw': models.Sum(
+            'customer_trackers__seconds_per_kw',
+            filter=models.Q(customer_trackers__status=CustomerTracker.STATUS_CLOSED),
         ),
 
         # 'avg_seconds_per_kw_test': models.Avg(
