@@ -1,0 +1,152 @@
+{% extends "analytics/admin/base.html" %}
+{% load i18n %}
+{% load read_time_seconds %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin_analytics:analytics_index' %}">{% trans 'Analytics' %}</a> &rsaquo; {{ title }}
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Total kW Installations</th>
+                        <th>AVG hr/kw</th>
+                        <th># of Installations</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for crew in crews %}
+                        <tr>
+                            <td>{{ crew.name }}</td>
+                            <td>
+                                {% if crew.total_kw_installations %}
+                                    {{ crew.total_kw_installations }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if crew.avg_seconds_per_kw %}
+                                    {{ crew.avg_seconds_per_kw|seconds_to_hours }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
+                            <td>{{ crew.total_installations }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <div id="chart_div1" style="width: 900px; height: 500px;"></div>
+            </div>
+            <div class="col-md-6">
+                <div id="chart_div2" style="width: 900px; height: 500px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+
+
+        function drawChart() {
+
+            let data = google.visualization.arrayToDataTable([
+                ['name', 'kW installed', 'Avg hr/kW', '# Installations'],
+                {% for crew in crews %}
+                    [
+                        '{{ crew.name }}',
+                        {% if crew.total_kw_installations %}
+                            {{ crew.total_kw_installations }}
+                        {% else %}
+                            0
+                        {% endif %}
+                        ,
+                        {% if crew.avg_seconds_per_kw %}
+                            {{ crew.avg_seconds_per_kw|seconds_to_hours }}
+                        {% else %}
+                            0
+                        {% endif %},
+                        {{ crew.total_installations }},],
+                {% endfor %}
+            ]);
+
+            let options = {
+                title: '{{title}}',
+                hAxis: {
+                    title: 'Crew'
+                },
+                series: {
+                    0: {
+                        type: 'line',
+                        color: '#0055b8',
+                        pointSize: 10
+                    },
+                    1: {
+                        type: 'line',
+                        color: '#f26900',
+                        pointSize: 10
+                    },
+                    2: {
+                        type: 'line',
+                        color: '#27a600',
+                        pointSize: 10
+                    },
+
+                },
+            };
+            let chart = new google.visualization.LineChart(document.getElementById('chart_div1'));
+
+            chart.draw(data, options);
+        }
+
+        function drawPerformanceByCrew() {
+            let data = google.visualization.arrayToDataTable([
+                ['name', 'kW installed', {role: 'style'}, 'Avg hr/kW',],
+                {% for crew in crews %}
+                    ['{{ crew.name }}', parseInt(`{{ crew.total_kw_installations }}`), 'color: #1038EB',
+                         {% if crew.avg_seconds_per_kw %}
+                            {{ crew.avg_seconds_per_kw|seconds_to_hours }}
+                        {% else %}
+                            0
+                        {% endif %}],
+                {% endfor %}
+            ]);
+            let options = {
+                title: 'Performance by Crew',
+                hAxis: {
+                    title: 'Crew'
+                },
+                vAxis: {
+                     title: 'kW Installed'
+                },
+                seriesType: 'bars',
+                series: {
+                    1: {
+                        type: 'line',
+                        color: '#f26900',
+                        pointSize: 10
+                    }
+                },
+            };
+            let chart = new google.visualization.ComboChart(document.getElementById('chart_div2'));
+
+            chart.draw(data, options);
+        }
+
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawPerformanceByCrew);
+    </script>
+{% endblock %}

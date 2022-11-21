@@ -1,0 +1,66 @@
+{% extends "analytics/admin/base.html" %}
+{% load i18n %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin_analytics:analytics_index' %}">{% trans 'Analytics' %}</a> &rsaquo; {{ title }}
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <table border="1" cellspacing="0" cellpadding="10">
+                    <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Duration Avg in Mins</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Crew Ground</td>
+                        <td>{{ avg_minutes_per_job_ground }}</td>
+                    </tr>
+                    <tr>
+                        <td>Crew Roof</td>
+                        <td>{{ avg_minutes_per_job_roof }}</td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="col-md-6">
+                <div id="piechart" style="width: 900px; height: 500px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+
+
+        function drawChart() {
+            let ground = parseInt(`{{ avg_minutes_per_job_ground }}`);
+            let roof = parseInt(`{{ avg_minutes_per_job_roof }}`);
+
+            var data = google.visualization.arrayToDataTable([
+                ['Name', 'Avg in Mins'],
+                ['Ground', ground],
+                ['Roof', roof],
+            ]);
+
+            var options = {
+                title: 'Crew Mix by Location (in mins)'
+            };
+            let chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
+        }
+
+        google.charts.setOnLoadCallback(drawChart);
+    </script>
+{% endblock %}

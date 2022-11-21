@@ -1,0 +1,30 @@
+<div class="app-analytics module">
+    <table>
+        <caption>
+            <a href="/admin/analytics/" class="section"
+               title="">Analytics</a>
+        </caption>
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:admin_crew_graph_by_location' %}">Crew Graph</a></th>
+            <td><a href="{% url 'admin_analytics:admin_crew_graph_by_location' %}" class="viewlink">View</a></td>
+        </tr>
+          <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:admin_crew_performance_graph' %}">Crew Graph
+                Performance</a></th>
+            <td><a href="{% url 'admin_analytics:admin_crew_performance_graph' %}" class="viewlink">View</a></td>
+        </tr>
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:graph_duration_steps' %}">Duration of
+                Steps</a></th>
+            <td><a href="{% url 'admin_analytics:graph_duration_steps' %}" class="viewlink">View</a></td>
+        </tr>
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:roof_type_graph_view' %}">Roof Type</a></th>
+            <td><a href="{% url 'admin_analytics:roof_type_graph_view' %}" class="viewlink">View</a></td>
+        </tr>
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:admin_graph_app_feedback' %}">App Feedback</a></th>
+            <td><a href="{% url 'admin_analytics:admin_graph_app_feedback' %}" class="viewlink">View</a></td>
+        </tr>
+    </table>
+</div>

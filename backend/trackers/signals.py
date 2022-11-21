@@ -13,9 +13,10 @@ def model_customer_tracker_post_save(sender, created, instance, **kwargs):
         create_customer_tracker_job_process(instance, created=True)
     status_changed = instance.data_changed(['status'])
     # print(status_changed)
-    if status_changed and instance.status == CustomerTracker.STATUS_CLOSED:
+    if instance.status == CustomerTracker.STATUS_CLOSED:
         from trackers.utils import close_trackers_job_process
         close_trackers_job_process(instance)
+
 
     # if created:
     #     create_customer_tracker_job_process(instance, intial=True)
@@ -52,4 +53,5 @@ def model_job_process_pre_save(sender, instance, **kwargs):
 @receiver(post_save, sender=JobProcess)
 def model_job_process_post_save(sender, created, instance, **kwargs):
     # print(instance.updated)
-    pass
+    from .utils import update_tracker_fields
+    update_tracker_fields(instance.customer_tracker.id)

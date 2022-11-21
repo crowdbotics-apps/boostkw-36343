@@ -1,0 +1,37 @@
+{% extends "analytics/admin/base.html" %}
+{% load i18n %}
+{% load read_time_seconds %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin_analytics:analytics_index' %}">{% trans 'Analytics' %}</a> &rsaquo; {{ title }}
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <table>
+
+                    <tbody>
+                    <tr>
+                        <td>Users</td>
+                        <td>{{ total_users }}</td>
+                    </tr>
+                     <tr>
+                        <td>Total User Feedbacks</td>
+                        <td>{{ total_users_review }}</td>
+                    </tr>
+                    <tr>
+                        <td>Rating AVG</td>
+                        <td>{{ avg_rating }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}

@@ -80,7 +80,8 @@ class CustomerTracker(ModelFieldChangeStatusMixin, TimeStampModel):
     customer_name = models.CharField(_('Customer Name'), max_length=250)
     system_size = models.DecimalField(_('System Size'), max_digits=20, decimal_places=2, help_text=_('In kW'))
     number_of_panels = models.PositiveIntegerField(_('Number of Panels'), )
-    roof_type = models.ForeignKey('roofs.RoofType', on_delete=models.SET_NULL, null=True, blank=True)
+    roof_type = models.ForeignKey('roofs.RoofType', on_delete=models.SET_NULL, null=True, blank=True,
+                                  related_name='customer_trackers')
     number_of_arrays = models.PositiveIntegerField(_('Number of Arrays'))
 
     is_battery = models.BooleanField(default=False)
@@ -96,6 +97,8 @@ class CustomerTracker(ModelFieldChangeStatusMixin, TimeStampModel):
     number_of_workers = models.PositiveIntegerField()
 
     status = models.CharField(choices=STATUS_CHOICES, default=STATUS_ACTIVE, max_length=10)
+
+    seconds_per_kw = models.PositiveIntegerField(_('Seconds Per kW'), default=0, editable=False)
 
     def __str__(self):
         return '%s' % self.job_code
@@ -198,6 +201,7 @@ class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
     end_datetime = models.DateTimeField(_('End Time'), null=True, blank=True)
     last_paused_datetime = models.DateTimeField(_('Last Paused Time'), null=True, blank=True)
     resuming_datetime = models.DateTimeField(_('Resuming Time'), null=True, blank=True)
+    seconds_per_job = models.PositiveIntegerField(_('Seconds Per Job'), default=0, editable=False)
 
     def __str__(self):
         return '%s' % self.title
@@ -241,3 +245,12 @@ class JobProcess(ModelFieldChangeStatusMixin, TimeStampModel):
         return time_spent_seconds * self.customer_tracker.number_of_workers
 
         # return 0
+
+    def save(self, *args, **kwargs):
+        number_of_workers = self.customer_tracker.number_of_workers
+        time_spent_seconds = self.get_time_spent_seconds
+        if number_of_workers >= 0 and time_spent_seconds >= 0:
+            self.seconds_per_job = time_spent_seconds * number_of_workers
+        else:
+            self.seconds_per_job = 0
+        super(self.__class__, self).save(*args, **kwargs)

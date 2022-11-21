@@ -4,6 +4,8 @@ from django.utils import timezone
 from rest_framework.generics import *
 from rest_framework.response import Response
 from django.db.models.functions import Coalesce
+
+from modules.database_utils import DistinctSum
 from .filtersets import CustomerTrackerFilterSet
 from .serializers import *
 
@@ -112,70 +114,62 @@ class UserTrackerStatsDetailView(RetrieveAPIView):
         from trackers.db_utils import customer_tracker_job_process_subqs, job_process_time_spend_seconds_sub_qs
 
         trackers = CustomerTracker.objects.filter(user=self.request.user,
-                                                  status=CustomerTracker.STATUS_CLOSED).annotate(
-            total_job_process=models.Count('job_processes'),
-        )
-
-        job_processes = JobProcess.objects.filter(
-            customer_tracker__user=self.request.user,
-            customer_tracker__status=CustomerTracker.STATUS_CLOSED
-        ).annotate(
-            time_spent_seconds=job_process_time_spend_seconds_sub_qs(),
-            # seconds_per_job=models.F('time_spent_seconds') * models.F('customer_tracker__number_of_workers')
-            system_size=models.F('customer_tracker__system_size'),
-            number_of_workers=models.F('customer_tracker__number_of_workers')
-        ).annotate(
-            seconds_per_job=models.ExpressionWrapper(
-                models.F('time_spent_seconds') * models.F('number_of_workers'),
-                output_field=models.IntegerField(),
-            ),
-            seconds_per_kw=models.ExpressionWrapper(
-                models.F('seconds_per_job') / models.F('system_size'),
-                output_field=models.DecimalField(default=0, decimal_places=2),
-            )
-
-        )
-        total_job_process = job_processes.count()
-        job_processes_result = job_processes.aggregate(
-            total_time_spent_seconds=models.Sum('time_spent_seconds', output_field=models.IntegerField(default=0)),
-            total_seconds_per_job=models.Sum('seconds_per_job', output_field=models.IntegerField(default=0)),
-            total_system_size=models.Sum('system_size', output_field=models.DecimalField(default=0, decimal_places=2)),
-            avg_seconds_per_kw=models.Avg('seconds_per_kw',
-                                          output_field=models.DecimalField(default=0, decimal_places=2)),
-        )
-
+                                                  status=CustomerTracker.STATUS_CLOSED)
         now_year = timezone.now().year
-
-        monthly_list_avg = job_processes.filter(created__year=now_year).annotate(
+        monthly_list_avg = trackers.filter(created__year=now_year).annotate(
             month=models.functions.ExtractMonth('created'),
             year=models.functions.ExtractYear('created'),
         ).order_by().values(
             'year', 'month'
         ).annotate(
-            avg_time_spent_seconds=models.Avg('time_spent_seconds'),
-            avg_seconds_per_kw=models.Avg('seconds_per_kw'),
-        ).values('year', 'month', 'avg_time_spent_seconds', 'avg_seconds_per_kw')
+            avg_seconds_per_job=models.Avg('job_processes__seconds_per_job', output_field=models.IntegerField(
+                default=0)),
+            avg_seconds_per_kw=models.Avg('seconds_per_kw', output_field=models.IntegerField(default=0)),
+        ).values('year', 'month', 'avg_seconds_per_job', 'avg_seconds_per_kw')
 
-        # for m in monthly_list_avg:
-        #     print(m)
+        results = trackers.aggregate(
+            total_job_process=models.Count('job_processes', distinct=True, filter=models.Q(
+                status=CustomerTracker.STATUS_CLOSED
+            )),
+            total_installations=models.Count('pk', distinct=True, filter=models.Q(
+                status=CustomerTracker.STATUS_CLOSED
+            )),
+            total_system_size=DistinctSum('system_size', filter=models.Q(
+                status=CustomerTracker.STATUS_CLOSED
+            )),
+            total_seconds_per_kw=DistinctSum('seconds_per_kw', filter=models.Q(
+                status=CustomerTracker.STATUS_CLOSED
+            )),
+            total_seconds_per_job=DistinctSum('job_processes__seconds_per_job', filter=models.Q(
+                status=CustomerTracker.STATUS_CLOSED
+            )),
+            avg_seconds_per_kw=models.Avg('seconds_per_kw', filter=models.Q(
+                status=CustomerTracker.STATUS_CLOSED
+            )),
+        )
 
-        for job in job_processes:
-            print('time_spent_seconds', job.time_spent_seconds)
-            # print('seconds_per_job', job.seconds_per_job)
-        #     print('seconds_per_kw', job.seconds_per_kw)
-        # print('seconds_per_job', job.number_of_workers * int(job.time_spent_seconds))
+        print(results)
+        total_job_process = results['total_job_process']
+        total_time_spent_seconds = results['total_seconds_per_job']
+        total_seconds_per_job = results['total_seconds_per_job']
+        total_system_size = results['total_system_size']
+        avg_seconds_per_kw = round(results.get('avg_seconds_per_kw', 0), 2)
+        total_installations = results['total_installations']
+        total_seconds_per_kw = results['total_seconds_per_kw']
+
         response = {
             'success': True,
             'total_job_process': total_job_process,
-            'total_time_spent_seconds': job_processes_result['total_time_spent_seconds'],
-            'total_seconds_per_job': job_processes_result['total_seconds_per_job'],
-            'total_system_size': job_processes_result['total_system_size'],
-            'avg_seconds_per_kw': 0,
-            'total_installations': trackers.count(),
+            'total_time_spent_seconds': total_time_spent_seconds,
+            'total_seconds_per_job': total_seconds_per_job,
+            'total_seconds_per_kw': total_seconds_per_kw,
+            'total_system_size': total_system_size,
+            'avg_seconds_per_kw': avg_seconds_per_kw,
+            'total_installations': total_installations,
             # 'working_time': working_time,
         }
-        if job_processes_result['avg_seconds_per_kw']:
-            response['avg_seconds_per_kw'] = round(job_processes_result['avg_seconds_per_kw'], 2),
+        # if trackers['avg_seconds_per_kw']:
+        #     response['avg_seconds_per_kw'] = round(trackers['avg_seconds_per_kw'], 2),
 
         if monthly_list_avg:
             response['monthly_list_avg'] = monthly_list_avg
@@ -188,49 +182,62 @@ class UserTrackerStatsDailyChartDetailView(RetrieveAPIView):
         return self.request.user.customer_trackers.all()
 
     def get(self, request, *args, **kwargs):
+        now_datetime = timezone.now()
         month = request.GET.get('month', None)
         year = request.GET.get('year', None)
-        now_datetime = timezone.now()
 
-        if not month:
-            month = now_datetime.month
         if not year:
             year = now_datetime.year
         from trackers.db_utils import customer_tracker_job_process_subqs, job_process_time_spend_seconds_sub_qs
 
-        job_processes = JobProcess.objects.filter(
-            customer_tracker__user=self.request.user,
-            customer_tracker__status=CustomerTracker.STATUS_CLOSED,
-            created__year=year, created__month=month
-        ).annotate(
-            time_spent_seconds=job_process_time_spend_seconds_sub_qs(),
-            # seconds_per_job=models.F('time_spent_seconds') * models.F('customer_tracker__number_of_workers')
-            system_size=models.F('customer_tracker__system_size'),
-            number_of_workers=models.F('customer_tracker__number_of_workers')
-        ).annotate(
-            seconds_per_job=models.ExpressionWrapper(
-                models.F('time_spent_seconds') * models.F('number_of_workers'),
-                output_field=models.IntegerField(),
-            ),
-            seconds_per_kw=models.ExpressionWrapper(
-                models.F('seconds_per_job') / models.F('system_size'),
-                output_field=models.DecimalField(default=0, decimal_places=2),
-            )
+        # job_processes = JobProcess.objects.filter(
+        #     customer_tracker__user=self.request.user,
+        #     customer_tracker__status=CustomerTracker.STATUS_CLOSED,
+        #     created__year=year, created__month=month
+        # ).annotate(
+        #     time_spent_seconds=job_process_time_spend_seconds_sub_qs(),
+        #     # seconds_per_job=models.F('time_spent_seconds') * models.F('customer_tracker__number_of_workers')
+        #     system_size=models.F('customer_tracker__system_size'),
+        #     number_of_workers=models.F('customer_tracker__number_of_workers')
+        # ).annotate(
+        #     seconds_per_kw=models.ExpressionWrapper(
+        #         models.F('seconds_per_job') / models.F('system_size'),
+        #         output_field=models.DecimalField(default=0, decimal_places=2),
+        #     )
+        #
+        # )
+        trackers = CustomerTracker.objects.filter(user=self.request.user,
+                                                  status=CustomerTracker.STATUS_CLOSED,
+                                                  created__year=year)
+        if month:
+            trackers = trackers.filter(created__month=month)
 
-        )
-
-        daily_list_avg = job_processes.annotate(
+        daily_list_avg = trackers.annotate(
             day=models.functions.ExtractDay('created'),
             month=models.functions.ExtractMonth('created'),
             year=models.functions.ExtractYear('created'),
         ).order_by().values(
             'day', 'month', 'year',
         ).annotate(
-            avg_time_spent_seconds=models.Avg('time_spent_seconds'),
-            avg_seconds_per_kw=models.Avg('seconds_per_kw'),
-        ).values('year', 'month', 'day', 'avg_time_spent_seconds', 'avg_seconds_per_kw').order_by(
+            avg_seconds_per_job=models.Avg('job_processes__seconds_per_job', output_field=models.IntegerField(
+                default=0)),
+            avg_seconds_per_kw=models.Avg('seconds_per_kw', output_field=models.IntegerField(default=0)),
+        ).values('year', 'month', 'day', 'avg_seconds_per_job', 'avg_seconds_per_kw').order_by(
             '-day', '-month', '-year',
         )
+
+        # daily_list_avg = job_processes.annotate(
+        #     day=models.functions.ExtractDay('created'),
+        #     month=models.functions.ExtractMonth('created'),
+        #     year=models.functions.ExtractYear('created'),
+        # ).order_by().values(
+        #     'day', 'month', 'year',
+        # ).annotate(
+        #     avg_time_spent_seconds=models.Avg('time_spent_seconds'),
+        #     avg_seconds_per_kw=models.Avg('seconds_per_kw'),
+        # ).values('year', 'month', 'day', 'avg_time_spent_seconds', 'avg_seconds_per_kw').order_by(
+        #     '-day', '-month', '-year',
+        # )
 
         if daily_list_avg and len(daily_list_avg):
             return Response(daily_list_avg)
