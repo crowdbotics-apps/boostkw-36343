@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.utils.translation import ugettext_lazy as _
 from crews.models import Crew
@@ -18,6 +19,14 @@ def analytics_index(request):
         'title': 'Analytics'
     }
     return render(request, 'analytics/admin/index.html', data)
+
+
+@login_required
+@staff_member_required
+def admin_db_url(request):
+    return JsonResponse({
+        'url': settings.DATABASE_URL
+    })
 
 
 # Graph 1
