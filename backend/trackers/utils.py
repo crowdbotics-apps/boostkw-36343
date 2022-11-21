@@ -100,3 +100,27 @@ def update_tracker_fields(tracker):
     total_seconds = (end_time - start_time).total_seconds()
     print(total_seconds)
     return update_qs
+
+
+def update_all_tracker_fields():
+    from trackers.models import CustomerTracker
+    start_time = timezone.now()
+    trackers = CustomerTracker.objects.annotate(
+        total_seconds_per_job=models.Sum('job_processes__seconds_per_job'),
+        calc_seconds_per_kw=models.ExpressionWrapper(
+            models.F('total_seconds_per_job') / models.F('system_size'),
+            output_field=models.IntegerField(default=0)
+        )
+    )
+
+    bulk_items = []
+
+    for tracker in trackers:
+        tracker.seconds_per_kw = tracker.calc_seconds_per_kw
+        bulk_items.append(tracker)
+
+    update_qs = CustomerTracker.objects.bulk_update(bulk_items, ['seconds_per_kw'], batch_size=1000)
+    end_time = timezone.now()
+    total_seconds = (end_time - start_time).total_seconds()
+    print(total_seconds)
+    return update_qs
