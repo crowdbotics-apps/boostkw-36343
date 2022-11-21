@@ -80,6 +80,7 @@ def job_process_workers_seconds():
     time_spent_seconds = job_process_time_spend_seconds_sub_qs(),
     # seconds_per_job=models.F('time_spent_seconds') * models.F('customer_tracker__number_of_workers')
     system_size = models.F('customer_tracker__system_size')
+    return 0
 
 
 def update_job_process_seconds_per_job_field():
@@ -95,14 +96,14 @@ def update_job_process_seconds_per_job_field():
     for job in job_processes:
         # print(job.total_seconds_per_job)
         job.seconds_per_job = job.total_seconds_per_job
-        # job.save()
-        bulk_items.append(job)
+        job.save()
+        # bulk_items.append(job)
 
-    update_qs = JobProcess.objects.bulk_update(bulk_items, ['seconds_per_job'], batch_size=1000)
+    # update_qs = JobProcess.objects.bulk_update(bulk_items, ['seconds_per_job'], batch_size=1000)
     end_time = timezone.now()
     total_seconds = (end_time - start_time).total_seconds()
     print(total_seconds)
-    return update_qs
+    return total_seconds
     # return 'update_qs'
 
     # return job_processes.update(seconds_per_job=models.F('total_seconds_per_job'))
