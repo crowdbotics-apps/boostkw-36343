@@ -11,3 +11,12 @@ def update_job_process_field_view(request):
     res = update_job_process_seconds_per_job_field()
     print(res)
     return HttpResponse('updated')
+
+
+@login_required
+@staff_member_required
+def update_tracker_field_view(request):
+    from trackers.utils import update_tracker_fields
+    res = update_tracker_fields()
+    print(res)
+    return HttpResponse('updated')
