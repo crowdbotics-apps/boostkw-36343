@@ -16,7 +16,7 @@ def update_job_process_field_view(request):
 @login_required
 @staff_member_required
 def update_tracker_field_view(request):
-    from trackers.utils import update_tracker_fields
-    res = update_tracker_fields()
+    from trackers.utils import update_all_tracker_fields
+    res = update_all_tracker_fields()
     print(res)
     return HttpResponse('updated')
