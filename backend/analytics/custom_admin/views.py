@@ -287,6 +287,38 @@ def admin_graph_app_feedback(request):
     return render(request, 'analytics/admin/graphs/app_feedback.html', data)
 
 
+# graph 6
+@login_required
+@staff_member_required
+def admin_roof_type_avg_hr_kw_graph(request):
+    from roofs.models import RoofType
+    from roofs.db_utils import roof_type_counter_subqs
+    roof_types = RoofType.objects.filter(
+        customer_trackers__status=CustomerTracker.STATUS_CLOSED,
+    ).annotate(
+        **roof_type_counter_subqs()
+    )
+
+    chart_data = []
+    for roof in roof_types:
+        avg_hours = round(int(roof.avg_seconds_per_kw) / 3600)
+        avg_duration_in_mins = round(int(roof.total_seconds_per_job) / 60 / roof.total_customer_trackers_closed)
+        chart_data.append({
+            'name': roof.name,
+            'avg_hours': round(avg_hours),
+            'avg_duration_in_mins': round(avg_duration_in_mins),
+            'kw_installations': roof.total_system_size,
+            'total_number_of_arrays': roof.total_number_of_arrays,
+        })
+    print(chart_data)
+    data = {
+        'title': 'AVG hr/kW by Roof Type',
+        'roof_types': roof_types,
+        'chart_data': chart_data,
+    }
+    return render(request, 'analytics/admin/graphs/avg_hr_kw_by_roof_type.html', data)
+
+
 # graph 8
 @login_required
 @staff_member_required

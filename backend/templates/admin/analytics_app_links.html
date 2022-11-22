@@ -24,13 +24,20 @@
             <th scope="row"><a href="{% url 'admin_analytics:admin_graph_roof_type_performance_view' %}">
                 Roof Type Performance</a>
             </th>
-            <td><a href="{% url 'admin_analytics:admin_graph_roof_type_performance_view' %}" class="viewlink">View</a></td>
+            <td><a href="{% url 'admin_analytics:admin_graph_roof_type_performance_view' %}" class="viewlink">View</a>
+            </td>
         </tr>
         <tr class="model-crew-analytics">
             <th scope="row"><a href="{% url 'admin_analytics:admin_graph_app_feedback' %}">App Feedback</a></th>
             <td><a href="{% url 'admin_analytics:admin_graph_app_feedback' %}" class="viewlink">View</a></td>
         </tr>
-           <tr class="model-crew-analytics">
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:admin_roof_type_avg_hr_kw_graph' %}">
+                AVG hr/kW by Roof Type
+            </a></th>
+            <td><a href="{% url 'admin_analytics:admin_roof_type_avg_hr_kw_graph' %}" class="viewlink">View</a></td>
+        </tr>
+        <tr class="model-crew-analytics">
             <th scope="row"><a href="{% url 'admin_analytics:admin_grap_performance_by_crew' %}">Performance by Crew
             </a></th>
             <td><a href="{% url 'admin_analytics:admin_grap_performance_by_crew' %}" class="viewlink">View</a></td>
