@@ -12,9 +12,12 @@ urlpatterns = [
     path('crew/graph/mix-by-location/', admin_crew_mix_by_location, name='admin_crew_grap_mix_by_location'),
     # graph 3
     path('crew/performance/', admin_crew_performance_graph, name='admin_crew_performance_graph'),
+    # graph 4
+    path('roof-types/graph/roof-type-performance/', admin_graph_roof_type_performance_view,
+         name='admin_graph_roof_type_performance_view'),
+    # graph 5
+    path('feedbacks/rating-graph/', admin_graph_app_feedback, name='admin_graph_app_feedback'),
     # graph 8
     path('crew/graph/performance-by-crew/', admin_grap_performance_by_crew, name='admin_grap_performance_by_crew'),
-    path('roof-types/graph/', admin_roof_type_graph_view, name='roof_type_graph_view'),
-    path('feedbacks/graph/', admin_graph_app_feedback, name='admin_graph_app_feedback'),
 
 ]

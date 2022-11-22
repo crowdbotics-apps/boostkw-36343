@@ -206,7 +206,7 @@ def admin_crew_mix_by_location(request):
 # graph 4
 @login_required
 @staff_member_required
-def admin_roof_type_graph_view(request):
+def admin_graph_roof_type_performance_view(request):
     from roofs.models import RoofType
     from roofs.db_utils import roof_type_counter_subqs
     roof_types = RoofType.objects.filter(
@@ -229,7 +229,7 @@ def admin_roof_type_graph_view(request):
         })
 
     data = {
-        'title': _('Roof Types'),
+        'title': _('Roof Type Performance'),
         'roof_types': roof_types,
         'chart_data': chart_data,
     }
@@ -244,6 +244,26 @@ def admin_graph_app_feedback(request):
     user_feedbacks = UserFeedback.objects.all().aggregate(
         total_users_review=models.Count('user', distinct=True),
         avg_rating=models.Avg('rating', output_field=models.DecimalField(default=0, decimal_places=2)),
+        rating_1=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=1
+                              )),
+        rating_2=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=2
+                              )),
+        rating_3=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=3
+                              )),
+        rating_4=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=4
+                              )),
+        rating_5=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=15
+                              )),
     )
     from users.models import User
     users = User.objects.filter(is_active=True)
@@ -257,6 +277,11 @@ def admin_graph_app_feedback(request):
         'total_users': users.count(),
         'total_users_review': user_feedbacks['total_users_review'],
         'avg_rating': round(avg_rating, 1),
+        'rating_1': user_feedbacks['rating_1'],
+        'rating_2': user_feedbacks['rating_2'],
+        'rating_3': user_feedbacks['rating_3'],
+        'rating_4': user_feedbacks['rating_4'],
+        'rating_5': user_feedbacks['rating_5'],
     }
 
     return render(request, 'analytics/admin/graphs/app_feedback.html', data)

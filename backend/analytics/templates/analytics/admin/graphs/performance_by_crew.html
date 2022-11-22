@@ -10,14 +10,14 @@
 {% block content %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4 col-sm-5 col-12">
+            <div class="col-md-3 col-sm-4 col-12">
                 <table>
                     <thead>
                     <tr>
                         <th>Name</th>
                         <th>Total kW Installations</th>
                         <th>AVG hr/kw</th>
-                        <th># of Installations</th>
+
                     </tr>
                     </thead>
                     <tbody>
@@ -38,14 +38,14 @@
                                     0
                                 {% endif %}
                             </td>
-                            <td>{{ crew.total_installations }}</td>
+
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
 
-            <div class="col-md-8 col-sm-7 col-12">
+            <div class="col-md-9 col-sm-8 col-12">
                 <div id="chart_div2" style="width: 900px; height: 500px;"></div>
             </div>
         </div>
