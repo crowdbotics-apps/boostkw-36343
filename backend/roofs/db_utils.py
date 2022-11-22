@@ -80,6 +80,10 @@ def roof_type_counter_subqs():
             'customer_trackers__seconds_per_kw',
             filter=models.Q(customer_trackers__status=CustomerTracker.STATUS_CLOSED),
         ),
+        'avg_number_of_arrays': models.Avg(
+            'customer_trackers__number_of_arrays',
+            filter=models.Q(customer_trackers__status=CustomerTracker.STATUS_CLOSED),
+        ),
 
         # 'avg_seconds_per_kw_test': models.Avg(
         #     models.F('total_seconds_per_job') / models.F('total_system_size'),

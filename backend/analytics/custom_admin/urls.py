@@ -18,6 +18,9 @@ urlpatterns = [
     # graph 5
     path('feedbacks/rating-graph/', admin_graph_app_feedback, name='admin_graph_app_feedback'),
     # graph 6
+    path('roofs/graph/roof-type-by-array-count/', admin_roof_type_by_array_count_graph,
+         name='admin_roof_type_by_array_count_graph'),
+    # graph 7
     path('roofs/graph/roof-type-avg-hr-kw/', admin_roof_type_avg_hr_kw_graph, name='admin_roof_type_avg_hr_kw_graph'),
     # graph 8
     path('crew/graph/performance-by-crew/', admin_grap_performance_by_crew, name='admin_grap_performance_by_crew'),
