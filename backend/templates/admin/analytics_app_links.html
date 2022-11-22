@@ -5,26 +5,48 @@
                title="">Analytics</a>
         </caption>
         <tr class="model-crew-analytics">
-            <th scope="row"><a href="{% url 'admin_analytics:admin_crew_graph_by_location' %}">Crew Graph</a></th>
-            <td><a href="{% url 'admin_analytics:admin_crew_graph_by_location' %}" class="viewlink">View</a></td>
+            <th scope="row"><a href="{% url 'admin_analytics:admin_crew_grap_mix_by_location' %}">Crew Mix By
+                Location</a></th>
+            <td><a href="{% url 'admin_analytics:admin_crew_grap_mix_by_location' %}" class="viewlink">View</a></td>
         </tr>
-          <tr class="model-crew-analytics">
-            <th scope="row"><a href="{% url 'admin_analytics:admin_crew_performance_graph' %}">Crew Graph
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:admin_crew_graph_duration_steps' %}">Duration of
+                Steps</a></th>
+            <td><a href="{% url 'admin_analytics:admin_crew_graph_duration_steps' %}" class="viewlink">View</a></td>
+        </tr>
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:admin_crew_performance_graph' %}">Summary of Crew
                 Performance</a></th>
             <td><a href="{% url 'admin_analytics:admin_crew_performance_graph' %}" class="viewlink">View</a></td>
         </tr>
+
         <tr class="model-crew-analytics">
-            <th scope="row"><a href="{% url 'admin_analytics:graph_duration_steps' %}">Duration of
-                Steps</a></th>
-            <td><a href="{% url 'admin_analytics:graph_duration_steps' %}" class="viewlink">View</a></td>
-        </tr>
-        <tr class="model-crew-analytics">
-            <th scope="row"><a href="{% url 'admin_analytics:roof_type_graph_view' %}">Roof Type</a></th>
-            <td><a href="{% url 'admin_analytics:roof_type_graph_view' %}" class="viewlink">View</a></td>
+            <th scope="row"><a href="{% url 'admin_analytics:admin_graph_roof_type_performance_view' %}">
+                Roof Type Performance</a>
+            </th>
+            <td><a href="{% url 'admin_analytics:admin_graph_roof_type_performance_view' %}" class="viewlink">View</a>
+            </td>
         </tr>
         <tr class="model-crew-analytics">
             <th scope="row"><a href="{% url 'admin_analytics:admin_graph_app_feedback' %}">App Feedback</a></th>
             <td><a href="{% url 'admin_analytics:admin_graph_app_feedback' %}" class="viewlink">View</a></td>
+        </tr>
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:admin_roof_type_avg_hr_kw_graph' %}">
+                AVG hr/kW by Roof Type
+            </a></th>
+            <td><a href="{% url 'admin_analytics:admin_roof_type_avg_hr_kw_graph' %}" class="viewlink">View</a></td>
+        </tr>
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:admin_roof_type_by_array_count_graph' %}">
+                Roof Type by Array Count
+            </a></th>
+            <td><a href="{% url 'admin_analytics:admin_roof_type_by_array_count_graph' %}" class="viewlink">View</a></td>
+        </tr>
+        <tr class="model-crew-analytics">
+            <th scope="row"><a href="{% url 'admin_analytics:admin_grap_performance_by_crew' %}">Performance by Crew
+            </a></th>
+            <td><a href="{% url 'admin_analytics:admin_grap_performance_by_crew' %}" class="viewlink">View</a></td>
         </tr>
     </table>
 </div>

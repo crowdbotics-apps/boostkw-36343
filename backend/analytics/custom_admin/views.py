@@ -32,7 +32,121 @@ def admin_db_url(request):
 # Graph 1
 @login_required
 @staff_member_required
-def admin_crew_graph_by_location(request):
+def admin_crew_graph_duration_steps(request):
+    from trackers.db_utils import job_process_time_spend_seconds_sub_qs
+    initial_job_processes = InitialJobProcess.objects.all()
+    processes = [{'id': item.id, 'title': item.title, 'type': item.location} for item in initial_job_processes]
+    # trackers = CustomerTracker.objects.filter().order_by('-location')
+    job_processes = JobProcess.objects.filter()
+    subqs_trackers = {}
+    subqs_job = {}
+    for item in processes:
+        _id = item.get('id')
+        title = item.get('title')
+        # subqs_trackers[f'count_{_id}'] = models.Count('id', filter=models.Q(job_processes__title__exact=title),
+        #                                               output_field=models.IntegerField(default=0))
+        subqs_job[f'count_{_id}'] = models.Count('id', filter=models.Q(title__exact=title),
+                                                 output_field=models.IntegerField(default=0))
+
+        # subqs_trackers[f'total_seconds_per_job_{_id}'] = models.Sum('job_processes__seconds_per_job',
+        #                                                             filter=models.Q(job_processes__title__exact=title),
+        #                                                             output_field=models.IntegerField(default=0)
+        #                                                             )
+        subqs_job[f'toal_seconds_per_job_{_id}'] = models.Sum('seconds_per_job',
+                                                              filter=models.Q(title__exact=title),
+                                                              output_field=models.IntegerField(default=0)
+                                                              )
+        subqs_job[f'avg_seconds_per_job_{_id}'] = models.Avg('seconds_per_job',
+                                                             filter=models.Q(title__exact=title),
+                                                             output_field=models.IntegerField(default=0)
+                                                             )
+
+    # results_trackers = trackers.aggregate(**subqs_trackers)
+    results_job_processes = job_processes.aggregate(**subqs_job)
+    print(results_job_processes)
+
+    trackers_roof_list = []
+    trackers_ground_list = []
+    job_processes_roof_list = []
+    job_processes_ground_list = []
+    for item in processes:
+        _id = item.get('id')
+        # count_value = results_trackers[f'count_{_id}']
+        job_count_value = results_job_processes[f'count_{_id}']
+        # total_seconds_per_job = results_trackers[f'total_seconds_per_job_{_id}']
+        total_seconds_per_job = results_job_processes[f'toal_seconds_per_job_{_id}']
+        avg_seconds_per_job = results_job_processes[f'avg_seconds_per_job_{_id}']
+        # total_seconds_per_job_mins = round(total_seconds_per_job / 60)
+        total_seconds_per_job_mins = round(total_seconds_per_job / 60)
+        avg_seconds_per_job_mins = round(avg_seconds_per_job / 60)
+        # new_item = next((x for x in processes if x['id'] == _id), None)
+        # new_item['total'] = count_value
+        # new_item['total_seconds_per_job'] = total_seconds_per_job
+        # new_item['total_seconds_per_job_mins'] = total_seconds_per_job_mins
+        new_item_job = next((x for x in processes if x['id'] == _id), None)
+        new_item_job['total'] = job_count_value
+        new_item_job['total_seconds_per_job_mins'] = total_seconds_per_job_mins
+        new_item_job['avg_seconds_per_job_mins'] = avg_seconds_per_job_mins
+        # if int(count_value) > 0:
+        #     new_item['avg_total_seconds_per_job_mins'] = total_seconds_per_job_mins / int(count_value)
+        # else:
+        #     new_item['avg_total_seconds_per_job_mins'] = 0
+
+        if int(job_count_value) > 0:
+            new_item_job['avg_seconds_per_job_mins'] = avg_seconds_per_job_mins / int(job_count_value)
+        else:
+            new_item_job['avg_seconds_per_job_mins'] = 0
+
+        if new_item_job['type'] == 'roof':
+            job_processes_roof_list.append(new_item_job)
+        elif new_item_job['type'] == 'ground':
+            job_processes_ground_list.append(new_item_job)
+
+    # print(job_processes_roof_list)
+    # print(job_processes_ground_list)
+    data = {
+        'title': 'Duration of Steps (Avg in mins)',
+        # 'results': results_trackers,
+        # 'roof_list': trackers_roof_list,
+        # 'roof_count': len(trackers_roof_list),
+        # 'ground_list': trackers_ground_list,
+        # 'ground_count': len(trackers_ground_list),
+        'results': results_job_processes,
+        'roof_list': job_processes_roof_list,
+        'roof_count': len(job_processes_roof_list),
+        'ground_list': job_processes_ground_list,
+        'ground_count': len(job_processes_ground_list),
+    }
+
+    return render(request, 'analytics/admin/graphs/duration_of_steps.html', data)
+
+
+# Graph 2
+@login_required
+@staff_member_required
+def admin_crew_performance_graph(request):
+    crews = Crew.objects.annotate(
+        total_installations=models.Count('customer_trackers', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED
+        )),
+        total_kw_installations=models.Sum('customer_trackers__system_size', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED
+        ), output_field=models.IntegerField(0)),
+        avg_seconds_per_kw=models.Avg('customer_trackers__seconds_per_kw', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED
+        ), output_field=models.IntegerField(0))
+    )
+    data = {
+        'title': 'Summary of Crew Performance',
+        'crews': crews,
+    }
+    return render(request, 'analytics/admin/graphs/crew_graph_performance.html', data)
+
+
+# graph 3
+@login_required
+@staff_member_required
+def admin_crew_mix_by_location(request):
     # queryset = Crew.objects.annotate(**crew_counter_subqs())
     queryset = Crew.objects.all()
     # print(queryset)
@@ -76,7 +190,7 @@ def admin_crew_graph_by_location(request):
 
     data = {
         # 'queryset': queryset,
-        'title': 'Crew Graph by Location',
+        'title': 'Crew Mix by Location',
         'result': result,
         'total_minutes_per_job_roof': round(total_minutes_per_job_roof),
         'total_minutes_per_job_ground': round(total_minutes_per_job_ground),
@@ -89,89 +203,10 @@ def admin_crew_graph_by_location(request):
     return render(request, 'analytics/admin/graphs/crew_mins_by_location.html', data)
 
 
-# Graph 2
-@login_required
-@staff_member_required
-def admin_crew_performance_graph(request):
-    crews = Crew.objects.annotate(
-        total_installations=models.Count('customer_trackers', filter=models.Q(
-            customer_trackers__status=CustomerTracker.STATUS_CLOSED
-        )),
-        total_kw_installations=models.Sum('customer_trackers__system_size', filter=models.Q(
-            customer_trackers__status=CustomerTracker.STATUS_CLOSED
-        ), output_field=models.IntegerField(0)),
-        avg_seconds_per_kw=models.Avg('customer_trackers__seconds_per_kw', filter=models.Q(
-            customer_trackers__status=CustomerTracker.STATUS_CLOSED
-        ), output_field=models.IntegerField(0))
-    )
-    data = {
-        'title': 'Summary of Crew Performance',
-        'crews': crews,
-    }
-    return render(request, 'analytics/admin/graphs/crew_graph_performance.html', data)
-
-
-# graph 3
-@login_required
-@staff_member_required
-def graph_duration_steps(request):
-    from trackers.db_utils import job_process_time_spend_seconds_sub_qs
-    initial_job_processes = InitialJobProcess.objects.all()
-    processes = [{'id': item.id, 'title': item.title, 'type': item.location} for item in initial_job_processes]
-    trackers = CustomerTracker.objects.filter().order_by('-location')
-    subqs_trackers = {}
-    for item in processes:
-        _id = item.get('id')
-        title = item.get('title')
-        subqs_trackers[f'count_{_id}'] = models.Count('id', filter=models.Q(job_processes__title__exact=title),
-                                                      output_field=models.IntegerField(default=0))
-
-        subqs_trackers[f'total_seconds_per_job_{_id}'] = models.Sum('job_processes__seconds_per_job',
-                                                                    filter=models.Q(job_processes__title__exact=title),
-                                                                    output_field=models.IntegerField(default=0)
-                                                                    )
-
-    results_trackers = trackers.aggregate(**subqs_trackers)
-
-    trackers_roof_list = []
-    trackers_ground_list = []
-    for item in processes:
-        _id = item.get('id')
-        count_value = results_trackers[f'count_{_id}']
-        total_seconds_per_job = results_trackers[f'total_seconds_per_job_{_id}']
-        total_seconds_per_job_mins = round(total_seconds_per_job / 60)
-        new_item = next((x for x in processes if x['id'] == _id), None)
-        new_item['total'] = count_value
-        new_item['total_seconds_per_job'] = total_seconds_per_job
-        new_item['total_seconds_per_job_mins'] = total_seconds_per_job_mins
-        if int(count_value) > 0:
-            new_item['avg_total_seconds_per_job_mins'] = total_seconds_per_job_mins / int(count_value)
-        else:
-            new_item['avg_total_seconds_per_job_mins'] = 0
-
-        if new_item['type'] == 'roof':
-            trackers_roof_list.append(new_item)
-        elif new_item['type'] == 'ground':
-            trackers_ground_list.append(new_item)
-
-    # print(trackers_roof_list)
-    # print(trackers_ground_list)
-    data = {
-        'title': 'Duration of Steps (Avg in mins)',
-        'results': results_trackers,
-        'roof_list': trackers_roof_list,
-        'roof_count': len(trackers_roof_list),
-        'ground_list': trackers_ground_list,
-        'ground_count': len(trackers_ground_list),
-    }
-
-    return render(request, 'analytics/admin/graphs/duration_of_steps.html', data)
-
-
 # graph 4
 @login_required
 @staff_member_required
-def admin_roof_type_graph_view(request):
+def admin_graph_roof_type_performance_view(request):
     from roofs.models import RoofType
     from roofs.db_utils import roof_type_counter_subqs
     roof_types = RoofType.objects.filter(
@@ -194,7 +229,7 @@ def admin_roof_type_graph_view(request):
         })
 
     data = {
-        'title': _('Roof Types'),
+        'title': _('Roof Type Performance'),
         'roof_types': roof_types,
         'chart_data': chart_data,
     }
@@ -209,6 +244,26 @@ def admin_graph_app_feedback(request):
     user_feedbacks = UserFeedback.objects.all().aggregate(
         total_users_review=models.Count('user', distinct=True),
         avg_rating=models.Avg('rating', output_field=models.DecimalField(default=0, decimal_places=2)),
+        rating_1=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=1
+                              )),
+        rating_2=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=2
+                              )),
+        rating_3=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=3
+                              )),
+        rating_4=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=4
+                              )),
+        rating_5=models.Count('id', output_field=models.IntegerField(default=0),
+                              filter=models.Q(
+                                  rating=15
+                              )),
     )
     from users.models import User
     users = User.objects.filter(is_active=True)
@@ -222,6 +277,98 @@ def admin_graph_app_feedback(request):
         'total_users': users.count(),
         'total_users_review': user_feedbacks['total_users_review'],
         'avg_rating': round(avg_rating, 1),
+        'rating_1': user_feedbacks['rating_1'],
+        'rating_2': user_feedbacks['rating_2'],
+        'rating_3': user_feedbacks['rating_3'],
+        'rating_4': user_feedbacks['rating_4'],
+        'rating_5': user_feedbacks['rating_5'],
     }
 
     return render(request, 'analytics/admin/graphs/app_feedback.html', data)
+
+
+# graph 6
+@login_required
+@staff_member_required
+def admin_roof_type_avg_hr_kw_graph(request):
+    from roofs.models import RoofType
+    from roofs.db_utils import roof_type_counter_subqs
+    roof_types = RoofType.objects.filter(
+        customer_trackers__status=CustomerTracker.STATUS_CLOSED,
+    ).annotate(
+        **roof_type_counter_subqs()
+    )
+
+    chart_data = []
+    for roof in roof_types:
+        avg_hours = round(int(roof.avg_seconds_per_kw) / 3600)
+        avg_duration_in_mins = round(int(roof.total_seconds_per_job) / 60 / roof.total_customer_trackers_closed)
+        chart_data.append({
+            'name': roof.name,
+            'avg_hours': round(avg_hours),
+            'avg_duration_in_mins': round(avg_duration_in_mins),
+            'kw_installations': roof.total_system_size,
+            'total_number_of_arrays': roof.total_number_of_arrays,
+        })
+    print(chart_data)
+    data = {
+        'title': 'AVG hr/kW by Roof Type',
+        'roof_types': roof_types,
+        'chart_data': chart_data,
+    }
+    return render(request, 'analytics/admin/graphs/avg_hr_kw_by_roof_type.html', data)
+
+
+# graph 7
+@login_required
+@staff_member_required
+def admin_roof_type_by_array_count_graph(request):
+    from roofs.models import RoofType
+    from roofs.db_utils import roof_type_counter_subqs
+    roof_types = RoofType.objects.filter(
+        customer_trackers__status=CustomerTracker.STATUS_CLOSED,
+    ).annotate(
+        **roof_type_counter_subqs()
+    )
+
+    chart_data = []
+    for roof in roof_types:
+        avg_hours = round(int(roof.avg_seconds_per_kw) / 3600)
+        avg_duration_in_mins = round(int(roof.total_seconds_per_job) / 60 / roof.total_customer_trackers_closed)
+        chart_data.append({
+            'name': roof.name,
+            'avg_hours': round(avg_hours),
+            'avg_duration_in_mins': round(avg_duration_in_mins),
+            'kw_installations': roof.total_system_size,
+            'total_number_of_arrays': roof.total_number_of_arrays,
+            'avg_number_of_arrays': roof.avg_number_of_arrays,
+        })
+    print(chart_data)
+    data = {
+        'title': 'Roof Type by Array Count',
+        'roof_types': roof_types,
+        'chart_data': chart_data,
+    }
+    return render(request, 'analytics/admin/graphs/roof_type_by_array_count.html', data)
+
+
+# graph 8
+@login_required
+@staff_member_required
+def admin_grap_performance_by_crew(request):
+    crews = Crew.objects.annotate(
+        total_installations=models.Count('customer_trackers', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED
+        )),
+        total_kw_installations=models.Sum('customer_trackers__system_size', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED
+        ), output_field=models.IntegerField(0)),
+        avg_seconds_per_kw=models.Avg('customer_trackers__seconds_per_kw', filter=models.Q(
+            customer_trackers__status=CustomerTracker.STATUS_CLOSED
+        ), output_field=models.IntegerField(0))
+    )
+    data = {
+        'title': 'Performance by Crew',
+        'crews': crews,
+    }
+    return render(request, 'analytics/admin/graphs/performance_by_crew.html', data)

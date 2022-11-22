@@ -1,0 +1,82 @@
+{% extends "analytics/admin/base.html" %}
+{% load i18n %}
+{% load read_time_seconds %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin_analytics:analytics_index' %}">{% trans 'Analytics' %}</a> &rsaquo; {{ title }}
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 col-sm-5 col-12">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Avg hr/kW</th>
+                        <th>Total Number of Arrays</th>
+                        <th>AVG Number of Arrays</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for roof in roof_types %}
+                        <tr>
+                            <td>{{ roof.name }}</td>
+                            <td>
+                                {{ roof.avg_seconds_per_kw|seconds_to_hours }}
+                            </td>
+                            <td>{{ roof.total_number_of_arrays }}</td>
+                            <td>{{ roof.avg_number_of_arrays }}</td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-8 col-sm-7 col-12">
+                <div id="chart_div" style="height: 400px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+
+        const chart_data = []
+        const total_roof_types = parseInt({{ roof_types.count }})
+
+        function drawAVGRoofTypeArrays() {
+            let data = google.visualization.arrayToDataTable([
+                ['Name', 'AVG hr/kW', {role: 'style'}, 'Number of Arrays'],
+                {% for item in chart_data %}
+                    ['{{ item.name }}', parseInt({{ item.avg_hours }}), 'color: #1038EB', parseInt(
+                        {{ item.avg_number_of_arrays }}),],
+                {% endfor %}
+
+            ]);
+
+            let options = {
+                title: '{{ title }}',
+                vAxis: {title: 'AVG hr/kW'},
+                hAxis: {title: 'Roof Types'},
+                seriesType: 'bars',
+                series: {
+                    1: {
+                        type: 'line',
+                        color: '#f26900',
+                        pointSize: 10
+                    }
+                },
+            };
+            let chart = new google.visualization.ComboChart(
+                document.getElementById('chart_div'));
+
+            chart.draw(data, options);
+        }
+
+        google.charts.setOnLoadCallback(drawAVGRoofTypeArrays);
+    </script>
+{% endblock %}

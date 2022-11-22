@@ -8,17 +8,16 @@
     </div>
 {% endblock %}
 {% block content %}
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-3 col-sm-4 col-12">
                 <table>
-
                     <tbody>
                     <tr>
                         <td>Users</td>
                         <td>{{ total_users }}</td>
                     </tr>
-                     <tr>
+                    <tr>
                         <td>Total User Feedbacks</td>
                         <td>{{ total_users_review }}</td>
                     </tr>
@@ -26,12 +25,60 @@
                         <td>Rating AVG</td>
                         <td>{{ avg_rating }}</td>
                     </tr>
+                    <tr>
+                        <td>Rating 1</td>
+                        <td>{{ rating_1 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Rating 2</td>
+                        <td>{{ rating_2 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Rating 3</td>
+                        <td>{{ rating_3 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Rating 4</td>
+                        <td>{{ rating_4 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Rating 5</td>
+                        <td>{{ rating_5 }}</td>
+                    </tr>
+
                     </tbody>
                 </table>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12">
+                <div id="piechart" style="max-width: 400px; height: 400px; width: 100%;"></div>
             </div>
         </div>
 
     </div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
 
+        function drawChart() {
+
+            var data = google.visualization.arrayToDataTable([
+                ['Rating', 'Total'],
+                ['Rating 1', {{ rating_1 }}],
+                ['Rating 2', {{ rating_2 }}],
+                ['Rating 3', {{ rating_3 }}],
+                ['Rating 4', {{ rating_4 }}],
+                ['Rating 4', {{ rating_5 }}],
+            ]);
+
+            var options = {
+                title: '{{title}}'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
+        }
+    </script>
 
 {% endblock %}
