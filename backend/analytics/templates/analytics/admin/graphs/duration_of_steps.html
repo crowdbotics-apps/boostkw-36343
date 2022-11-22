@@ -7,82 +7,84 @@
     </div>
 {% endblock %}
 {% block content %}
-    <div style="display: flex; flex-direction: row">
-        <div>
-            <table>
-                <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Duration Steps</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td valign="center">Roof</td>
-                    <td>
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Total</th>
-                                <th>in Mins</th>
-                                <th>Avg in Mins</th>
-                            </tr>
-                            </thead>
-                            {% for item in roof_list %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 col-sm-5 col-12">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Duration Steps</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td valign="center">Roof</td>
+                        <td>
+                            <table>
+                                <thead>
                                 <tr>
-                                    <td>{{ item.title }}</td>
-                                    <td>{{ item.total }}</td>
-                                    <td>{{ item.total_seconds_per_job_mins }}</td>
-                                    <td>{{ item.avg_total_seconds_per_job_mins }}</td>
+                                    <th>Name</th>
+                                    <th>Total</th>
+                                    <th>in Mins</th>
+                                    <th>Avg in Mins</th>
                                 </tr>
-                            {% endfor %}
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td valign="center">Ground</td>
-                    <td>
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Total</th>
-                                <th>in Mins</th>
-                                <th>Avg in Mins</th>
-                            </tr>
-                            </thead>
-                            {% for item in ground_list %}
+                                </thead>
+                                {% for item in roof_list %}
+                                    <tr>
+                                        <td>{{ item.title }}</td>
+                                        <td>{{ item.total }}</td>
+                                        <td>{{ item.total_seconds_per_job_mins }}</td>
+                                        <td>{{ item.avg_seconds_per_job_mins }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="center">Ground</td>
+                        <td>
+                            <table>
+                                <thead>
                                 <tr>
-                                    <td>{{ item.title }}</td>
-                                    <td>{{ item.total }}</td>
-                                    <td>{{ item.total_seconds_per_job_mins }}</td>
-                                    <td>{{ item.avg_total_seconds_per_job_mins }}</td>
+                                    <th>Name</th>
+                                    <th>Total</th>
+                                    <th>in Mins</th>
+                                    <th>Avg in Mins</th>
                                 </tr>
-                            {% endfor %}
-                        </table>
-                    </td>
-                </tr>
+                                </thead>
+                                {% for item in ground_list %}
+                                    <tr>
+                                        <td>{{ item.title }}</td>
+                                        <td>{{ item.total }}</td>
+                                        <td>{{ item.total_seconds_per_job_mins }}</td>
+                                        <td>{{ item.total_seconds_per_job_mins }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </td>
+                    </tr>
 
-                </tbody>
+                    </tbody>
 
-            </table>
-        </div>
-        <div style="display: flex; flex-direction: row">
-            <div id="chart_div" style="width: 900px; height: 500px;"></div>
-            <div style="display: flex; flex-direction: column; padding: 50px 20px 20px 15px">
-                <div style="display: flex; flex-direction: row; margin-bottom: 10px">
-                    <div style="width: 30px; height: 15px; background-color:  #1038EB; margin-right: 10px"></div>
-                    <div>Roof</div>
-                </div>
-                <div style="display: flex; flex-direction: row">
-                    <div style="width: 30px; height: 15px; background-color:  #ff7600; margin-right: 10px">
+                </table>
+            </div>
+            <div class="col-md-8 col-sm-7 col-12" style="display: flex; flex-direction: row">
+                <div id="chart_div" style="width: 900px; height: 500px;"></div>
+                <div style="display: flex; flex-direction: column; padding: 50px 20px 20px 15px">
+                    <div style="display: flex; flex-direction: row; margin-bottom: 10px">
+                        <div style="width: 30px; height: 15px; background-color:  #1038EB; margin-right: 10px"></div>
+                        <div>Roof</div>
                     </div>
-                    <div>Ground</div>
+                    <div style="display: flex; flex-direction: row">
+                        <div style="width: 30px; height: 15px; background-color:  #ff7600; margin-right: 10px">
+                        </div>
+                        <div>Ground</div>
+                    </div>
                 </div>
-
             </div>
         </div>
+
     </div>
 
 
@@ -98,10 +100,10 @@
             var data = google.visualization.arrayToDataTable([
                 ['Title', 'Avg Mins', {role: 'style'}],
                 {% for item in roof_list %}
-                    ['{{item.title}}', {{item.avg_total_seconds_per_job_mins}}, 'color: #1038EB'],
+                    ['{{item.title}}', {{item.avg_seconds_per_job_mins}}, 'color: #1038EB'],
                 {% endfor %}
                 {% for item in ground_list %}
-                    ['{{item.title}}', {{item.avg_total_seconds_per_job_mins}}, 'color: #ff7600'],
+                    ['{{item.title}}', {{item.avg_seconds_per_job_mins}}, 'color: #ff7600'],
                 {% endfor %}
             ]);
             let series = {};

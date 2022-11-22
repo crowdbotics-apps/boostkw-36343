@@ -32,7 +32,98 @@ def admin_db_url(request):
 # Graph 1
 @login_required
 @staff_member_required
-def admin_crew_graph_by_location(request):
+def admin_crew_graph_duration_steps(request):
+    from trackers.db_utils import job_process_time_spend_seconds_sub_qs
+    initial_job_processes = InitialJobProcess.objects.all()
+    processes = [{'id': item.id, 'title': item.title, 'type': item.location} for item in initial_job_processes]
+    # trackers = CustomerTracker.objects.filter().order_by('-location')
+    job_processes = JobProcess.objects.filter()
+    subqs_trackers = {}
+    subqs_job = {}
+    for item in processes:
+        _id = item.get('id')
+        title = item.get('title')
+        # subqs_trackers[f'count_{_id}'] = models.Count('id', filter=models.Q(job_processes__title__exact=title),
+        #                                               output_field=models.IntegerField(default=0))
+        subqs_job[f'count_{_id}'] = models.Count('id', filter=models.Q(title__exact=title),
+                                                 output_field=models.IntegerField(default=0))
+
+        # subqs_trackers[f'total_seconds_per_job_{_id}'] = models.Sum('job_processes__seconds_per_job',
+        #                                                             filter=models.Q(job_processes__title__exact=title),
+        #                                                             output_field=models.IntegerField(default=0)
+        #                                                             )
+        subqs_job[f'toal_seconds_per_job_{_id}'] = models.Sum('seconds_per_job',
+                                                              filter=models.Q(title__exact=title),
+                                                              output_field=models.IntegerField(default=0)
+                                                              )
+        subqs_job[f'avg_seconds_per_job_{_id}'] = models.Avg('seconds_per_job',
+                                                             filter=models.Q(title__exact=title),
+                                                             output_field=models.IntegerField(default=0)
+                                                             )
+
+    # results_trackers = trackers.aggregate(**subqs_trackers)
+    results_job_processes = job_processes.aggregate(**subqs_job)
+    print(results_job_processes)
+
+    trackers_roof_list = []
+    trackers_ground_list = []
+    job_processes_roof_list = []
+    job_processes_ground_list = []
+    for item in processes:
+        _id = item.get('id')
+        # count_value = results_trackers[f'count_{_id}']
+        job_count_value = results_job_processes[f'count_{_id}']
+        # total_seconds_per_job = results_trackers[f'total_seconds_per_job_{_id}']
+        total_seconds_per_job = results_job_processes[f'toal_seconds_per_job_{_id}']
+        avg_seconds_per_job = results_job_processes[f'avg_seconds_per_job_{_id}']
+        # total_seconds_per_job_mins = round(total_seconds_per_job / 60)
+        total_seconds_per_job_mins = round(total_seconds_per_job / 60)
+        avg_seconds_per_job_mins = round(avg_seconds_per_job / 60)
+        # new_item = next((x for x in processes if x['id'] == _id), None)
+        # new_item['total'] = count_value
+        # new_item['total_seconds_per_job'] = total_seconds_per_job
+        # new_item['total_seconds_per_job_mins'] = total_seconds_per_job_mins
+        new_item_job = next((x for x in processes if x['id'] == _id), None)
+        new_item_job['total'] = job_count_value
+        new_item_job['total_seconds_per_job_mins'] = total_seconds_per_job_mins
+        new_item_job['avg_seconds_per_job_mins'] = avg_seconds_per_job_mins
+        # if int(count_value) > 0:
+        #     new_item['avg_total_seconds_per_job_mins'] = total_seconds_per_job_mins / int(count_value)
+        # else:
+        #     new_item['avg_total_seconds_per_job_mins'] = 0
+
+        if int(job_count_value) > 0:
+            new_item_job['avg_seconds_per_job_mins'] = avg_seconds_per_job_mins / int(job_count_value)
+        else:
+            new_item_job['avg_seconds_per_job_mins'] = 0
+
+        if new_item_job['type'] == 'roof':
+            job_processes_roof_list.append(new_item_job)
+        elif new_item_job['type'] == 'ground':
+            job_processes_ground_list.append(new_item_job)
+
+    # print(job_processes_roof_list)
+    # print(job_processes_ground_list)
+    data = {
+        'title': 'Duration of Steps (Avg in mins)',
+        # 'results': results_trackers,
+        # 'roof_list': trackers_roof_list,
+        # 'roof_count': len(trackers_roof_list),
+        # 'ground_list': trackers_ground_list,
+        # 'ground_count': len(trackers_ground_list),
+        'results': results_job_processes,
+        'roof_list': job_processes_roof_list,
+        'roof_count': len(job_processes_roof_list),
+        'ground_list': job_processes_ground_list,
+        'ground_count': len(job_processes_ground_list),
+    }
+
+    return render(request, 'analytics/admin/graphs/duration_of_steps.html', data)
+
+
+@login_required
+@staff_member_required
+def admin_crew_mix_by_location(request):
     # queryset = Crew.objects.annotate(**crew_counter_subqs())
     queryset = Crew.objects.all()
     # print(queryset)
@@ -76,7 +167,7 @@ def admin_crew_graph_by_location(request):
 
     data = {
         # 'queryset': queryset,
-        'title': 'Crew Graph by Location',
+        'title': 'Crew Mix by Location',
         'result': result,
         'total_minutes_per_job_roof': round(total_minutes_per_job_roof),
         'total_minutes_per_job_ground': round(total_minutes_per_job_ground),
@@ -112,61 +203,6 @@ def admin_crew_performance_graph(request):
 
 
 # graph 3
-@login_required
-@staff_member_required
-def graph_duration_steps(request):
-    from trackers.db_utils import job_process_time_spend_seconds_sub_qs
-    initial_job_processes = InitialJobProcess.objects.all()
-    processes = [{'id': item.id, 'title': item.title, 'type': item.location} for item in initial_job_processes]
-    trackers = CustomerTracker.objects.filter().order_by('-location')
-    subqs_trackers = {}
-    for item in processes:
-        _id = item.get('id')
-        title = item.get('title')
-        subqs_trackers[f'count_{_id}'] = models.Count('id', filter=models.Q(job_processes__title__exact=title),
-                                                      output_field=models.IntegerField(default=0))
-
-        subqs_trackers[f'total_seconds_per_job_{_id}'] = models.Sum('job_processes__seconds_per_job',
-                                                                    filter=models.Q(job_processes__title__exact=title),
-                                                                    output_field=models.IntegerField(default=0)
-                                                                    )
-
-    results_trackers = trackers.aggregate(**subqs_trackers)
-
-    trackers_roof_list = []
-    trackers_ground_list = []
-    for item in processes:
-        _id = item.get('id')
-        count_value = results_trackers[f'count_{_id}']
-        total_seconds_per_job = results_trackers[f'total_seconds_per_job_{_id}']
-        total_seconds_per_job_mins = round(total_seconds_per_job / 60)
-        new_item = next((x for x in processes if x['id'] == _id), None)
-        new_item['total'] = count_value
-        new_item['total_seconds_per_job'] = total_seconds_per_job
-        new_item['total_seconds_per_job_mins'] = total_seconds_per_job_mins
-        if int(count_value) > 0:
-            new_item['avg_total_seconds_per_job_mins'] = total_seconds_per_job_mins / int(count_value)
-        else:
-            new_item['avg_total_seconds_per_job_mins'] = 0
-
-        if new_item['type'] == 'roof':
-            trackers_roof_list.append(new_item)
-        elif new_item['type'] == 'ground':
-            trackers_ground_list.append(new_item)
-
-    # print(trackers_roof_list)
-    # print(trackers_ground_list)
-    data = {
-        'title': 'Duration of Steps (Avg in mins)',
-        'results': results_trackers,
-        'roof_list': trackers_roof_list,
-        'roof_count': len(trackers_roof_list),
-        'ground_list': trackers_ground_list,
-        'ground_count': len(trackers_ground_list),
-    }
-
-    return render(request, 'analytics/admin/graphs/duration_of_steps.html', data)
-
 
 # graph 4
 @login_required
