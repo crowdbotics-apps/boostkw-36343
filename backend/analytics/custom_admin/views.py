@@ -415,7 +415,6 @@ def admin_roof_type_avg_hr_kw_graph(request):
             'kw_installations': roof.total_system_size,
             'total_number_of_arrays': roof.total_number_of_arrays,
         })
-    print(chart_data)
     data = {
         'title': 'AVG hr/kW by Roof Type',
         'roof_types': roof_types,
