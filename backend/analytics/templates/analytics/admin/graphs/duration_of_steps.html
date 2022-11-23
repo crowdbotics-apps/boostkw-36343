@@ -28,7 +28,7 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>Type</th>
+                        <th></th>
                         <th>Duration Steps</th>
                     </tr>
                     </thead>
@@ -39,7 +39,7 @@
                             <table>
                                 <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Process</th>
                                     <th>Total</th>
                                     <th>in Mins</th>
                                     <th>Avg in Mins</th>
@@ -62,7 +62,7 @@
                             <table>
                                 <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Process</th>
                                     <th>Total</th>
                                     <th>in Mins</th>
                                     <th>Avg in Mins</th>
@@ -114,10 +114,21 @@
 
         const roof_count = {{ roof_count }};
         const ground_count = {{ ground_count }};
+        const roof_items = [
+            {% for item in roof_list %}
+                {{item.avg_seconds_per_job_mins}},
+            {% endfor %}
+        ]
+
+        const ground_items = [
+            {% for item in ground_list %}
+                '{{item.title}}', {{item.avg_seconds_per_job_mins}},
+            {% endfor %}
+        ]
 
         function drawBasic() {
             var data = google.visualization.arrayToDataTable([
-                ['Title', 'Avg Mins', {role: 'style'}],
+                ['Processes', 'Avg Mins', {role: 'style'}],
                 {% for item in roof_list %}
                     ['{{item.title}}', {{item.avg_seconds_per_job_mins}}, 'color: #1038EB'],
                 {% endfor %}
@@ -125,6 +136,7 @@
                     ['{{item.title}}', {{item.avg_seconds_per_job_mins}}, 'color: #ff7600'],
                 {% endfor %}
             ]);
+
             let series = {};
             let colors = [];
             for (let i = 0; i < roof_count; i++) {
@@ -142,17 +154,17 @@
                     position: 'none',
                 },
                 hAxis: {
-                    title: 'Name',
+                    title: 'Processes',
                     textStyle: {color: 'grey'}
                 },
                 vAxis: {
                     title: 'Avg in Mins',
                 },
 
-                series: {
-                    0: {targetAxisIndex: 0},
-                    1: {targetAxisIndex: 1}
-                },
+               // series: {
+             //       0: {targetAxisIndex: 0},
+              //      1: {targetAxisIndex: 1}
+              //  },
 
                 {#colors: colors#}
 

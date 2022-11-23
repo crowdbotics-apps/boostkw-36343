@@ -8,10 +8,13 @@ urlpatterns = [
     path('db_url/', admin_db_url, name='admin_db_url'),
     # graph 1
     path('crew/location/duration-steps/', admin_crew_graph_duration_steps, name='admin_crew_graph_duration_steps'),
+
     # graph 2
-    path('crew/graph/mix-by-location/', admin_crew_mix_by_location, name='admin_crew_grap_mix_by_location'),
-    # graph 3
     path('crew/performance/', admin_crew_performance_graph, name='admin_crew_performance_graph'),
+
+    # graph 3
+    path('crew/graph/mix-by-location/', admin_crew_mix_by_location, name='admin_crew_grap_mix_by_location'),
+
     # graph 4
     path('roof-types/graph/roof-type-performance/', admin_graph_roof_type_performance_view,
          name='admin_graph_roof_type_performance_view'),
