@@ -49,6 +49,8 @@ class CustomerTrackerListAPIView(ListCreateAPIView):
         ).filter(user=self.request.user)
         queryset = queryset.annotate(
             total_time_spent_seconds=customer_tracker_job_process_subqs(),
+            total_seconds_per_job=models.Sum('job_processes__seconds_per_job', output_field=models.IntegerField(
+                default=0))
         )
         return queryset
 

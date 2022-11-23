@@ -8,39 +8,54 @@
     </div>
 {% endblock %}
 {% block content %}
-  <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-4 col-sm-5 col-12">
-                    <table>
-                        <thead>
+    <style>
+        .btn-export {
+            padding: 8px 20px;
+            border-radius: 20px;
+            min-width: 150px !important;
+            background-color: #000;
+            color: #fff !important;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-decoration: none !important;
+            display: inline-block;
+            text-align: center;
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 col-sm-5 col-12">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>kw Installations</th>
+                        <th>Avg hr/kW</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for roof in roof_types %}
                         <tr>
-                            <th>Title</th>
-                            <th>Installations</th>
-                            <th>Total kw Installations</th>
-                            <th>Avg hr/kW</th>
+                            <td>{{ roof.name }}</td>
+                            <td>{{ roof.total_system_size }}</td>
+                            <td>
+                                {{ roof.avg_seconds_per_kw|seconds_to_hours }}
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        {% for roof in roof_types %}
-                            <tr>
-                                <td>{{ roof.name }}</td>
-                                <td>{{ roof.total_system_size }}</td>
-                                <td>
-                                    {% widthratio roof.total_seconds_per_job|seconds_to_minutes roof.total_customer_trackers_closed 1 %}
-                                </td>
-                                <td>
-                                    {{ roof.avg_seconds_per_kw|seconds_to_hours }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-8 col-sm-7 col-12">
-                    <div id="chart_div" style="height: 400px; width: 100%;"></div>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div style="margin-top: 10px">
+                    <a class="btn-export"
+                       href="{% url 'admin_analytics:admin_roof_type_avg_hr_kw_graph' %}?export=1">Export</a>
                 </div>
             </div>
+            <div class="col-md-8 col-sm-7 col-12">
+                <div id="chart_div" style="height: 400px; width: 100%;"></div>
+            </div>
         </div>
+    </div>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         google.charts.load('current', {'packages': ['corechart']});

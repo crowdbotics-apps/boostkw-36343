@@ -165,7 +165,8 @@ class CustomerTrackerSerializer(serializers.ModelSerializer):
 
 class CustomerTrackerSerializerWithJobProcess(serializers.ModelSerializer):
     # job_processes = JobProcessSerializer(many=True, read_only=True)
-    total_time_spent_seconds = serializers.IntegerField(read_only=True)
+    total_time_spent_seconds = serializers.IntegerField(read_only=True, default=0)
+    total_seconds_per_job = serializers.IntegerField(read_only=True, default=0)
 
     class Meta:
         model = CustomerTracker
