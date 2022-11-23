@@ -7,6 +7,21 @@
     </div>
 {% endblock %}
 {% block content %}
+  <style>
+        .btn-export {
+            padding: 8px 20px;
+            border-radius: 20px;
+            min-width: 150px !important;
+            background-color: #000;
+            color: #fff !important;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-decoration: none !important;
+            display: inline-block;
+            text-align: center;
+        }
+    </style>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4 col-sm-5 col-12">
@@ -68,6 +83,10 @@
                     </tbody>
 
                 </table>
+                <div style="margin-top: 10px">
+                    <a class="btn-export"
+                       href="{% url 'admin_analytics:admin_crew_graph_duration_steps' %}?export=1">Export</a>
+                </div>
             </div>
             <div class="col-md-8 col-sm-7 col-12" style="display: flex; flex-direction: row">
                 <div id="chart_div" style="width: 900px; height: 500px;"></div>

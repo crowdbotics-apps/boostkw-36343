@@ -1,3 +1,5 @@
+import csv
+
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -63,7 +65,7 @@ def admin_crew_graph_duration_steps(request):
 
     # results_trackers = trackers.aggregate(**subqs_trackers)
     results_job_processes = job_processes.aggregate(**subqs_job)
-    print(results_job_processes)
+    # print(results_job_processes)
 
     trackers_roof_list = []
     trackers_ground_list = []
@@ -77,8 +79,8 @@ def admin_crew_graph_duration_steps(request):
         total_seconds_per_job = results_job_processes[f'toal_seconds_per_job_{_id}']
         avg_seconds_per_job = results_job_processes[f'avg_seconds_per_job_{_id}']
         # total_seconds_per_job_mins = round(total_seconds_per_job / 60)
-        total_seconds_per_job_mins = round(total_seconds_per_job / 60)
-        avg_seconds_per_job_mins = round(avg_seconds_per_job / 60)
+        total_seconds_per_job_mins = round(total_seconds_per_job / 60, 1)
+        avg_seconds_per_job_mins = round(avg_seconds_per_job / 60, 1)
         # new_item = next((x for x in processes if x['id'] == _id), None)
         # new_item['total'] = count_value
         # new_item['total_seconds_per_job'] = total_seconds_per_job
@@ -93,7 +95,7 @@ def admin_crew_graph_duration_steps(request):
         #     new_item['avg_total_seconds_per_job_mins'] = 0
 
         if int(job_count_value) > 0:
-            new_item_job['avg_seconds_per_job_mins'] = avg_seconds_per_job_mins / int(job_count_value)
+            new_item_job['avg_seconds_per_job_mins'] = avg_seconds_per_job_mins
         else:
             new_item_job['avg_seconds_per_job_mins'] = 0
 
@@ -117,6 +119,31 @@ def admin_crew_graph_duration_steps(request):
         'ground_list': job_processes_ground_list,
         'ground_count': len(job_processes_ground_list),
     }
+    is_export = bool(int(request.GET.get('export', 0)))
+
+    if is_export:
+        filename = "duration_of_steps.csv"
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        writer = csv.writer(response)
+        writer.writerow(['Type', 'Name', 'Total', 'In Mins', 'AVG (in Mins)'])
+        for item in job_processes_roof_list:
+            writer.writerow([
+                item.get('type'),
+                item.get('title'),
+                item.get('total'),
+                item.get('total_seconds_per_job_mins'),
+                item.get('avg_seconds_per_job_mins'),
+            ])
+        for item in job_processes_ground_list:
+            writer.writerow([
+                item.get('type'),
+                item.get('title'),
+                item.get('total'),
+                item.get('total_seconds_per_job_mins'),
+                item.get('avg_seconds_per_job_mins'),
+            ])
+        return response
 
     return render(request, 'analytics/admin/graphs/duration_of_steps.html', data)
 
@@ -140,6 +167,29 @@ def admin_crew_performance_graph(request):
         'title': 'Summary of Crew Performance',
         'crews': crews,
     }
+    is_export = bool(int(request.GET.get('export', 0)))
+
+    if is_export:
+        filename = "summary_of_crew_performance.csv"
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        writer = csv.writer(response)
+        writer.writerow(['Name', 'Total kW Installations', 'AVG hr/kW', '# of Installations'])
+
+        for crew in crews:
+            total_kw_installations = 0
+            if crew.total_kw_installations:
+                total_kw_installations = crew.total_kw_installations
+            avg_hours_per_kw = 0
+            if crew.avg_seconds_per_kw:
+                avg_hours_per_kw = round(crew.avg_seconds_per_kw / 3600, 1)
+            writer.writerow([
+                crew.name,
+                total_kw_installations,
+                avg_hours_per_kw,
+                crew.total_installations
+            ])
+        return response
     return render(request, 'analytics/admin/graphs/crew_graph_performance.html', data)
 
 
@@ -171,7 +221,7 @@ def admin_crew_mix_by_location(request):
         avg_seconds_per_job_ground=models.Avg('customer_trackers__job_processes__seconds_per_job',
                                               filter=models.Q(customer_trackers__location='ground')),
     )
-    print(result)
+    # print(result)
     total_minutes_per_job_roof = result['total_seconds_per_job_roof'] / 60
     total_minutes_per_job_ground = result['total_seconds_per_job_ground'] / 60
     total_minutes_per_job = result['total_seconds_per_job'] / 60
@@ -199,6 +249,17 @@ def admin_crew_mix_by_location(request):
         'avg_minutes_per_job_ground': round(avg_minutes_per_job_ground),
         'avg_minutes_per_job': round(avg_minutes_seconds_per_job),
     }
+    is_export = bool(int(request.GET.get('export', 0)))
+
+    if is_export:
+        filename = "crew_mix_by_lcoation.csv"
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        writer = csv.writer(response)
+        writer.writerow(['Location', 'Duration AVG in Mins'])
+        writer.writerow(['Crew Ground', round(avg_minutes_per_job_ground, 1)])
+        writer.writerow(['Crew Roof', round(avg_minutes_per_job_roof, 1)])
+        return response
 
     return render(request, 'analytics/admin/graphs/crew_mins_by_location.html', data)
 
@@ -233,6 +294,33 @@ def admin_graph_roof_type_performance_view(request):
         'roof_types': roof_types,
         'chart_data': chart_data,
     }
+    is_export = bool(int(request.GET.get('export', 0)))
+
+    if is_export:
+        filename = "roof_type_performance.csv"
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        writer = csv.writer(response)
+        writer.writerow(['Name', 'Duration in Mins', 'AVG hr/kW'])
+        for roof in roof_types:
+            total_seconds_per_job = 0
+            avg_seconds_per_kw = 0
+            if roof.total_seconds_per_job:
+                total_seconds_per_job = roof.total_seconds_per_job
+
+            total_mins_per_job = round(total_seconds_per_job / 60, 1)
+
+            if roof.avg_seconds_per_kw:
+                avg_seconds_per_kw = roof.avg_seconds_per_kw
+
+            avg_hr_per_kw = round(avg_seconds_per_kw / 3600, 1)
+
+            writer.writerow([
+                roof.name,
+                total_mins_per_job,
+                avg_hr_per_kw
+            ])
+        return response
     return render(request, 'analytics/admin/graphs/roof_type_graphs.html', data)
 
 
@@ -283,6 +371,23 @@ def admin_graph_app_feedback(request):
         'rating_4': user_feedbacks['rating_4'],
         'rating_5': user_feedbacks['rating_5'],
     }
+    is_export = bool(int(request.GET.get('export', 0)))
+
+    if is_export:
+        filename = "app_feedback.csv"
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        writer = csv.writer(response)
+        writer.writerow(['Title', 'Total/AVG'])
+        writer.writerow(['Users', users.count()])
+        writer.writerow(['Total User Feedbacks', user_feedbacks['total_users_review']])
+        writer.writerow(['Rating AVG', round(avg_rating, 1)])
+        writer.writerow(['Rating 1', user_feedbacks['rating_1']])
+        writer.writerow(['Rating 2', user_feedbacks['rating_2']])
+        writer.writerow(['Rating 3', user_feedbacks['rating_3']])
+        writer.writerow(['Rating 4', user_feedbacks['rating_4']])
+        writer.writerow(['Rating 5', user_feedbacks['rating_5']])
+        return response
 
     return render(request, 'analytics/admin/graphs/app_feedback.html', data)
 
@@ -301,11 +406,11 @@ def admin_roof_type_avg_hr_kw_graph(request):
 
     chart_data = []
     for roof in roof_types:
-        avg_hours = round(int(roof.avg_seconds_per_kw) / 3600)
+        avg_hours = round(int(roof.avg_seconds_per_kw) / 3600, 1)
         avg_duration_in_mins = round(int(roof.total_seconds_per_job) / 60 / roof.total_customer_trackers_closed)
         chart_data.append({
             'name': roof.name,
-            'avg_hours': round(avg_hours),
+            'avg_hours': avg_hours,
             'avg_duration_in_mins': round(avg_duration_in_mins),
             'kw_installations': roof.total_system_size,
             'total_number_of_arrays': roof.total_number_of_arrays,
@@ -316,6 +421,27 @@ def admin_roof_type_avg_hr_kw_graph(request):
         'roof_types': roof_types,
         'chart_data': chart_data,
     }
+    is_export = bool(int(request.GET.get('export', 0)))
+
+    if is_export:
+        filename = "avg_hrkw_by_roof_type.csv"
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        writer = csv.writer(response)
+        writer.writerow(['Name', 'kW Installations', 'AVG hr/kW'])
+        for roof in roof_types:
+            avg_seconds_per_kw = 0
+            if roof.avg_seconds_per_kw:
+                avg_seconds_per_kw = roof.avg_seconds_per_kw
+
+            avg_hr_per_kw = round(avg_seconds_per_kw / 3600, 1)
+
+            writer.writerow([
+                roof.name,
+                roof.total_system_size,
+                avg_hr_per_kw
+            ])
+        return response
     return render(request, 'analytics/admin/graphs/avg_hr_kw_by_roof_type.html', data)
 
 
@@ -343,12 +469,32 @@ def admin_roof_type_by_array_count_graph(request):
             'total_number_of_arrays': roof.total_number_of_arrays,
             'avg_number_of_arrays': roof.avg_number_of_arrays,
         })
-    print(chart_data)
     data = {
         'title': 'Roof Type by Array Count',
         'roof_types': roof_types,
         'chart_data': chart_data,
     }
+    is_export = bool(int(request.GET.get('export', 0)))
+
+    if is_export:
+        filename = "roof_type_by_array_count.csv"
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        writer = csv.writer(response)
+        writer.writerow(['Name', 'AVG hr/kW', 'Total Number of Arrays', 'AVG Number of Arrays'])
+        for roof in roof_types:
+            avg_seconds_per_kw = 0
+            if roof.avg_seconds_per_kw:
+                avg_seconds_per_kw = roof.avg_seconds_per_kw
+
+            avg_hr_per_kw = round(avg_seconds_per_kw / 3600, 1)
+            writer.writerow([
+                roof.name,
+                avg_hr_per_kw,
+                roof.total_number_of_arrays,
+                roof.avg_number_of_arrays
+            ])
+        return response
     return render(request, 'analytics/admin/graphs/roof_type_by_array_count.html', data)
 
 
@@ -371,4 +517,24 @@ def admin_grap_performance_by_crew(request):
         'title': 'Performance by Crew',
         'crews': crews,
     }
+    is_export = bool(int(request.GET.get('export', 0)))
+
+    if is_export:
+        filename = "performance_by_crew.csv"
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        writer = csv.writer(response)
+        writer.writerow(['Name', 'Total kw Installations', 'AVG hr/kW', ])
+        for crew in crews:
+            avg_seconds_per_kw = 0
+            if crew.avg_seconds_per_kw:
+                avg_seconds_per_kw = crew.avg_seconds_per_kw
+
+            avg_hr_per_kw = round(avg_seconds_per_kw / 3600, 1)
+            writer.writerow([
+                crew.name,
+                crew.total_kw_installations,
+                avg_hr_per_kw
+            ])
+        return response
     return render(request, 'analytics/admin/graphs/performance_by_crew.html', data)
