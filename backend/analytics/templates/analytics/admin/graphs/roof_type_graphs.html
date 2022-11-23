@@ -30,26 +30,28 @@
                     <table>
                         <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Installations</th>
-                            <th>Total kw Installations</th>
-                            <th>Total Number of Arrays</th>
+                            <th>Name</th>
+{#                            <th>Installations</th>#}
+{#                            <th>Total kw Installations</th>#}
+{#                            <th>Total Number of Arrays</th>#}
                             <th>Avg Duration (in Mins)</th>
                             <th>Avg hr/kW</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for roof in roof_types %}
+                        {% for roof in chart_data %}
+{#                        {% for roof in roof_types %}#}
                             <tr>
                                 <td>{{ roof.name }}</td>
-                                <td>{{ roof.total_customer_trackers_closed }}</td>
-                                <td>{{ roof.total_system_size }}</td>
-                                <td>{{ roof.total_number_of_arrays }}</td>
+{#                                <td>{{ roof.total_customer_trackers_closed }}</td>#}
+{#                                <td>{{ roof.total_system_size }}</td>#}
+{#                                <td>{{ roof.total_number_of_arrays }}</td>#}
                                 <td>
-                                    {% widthratio roof.total_seconds_per_job|seconds_to_minutes roof.total_customer_trackers_closed 1 %}
+                                    {{ roof.avg_duration_in_mins }}
+{#                                    {% widthratio roof.total_seconds_per_job|seconds_to_minutes roof.total_customer_trackers_closed 1 %}#}
                                 </td>
                                 <td>
-                                    {{ roof.avg_seconds_per_kw|seconds_to_hours }}
+                                    {{ roof.avg_hours }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -78,7 +80,7 @@
             let data = google.visualization.arrayToDataTable([
                 ['Name', 'Avg Durations (in Mins)', {role: 'style'}, 'Avg hr/kW'],
                 {% for item in chart_data %}
-                    ['{{ item.name }}', parseInt({{ item.avg_duration_in_mins }}), 'color: #1038EB', parseInt({{ item.avg_hours }}),],
+                    ['{{ item.name }}', {{ item.avg_duration_in_mins }}, 'color: #1038EB',{{ item.avg_hours }},],
                 {% endfor %}
 
             ]);
