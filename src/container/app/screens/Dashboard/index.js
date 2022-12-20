@@ -4,6 +4,8 @@ import * as Progress from 'react-native-progress'
 import React, { useCallback, useEffect, useState } from 'react'
 import { LineChart } from 'react-native-chart-kit'
 
+import { FullModal } from '@/components/FullModal'
+import { Search } from '@/components/Search'
 import { Layout } from '@/layout'
 import { Header } from '@/components/Header'
 import { useGetProfile } from '../../hooks/useProfile'
@@ -33,7 +35,7 @@ const MONTHS = [
 
 const Dashboard = () => {
   const { profile, refetchProfile } = useGetProfile()
-  const [values, setValues] = useState({})
+  const [visible, setVisible] = useState(false)
   const [selected, setSelected] = useState({
     name: 'November',
     number: new Date().getMonth() + 1,
@@ -100,7 +102,11 @@ const Dashboard = () => {
   return (
     <Layout>
       <ScrollView style={styles.container}>
-        <Header title="Dashboard" />
+        <Header
+          title="Dashboard"
+          showSearch={true}
+          onPress={() => setVisible(true)}
+        />
         <Image
           source={{ uri: profile?.profile_picture }}
           style={styles.avatar}
@@ -115,7 +121,7 @@ const Dashboard = () => {
         <View style={styles.details}>
           <View style={styles.branch}>
             <Text style={styles.label}>Branch</Text>
-            <Text style={styles.value}>{profile?.profile?.branch}</Text>
+            <Text style={styles.value}>{profile?.profile?.branch || ''}</Text>
           </View>
           <View style={styles.crew}>
             <Text style={styles.label}>Crew Name</Text>
@@ -127,20 +133,22 @@ const Dashboard = () => {
           <View style={styles.workStatItem}>
             <Text style={styles.label}>kW Installed</Text>
             <Text style={styles.value}>
-              {Math.floor(statistics?.avg_seconds_per_kw?.[0] / 3600)}
+              {Math.floor(statistics?.avg_seconds_per_kw / 3600) || '0'}
             </Text>
           </View>
 
           <View style={styles.workStatItem}>
             <Text style={styles.label}>Hour Worked</Text>
             <Text style={styles.value}>
-              {Math.floor(statistics?.total_time_spent_seconds / 3600)}
+              {Math.floor(statistics?.total_time_spent_seconds / 3600) || '0'}
             </Text>
           </View>
 
           <View style={styles.workStatItem}>
             <Text style={styles.label}>Installations</Text>
-            <Text style={styles.value}>{statistics?.total_installations}</Text>
+            <Text style={styles.value}>
+              {statistics?.total_installations || '0'}
+            </Text>
           </View>
         </View>
 
@@ -153,7 +161,7 @@ const Dashboard = () => {
         {graphValues?.xValues?.length > 0 && (
           <>
             <View style={styles.averageKW}>
-              <Text style={styles.averageKWValue}>{averageKW}</Text>
+              <Text style={styles.averageKWValue}>{averageKW || '0'}</Text>
               <Text style={styles.averageKWLabel}>Avg hr/kW</Text>
             </View>
             <LineChart
@@ -210,6 +218,10 @@ const Dashboard = () => {
             </Text>
           </View>
         )}
+
+        <FullModal visible={visible}>
+          <Search setVisible={setVisible} />
+        </FullModal>
 
         <View style={{ height: 100 }} />
       </ScrollView>

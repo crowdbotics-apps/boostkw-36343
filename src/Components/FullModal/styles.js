@@ -27,16 +27,14 @@ export const styles = StyleSheet.create({
     marginVertical: 20,
   },
   contentContainer: {
-    justifyContent: 'flex-end',
     width: '100%',
     flex: 1,
   },
   content: {
-    minHeight: appStyles.hp(35),
+    height: '100%',
     width: '100%',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    backgroundColor: '#fff',
+  },
+  body: {
   },
   title: {
     fontSize: 20,
@@ -45,8 +43,7 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
-  children: { paddingHorizontal: 20, paddingVertical: 10 },
-  buttonDanger: { color: '#fff' },
+  children: { paddingVertical: 10, flex: 1 },
   confirmMesssage: {
     fontSize: 22,
     color: appStyles.PRIMARY_DARK_COLOR,
