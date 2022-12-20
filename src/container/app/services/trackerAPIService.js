@@ -48,6 +48,24 @@ function getActiveProject() {
     })
 }
 
+function getCustomerTrackerInput(payload) {
+  let params = '?'
+
+  if (payload.query) {
+    params = params + 'search=' + payload.query
+  }
+
+  return request
+    .get('/trackers/customer-tracker-inputs/' + params)
+    .then(res => {
+      return res.data.results
+    })
+    .catch(function (error) {
+      console.log(error?.response)
+      throw error
+    })
+}
+
 function closeProject(payload) {
   return request
     .patch(`trackers/customer-tracker-inputs/${payload.id}/`, payload)
@@ -96,4 +114,5 @@ export const trackerAPIService = {
   closeProject,
   getActiveProject,
   startStopProcess,
+  getCustomerTrackerInput,
 }

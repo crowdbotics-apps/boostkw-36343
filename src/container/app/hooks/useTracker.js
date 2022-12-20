@@ -71,6 +71,30 @@ export const useGetActiveProject = payload => {
   }
 }
 
+export const useGetCustomerTrackerInput = payload => {
+  const { data, isLoading, error, isSuccess } = useQuery(
+    ['useGetCustomerTrackerInput', payload],
+    () => trackerAPIService.getCustomerTrackerInput(payload),
+    {
+      staleTime: 0,
+      cacheTime: 0,
+    },
+    {
+      onError: e => {
+        console.error(e)
+      },
+      refetchInterval: 5000,
+    },
+  )
+
+  return {
+    projects: data,
+    isSuccess,
+    isLoading,
+    error,
+  }
+}
+
 export const useGetCustomerTruckerInputsProcesses = (
   onSuccessFetch = () => {},
   payload,
