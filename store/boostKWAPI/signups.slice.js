@@ -12,24 +12,25 @@ const signupsSlice = createSlice({
   name: "signups",
   initialState,
   reducers: {},
-  extraReducers: {
-    [accounts_signup_create.pending]: (state, action) => {
-      if (state.api.loading === "idle") {
-        state.api.loading = "pending"
-      }
-    },
-    [accounts_signup_create.fulfilled]: (state, action) => {
-      if (state.api.loading === "pending") {
-        state.entities.push(action.payload)
-        state.api.loading = "idle"
-      }
-    },
-    [accounts_signup_create.rejected]: (state, action) => {
-      if (state.api.loading === "pending") {
-        state.api.error = action.error
-        state.api.loading = "idle"
-      }
-    }
+  extraReducers: builder => {
+    builder
+      .addCase(accounts_signup_create.pending, (state, action) => {
+        if (state.api.loading === "idle") {
+          state.api.loading = "pending"
+        }
+      })
+      .addCase(accounts_signup_create.fulfilled, (state, action) => {
+        if (state.api.loading === "pending") {
+          state.entities.push(action.payload)
+          state.api.loading = "idle"
+        }
+      })
+      .addCase(accounts_signup_create.rejected, (state, action) => {
+        if (state.api.loading === "pending") {
+          state.api.error = action.error
+          state.api.loading = "idle"
+        }
+      })
   }
 })
 export default { accounts_signup_create, slice: signupsSlice }

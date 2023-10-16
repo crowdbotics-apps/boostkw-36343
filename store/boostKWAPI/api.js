@@ -7,7 +7,7 @@ function accounts_delete_create(payload) {
   return boostKWAPI.post(`/accounts/delete/`)
 }
 function accounts_login_token_create(payload) {
-  return boostKWAPI.post(`/accounts/login/token/`, payload.data)
+  return boostKWAPI.post(`/accounts/login/token/`, payload)
 }
 function accounts_logout_list(payload) {
   return boostKWAPI.get(`/accounts/logout/`)
@@ -16,31 +16,31 @@ function accounts_logout_create(payload) {
   return boostKWAPI.post(`/accounts/logout/`)
 }
 function accounts_password_change_create(payload) {
-  return boostKWAPI.post(`/accounts/password/change/`, payload.data)
+  return boostKWAPI.post(`/accounts/password/change/`, payload)
 }
 function accounts_password_reset_create(payload) {
-  return boostKWAPI.post(`/accounts/password/reset/`, payload.data)
+  return boostKWAPI.post(`/accounts/password/reset/`, payload)
 }
 function accounts_password_reset_confirm_create(payload) {
-  return boostKWAPI.post(`/accounts/password/reset/confirm/`, payload.data)
+  return boostKWAPI.post(`/accounts/password/reset/confirm/`, payload)
 }
 function accounts_profile_read(payload) {
   return boostKWAPI.get(`/accounts/profile/`)
 }
 function accounts_profile_update(payload) {
-  return boostKWAPI.put(`/accounts/profile/`, payload.data)
+  return boostKWAPI.put(`/accounts/profile/`, payload)
 }
 function accounts_profile_partial_update(payload) {
-  return boostKWAPI.patch(`/accounts/profile/`, payload.data)
+  return boostKWAPI.patch(`/accounts/profile/`, payload)
 }
 function accounts_registration_resend_email_create(payload) {
-  return boostKWAPI.post(`/accounts/registration/resend-email/`, payload.data)
+  return boostKWAPI.post(`/accounts/registration/resend-email/`, payload)
 }
 function accounts_registration_verify_email_create(payload) {
-  return boostKWAPI.post(`/accounts/registration/verify-email/`, payload.data)
+  return boostKWAPI.post(`/accounts/registration/verify-email/`, payload)
 }
 function accounts_signup_create(payload) {
-  return boostKWAPI.post(`/accounts/signup/`, payload.data)
+  return boostKWAPI.post(`/accounts/signup/`, payload)
 }
 function crews_list(payload) {
   return boostKWAPI.get(`/crews/`, {
@@ -51,13 +51,13 @@ function feedbacks_user_feedback_read(payload) {
   return boostKWAPI.get(`/feedbacks/user-feedback/`)
 }
 function feedbacks_user_feedback_create(payload) {
-  return boostKWAPI.post(`/feedbacks/user-feedback/`, payload.data)
+  return boostKWAPI.post(`/feedbacks/user-feedback/`, payload)
 }
 function feedbacks_user_feedback_update(payload) {
-  return boostKWAPI.put(`/feedbacks/user-feedback/`, payload.data)
+  return boostKWAPI.put(`/feedbacks/user-feedback/`, payload)
 }
 function feedbacks_user_feedback_partial_update(payload) {
-  return boostKWAPI.patch(`/feedbacks/user-feedback/`, payload.data)
+  return boostKWAPI.patch(`/feedbacks/user-feedback/`, payload)
 }
 function roofs_types_list(payload) {
   return boostKWAPI.get(`/roofs/types/`, {
@@ -86,7 +86,7 @@ function trackers_customer_tracker_inputs_list(payload) {
   })
 }
 function trackers_customer_tracker_inputs_create(payload) {
-  return boostKWAPI.post(`/trackers/customer-tracker-inputs/`, payload.data)
+  return boostKWAPI.post(`/trackers/customer-tracker-inputs/`, payload)
 }
 function trackers_customer_tracker_inputs_read(payload) {
   return boostKWAPI.get(`/trackers/customer-tracker-inputs/${payload.id}/`)
@@ -94,13 +94,13 @@ function trackers_customer_tracker_inputs_read(payload) {
 function trackers_customer_tracker_inputs_update(payload) {
   return boostKWAPI.put(
     `/trackers/customer-tracker-inputs/${payload.id}/`,
-    payload.data
+    payload
   )
 }
 function trackers_customer_tracker_inputs_partial_update(payload) {
   return boostKWAPI.patch(
     `/trackers/customer-tracker-inputs/${payload.id}/`,
-    payload.data
+    payload
   )
 }
 function trackers_customer_tracker_inputs_delete(payload) {
@@ -115,7 +115,7 @@ function trackers_customer_tracker_inputs_job_processes_list(payload) {
 function trackers_customer_tracker_inputs_job_processes_create(payload) {
   return boostKWAPI.post(
     `/trackers/customer-tracker-inputs/${payload.id}/job-processes/`,
-    payload.data
+    payload
   )
 }
 function trackers_customer_tracker_inputs_job_processes_read(payload) {
@@ -126,7 +126,7 @@ function trackers_customer_tracker_inputs_job_processes_read(payload) {
 function trackers_customer_tracker_inputs_job_processes_update(payload) {
   return boostKWAPI.put(
     `/trackers/customer-tracker-inputs/${payload.id}/job-processes/${payload.job_process_id}/`,
-    payload.data
+    payload
   )
 }
 function trackers_customer_tracker_inputs_job_processes_partial_update(
@@ -134,7 +134,7 @@ function trackers_customer_tracker_inputs_job_processes_partial_update(
 ) {
   return boostKWAPI.patch(
     `/trackers/customer-tracker-inputs/${payload.id}/job-processes/${payload.job_process_id}/`,
-    payload.data
+    payload
   )
 }
 function trackers_customer_tracker_inputs_job_processes_delete(payload) {
@@ -163,19 +163,16 @@ function trackers_job_processes_list(payload) {
   })
 }
 function trackers_job_processes_create(payload) {
-  return boostKWAPI.post(`/trackers/job-processes/`, payload.data)
+  return boostKWAPI.post(`/trackers/job-processes/`, payload)
 }
 function trackers_job_processes_read(payload) {
   return boostKWAPI.get(`/trackers/job-processes/${payload.id}/`)
 }
 function trackers_job_processes_update(payload) {
-  return boostKWAPI.put(`/trackers/job-processes/${payload.id}/`, payload.data)
+  return boostKWAPI.put(`/trackers/job-processes/${payload.id}/`, payload)
 }
 function trackers_job_processes_partial_update(payload) {
-  return boostKWAPI.patch(
-    `/trackers/job-processes/${payload.id}/`,
-    payload.data
-  )
+  return boostKWAPI.patch(`/trackers/job-processes/${payload.id}/`, payload)
 }
 function trackers_job_processes_delete(payload) {
   return boostKWAPI.delete(`/trackers/job-processes/${payload.id}/`)
